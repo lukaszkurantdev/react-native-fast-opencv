@@ -9,6 +9,7 @@
 #include <FOCV_Storage.hpp>
 #include <FOCV_PointsGroup.hpp>
 #include <FOCV_StoredObject.hpp>
+#include "FOCV_Object.hpp"
 #include "opencv2/opencv.hpp"
 
 //using namespace facebook;
@@ -64,6 +65,24 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
                                 arguments[2].asObject(runtime));
     });
   }
+  else if (propName == "createObject") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "createObject"), 1,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::String {
+
+          return FOCV_Object::create(runtime, arguments);
+      });
+    }
+  else if (propName == "convertObjectToJSI") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "convertObjectToJSI"), 1,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Object {
+
+          return FOCV_Object::convertToJSI(runtime, arguments);
+      });
+    }
   else if (propName == "cvtColor") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "cvtColor"), 1,
@@ -100,7 +119,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
                   FOCV_Mat::saveMat(arguments[3].asString(runtime).utf8(runtime), dst);
                   return true;
       });
-  }  else if (propName == "split") {
+  } else if (propName == "split") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "split"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
@@ -201,6 +220,11 @@ std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtim
     std::vector<jsi::PropNameID> result;
     // list of available functions!!!
     result.push_back(jsi::PropNameID::forAscii(runtime, "frameBufferToMat"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "createObject"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "convertObjectToJSI"));
+    
+    
+    
     result.push_back(jsi::PropNameID::forAscii(runtime, "cvtColor"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "inRange"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "split"));
