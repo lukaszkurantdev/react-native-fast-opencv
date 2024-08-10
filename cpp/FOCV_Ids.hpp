@@ -17,7 +17,7 @@ private:
     
 public:
     void push(std::string id);
-    facebook::jsi::Array toJsiArray(facebook::jsi::Runtime& runtime);
+    facebook::jsi::Array toJsiArray(facebook::jsi::Runtime& runtime, std::string type);
 };
 
 #endif /* FOCV_Ids_hpp */

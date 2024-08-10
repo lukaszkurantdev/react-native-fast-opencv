@@ -29,20 +29,14 @@ using namespace facebook;
 class OpenCVPlugin : public jsi::HostObject {
 private:
     std::shared_ptr<react::CallInvoker> _callInvoker;
-    static std::unordered_map<std::string, cv::Mat> _matrices;
     
 public:
     explicit OpenCVPlugin(std::shared_ptr<react::CallInvoker> callInvoker);
-    
     static void installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::CallInvoker> callInvoker);
     
     jsi::Value get(jsi::Runtime& runtime, const jsi::PropNameID& name) override;
     std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& runtime) override;
-    
-private:
-    void clear();
-    
-    jsi::String frameBufferToMat(jsi::Runtime& runtime, jsi::Value rows, jsi::Value cols, jsi::Object input);
+
 };
 
 #endif /* FASTOPENCV_H */

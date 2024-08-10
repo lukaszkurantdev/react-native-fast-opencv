@@ -5,6 +5,7 @@
 //
 
 #include "FOCV_Ids.hpp"
+#include "FOCV_JsiObject.hpp"
 #include <jsi/jsilib.h>
 #include <jsi/jsi.h>
 
@@ -14,11 +15,11 @@ void FOCV_Ids::push(std::string id) {
     ids.push_back(id);
 }
 
-jsi::Array FOCV_Ids::toJsiArray(jsi::Runtime& runtime) {
+jsi::Array FOCV_Ids::toJsiArray(jsi::Runtime& runtime, std::string type) {
     auto result = jsi::Array(runtime, ids.size());
     
     for (int i = 0; i < ids.size(); i++) {
-      result.setValueAtIndex(runtime, i, ids[i]);
+      result.setValueAtIndex(runtime, i, FOCV_JsiObject::wrap(runtime, type, ids[i]));
     }
     
     return result;
