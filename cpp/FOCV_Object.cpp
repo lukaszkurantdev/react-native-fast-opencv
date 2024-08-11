@@ -65,6 +65,25 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             int c = arguments[3].asNumber();
             object = cv::Vec3b(a, b, c);
         } break;
+        case hashString("scalar", 6): {
+            if(arguments[4].isNumber()) {
+                int a = arguments[1].asNumber();
+                int b = arguments[2].asNumber();
+                int c = arguments[3].asNumber();
+                int d = arguments[3].asNumber();
+                
+                object = cv::Scalar(a, b, c, d);
+            } else if(arguments[3].isNumber()) {
+                int a = arguments[1].asNumber();
+                int b = arguments[2].asNumber();
+                int c = arguments[3].asNumber();
+
+                object = cv::Scalar(a, b, c);
+            } else {
+                int a = arguments[1].asNumber();
+                object = cv::Scalar(a);
+            }
+        } break;
     }
     
     std::string id = FOCV_Storage::save(object);
@@ -160,6 +179,14 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "a", jsi::Value(vec.val[0]));
             value.setProperty(runtime, "b", jsi::Value(vec.val[1]));
             value.setProperty(runtime, "c", jsi::Value(vec.val[2]));
+        } break;
+        case hashString("scalar", 6): {
+            cv::Scalar scalar = FOCV_Storage::get<cv::Scalar>(id);
+            
+            value.setProperty(runtime, "a", jsi::Value(scalar.val[0]));
+            value.setProperty(runtime, "b", jsi::Value(scalar.val[1]));
+            value.setProperty(runtime, "c", jsi::Value(scalar.val[2]));
+            value.setProperty(runtime, "d", jsi::Value(scalar.val[3]));
         } break;
     }
   

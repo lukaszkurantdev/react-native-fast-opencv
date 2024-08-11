@@ -8,6 +8,7 @@ export type Rect = { id: string; type: ObjectType.Rect };
 export type RectVector = { id: string; type: ObjectType.RectVector };
 export type Size = { id: string; type: ObjectType.Size };
 export type Vec3b = { id: string; type: ObjectType.Vec3b };
+export type Scalar = { id: string; type: ObjectType.Scalar };
 
 export type Vector = MatVector | PointVector | RectVector;
 export type Array = Mat | Vec3b;

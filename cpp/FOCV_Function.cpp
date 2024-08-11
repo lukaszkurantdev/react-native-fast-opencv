@@ -34,8 +34,8 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
     
     switch (hashString(functionName.c_str(), functionName.size())) {
         case hashString("cvtColor", 8): {
-            cv::InputArray src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
-            cv::OutputArray dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
             auto code = arguments[3].getNumber();
             
             if(arguments[4].isNumber()) {
@@ -47,15 +47,6 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             }
             
             FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
-        } break;
-        case hashString("inRange", 7): {
-            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
-            auto lowerBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
-            auto upperBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
-            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]));
-            
-            cv::inRange(src, lowerBound, upperBound, dst);
-            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]), dst);
         } break;
         case hashString("split", 5): {
             auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
@@ -238,6 +229,356 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             cv::calcCovarMatrix(samples.data(), nsamples, covar, mean, flags, dtype);
             
             FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), covar);
+        } break;
+        case hashString("cartToPolar", 11): {
+            auto x = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            
+            auto y = FOCV_JsiObject::type_from_wrap(runtime, arguments[2]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            
+            auto magnitude = FOCV_JsiObject::type_from_wrap(runtime, arguments[3]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            
+            auto angle = FOCV_JsiObject::type_from_wrap(runtime, arguments[4]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]));
+            
+            if(arguments[5].isBool()) {
+                auto angleInDegrees = arguments[5].asBool();
+                
+                cv::cartToPolar(x, y, magnitude, angle, angleInDegrees);
+            } else {
+                cv::cartToPolar(x, y, magnitude, angle);
+            }
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), magnitude);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]), angle);
+        } break;
+        case hashString("checkRange", 10): {
+            auto a = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto quiet = arguments[2].asBool();
+            auto pos = FOCV_Storage::get<cv::Point>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            auto minVal = arguments[4].asNumber();
+            auto maxVal = arguments[5].asNumber();
+            
+            cv::checkRange(a, quiet, &pos, minVal, maxVal);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), pos);
+        } break;
+        case hashString("compare", 7): {
+            auto src1 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto src2 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            auto cmpop = arguments[4].asNumber();
+            
+            cv::compare(src1, src2, dst, cmpop);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), dst);
+        } break;
+        case hashString("completeSymm", 12): {
+            auto m = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto lowerToUpper = arguments[4].asBool();
+            
+            cv::completeSymm(m, lowerToUpper);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]), m);
+        } break;
+        case hashString("convertFp16", 11): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            
+            cv::convertFp16(src, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("convertScaleAbs", 15): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            
+            if(arguments[4].isNumber()) {
+                auto alpha = arguments[3].asNumber();
+                auto beta = arguments[4].asNumber();
+                
+                cv::convertScaleAbs(src, dst, alpha, beta);
+            } else if(arguments[3].isNumber()) {
+                auto alpha = arguments[3].asNumber();
+                
+                cv::convertScaleAbs(src, dst, alpha);
+            } else {
+                cv::convertScaleAbs(src, dst);
+            }
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("copyMakeBorder", 14): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto top = arguments[3].asNumber();
+            auto bottom = arguments[4].asNumber();
+            auto left = arguments[5].asNumber();
+            auto right = arguments[6].asNumber();
+            auto borderType = arguments[7].asNumber();
+            auto value = FOCV_Storage::get<cv::Scalar>(FOCV_JsiObject::id_from_wrap(runtime, arguments[8]));
+            
+            cv::copyMakeBorder(src, dst, top, bottom, left, right, borderType, value);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("copyTo", 6): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto mask = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+           
+            cv::copyTo(src, dst, mask);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("countNonZero", 12): {
+            auto src = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+           
+            auto result = cv::countNonZero(src);
+            value.setProperty(runtime, "value", result);
+        } break;
+        case hashString("dct", 3): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto flags = arguments[3].asNumber();
+           
+            cv::dct(src, dst, flags);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("determinant", 11): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+           
+            auto result = cv::determinant(src);
+            value.setProperty(runtime, "value", result);
+        } break;
+        case hashString("dft", 3): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto flags = arguments[3].asNumber();
+            auto nonzeroRows = arguments[4].asNumber();
+           
+            cv::dft(src, dst, flags, nonzeroRows);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("divide", 6): {
+            auto src1 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto src2 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            auto scale = arguments[4].asNumber();
+       
+            if(arguments[5].isNumber()) {
+                auto dtype = arguments[5].asNumber();
+                
+                cv::divide(src1, src2, dst, scale, dtype);
+            } else {
+                cv::divide(src1, src2, dst, scale);
+            }
+         
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), dst);
+        } break;
+        case hashString("eigen", 5): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto eigenvalues = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto eigenvectors = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+          
+            cv::eigen(src, eigenvalues, eigenvectors);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), eigenvalues);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), eigenvectors);
+        } break;
+        case hashString("eigenNonSymmetric", 17): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto eigenvalues = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto eigenvectors = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+          
+            cv::eigenNonSymmetric(src, eigenvalues, eigenvectors);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), eigenvalues);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), eigenvectors);
+        } break;
+        case hashString("exp", 3): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+          
+            cv::exp(src, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("extractChannel", 14): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto coi = arguments[3].asNumber();
+          
+            cv::extractChannel(src, dst, coi);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("findNonZero", 11): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto idx = FOCV_JsiObject::type_from_wrap(runtime, arguments[2]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2])) :
+                FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+          
+            cv::findNonZero(src, idx);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), idx);
+        } break;
+        case hashString("flip", 4): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto flipCode = arguments[3].asNumber();
+          
+            cv::flip(src, dst, flipCode);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("gemm", 4): {
+            auto src1 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto src2 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto alpha = arguments[3].asNumber();
+            auto src3 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]));
+            auto beta = arguments[5].asNumber();
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[6]));
+            auto flags = arguments[7].asNumber();
+            
+            cv::gemm(src1, src2, alpha, src3, beta, dst, flags);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[6]), dst);
+        } break;
+        case hashString("getOptimalDFTSize", 17): {
+            auto vecsize =  arguments[1].asNumber();
+           
+            auto result = cv::getOptimalDFTSize(vecsize);
+            value.setProperty(runtime, "value", result);
+        } break;
+        case hashString("hconcat", 7): {
+            auto srcs = FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+          
+            cv::hconcat(srcs, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("idft", 4): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto flags = arguments[3].asNumber();
+            auto nonzeroRows = arguments[3].asNumber();
+          
+            cv::idft(src, dst, flags, nonzeroRows);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("inRange", 7): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto lowerBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto upperBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]));
+            
+            cv::inRange(src, lowerBound, upperBound, dst);
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]), dst);
+        } break;
+        case hashString("insertChannel", 13): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto coi = arguments[3].asNumber();
+         
+            cv::insertChannel(src, dst, coi);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("invert", 6): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto flags = arguments[3].asNumber();
+         
+            cv::invert(src, dst, flags);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("log", 3): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+      
+            cv::log(src, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
+        } break;
+        case hashString("LUT", 3): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto lut = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+      
+            cv::LUT(src, lut, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), dst);
+        } break;
+        case hashString("magnitude", 9): {
+            auto x = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            
+            auto y = FOCV_JsiObject::type_from_wrap(runtime, arguments[2]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            
+            auto magnitude = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+      
+            cv::magnitude(x, y, magnitude);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), magnitude);
+        } break;
+        case hashString("Mahalanobis", 11): {
+            auto x = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            
+            auto y = FOCV_JsiObject::type_from_wrap(runtime, arguments[2]) == "mat" ?
+                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2])) :
+                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            
+            auto icovar = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+      
+            cv::Mahalanobis(x, y, icovar);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), icovar);
+        } break;
+        case hashString("max", 3): {
+            auto src1 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto src2 = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+      
+            cv::max(src1, src2, dst);
+            
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]), dst);
+        } break;
+        case hashString("mean", 4): {
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            std::string id = "";
+            
+            if(arguments[2].isObject()) {
+                auto mask = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+                
+                auto scalar = cv::mean(src, mask);
+                std::string id = FOCV_Storage::save(scalar);
+            } else {
+                auto scalar = cv::mean(src);
+                std::string id = FOCV_Storage::save(scalar);
+            }
+            
+            return FOCV_JsiObject::wrap(runtime, "scalar", id);
         } break;
     }
     

@@ -7,4 +7,5 @@ export enum ObjectType {
   RectVector = 'rect_vector',
   Size = 'size',
   Vec3b = 'vec3b',
+  Scalar = 'scalar',
 }
