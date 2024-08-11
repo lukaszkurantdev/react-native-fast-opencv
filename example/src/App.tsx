@@ -72,7 +72,7 @@ export default function App() {
     );
 
     for (const contour of contours) {
-      const { area } = OpenCV.invoke('contourArea', contour, false);
+      const { value: area } = OpenCV.invoke('contourArea', contour, false);
 
       if (area > 3000) {
         const rect = OpenCV.invoke('boundingRect', contour);

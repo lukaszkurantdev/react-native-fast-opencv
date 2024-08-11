@@ -134,7 +134,7 @@ export interface OpenCVModel {
     name: 'contourArea',
     contour: PointVector,
     oriented: boolean
-  ): { area: number };
+  ): { value: number };
 
   /**
    * Converts an image from one color space to another.
@@ -148,6 +148,21 @@ export interface OpenCVModel {
     src: Mat,
     dst: Mat,
     code: ColorConversionCodes
+  ): void;
+  /**
+   * Converts an image from one color space to another.
+   * @param name Function name.
+   * @param src input image: 8-bit unsigned, 16-bit unsigned ( CV_16UC... ), or single-precision floating-point.
+   * @param dst output image of the same size and depth as src.
+   * @param code color space conversion code.
+   * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the channels is derived automatically from src and code.
+   */
+  invoke(
+    name: 'cvtColor',
+    src: Mat,
+    dst: Mat,
+    code: ColorConversionCodes,
+    dstCd: number
   ): void;
 
   /**
@@ -172,15 +187,27 @@ export interface OpenCVModel {
     method: ContourApproximationModes
   ): PointVector[];
 
+  /** Checks if array elements lie between the elements of two other arrays. When the lower and/or upper boundary parameters are scalars, the indexes (I) at lowerb and upperb in the above formulas should be omitted.
+   * @param name Function name.
+   * @param src first input array.
+   * @param lowerb inclusive lower boundary array or a scalar.
+   * @param upperb inclusive upper boundary array or a scalar.
+   * @param dst output array of the same size as src and CV_8U type.
+   */
   invoke(
     name: 'inRange',
     src: Mat,
-    lowerBound: Array,
-    upperBound: Array,
+    lowerb: Array,
+    upperb: Array,
     dst: Mat
   ): void;
 
-  invoke(name: 'split', src: Mat | MatVector, mv: Mat | MatVector): void;
+  /**
+   * Divides a multi-channel array into several single-channel arrays
+   * @param src input multi-channel array
+   * @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
+   */
+  invoke(name: 'split', src: Mat, mv: Mat | MatVector): void;
 }
 
 export * from './objects/ObjectType';
