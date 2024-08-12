@@ -83,3 +83,10 @@ export enum RotateFlags {
   ROTATE_180 = 1,
   ROTATE_90_COUNTERCLOCKWISE = 2,
 }
+
+export enum SortFlags {
+  SORT_EVERY_ROW = 0,
+  SORT_EVERY_COLUMN = 1,
+  SORT_ASCENDING = 0,
+  SORT_DESCENDING = 16,
+}

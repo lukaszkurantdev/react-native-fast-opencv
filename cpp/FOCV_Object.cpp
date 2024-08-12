@@ -8,6 +8,7 @@
 #include "FOCV_Object.hpp"
 #include "FOCV_Storage.hpp"
 #include "FOCV_JsiObject.hpp"
+#include "jsi/TypedArray.h"
 #include <opencv2/opencv.hpp>
 
 constexpr uint64_t hashString(const char* str, size_t length) {
@@ -99,11 +100,25 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat", 3): {
             cv::Mat mat = FOCV_Storage::get<cv::Mat>(id);
+//            cv::Mat flat = mat.reshape(1, mat.total()*mat.channels());
+//            std::vector<uchar> vec = mat.isContinuous() ? flat : flat.clone();
+//            
+//            jsi::Array valueArray(runtime, vec.size());
+//            
+//            for (unsigned int i = 0; i < vec.size(); i++) {
+//                valueArray.setValueAtIndex(runtime, i, jsi::Value(vec.at(i)));
+//            }
+//            //TODO
+//            mrousavy::TypedArray<mrousavy::TypedArrayKind::Uint8Array>(runtime, mat.total() * mat.channels());
+//            getTypedArray(runtime, jsBuffer)
+//                      .as<TypedArrayKind::Uint8Array>(runtime)
+//                      .updateUnsafe(runtime, (uint8_t*)data, size);
             
+     
             value.setProperty(runtime, "size", jsi::Value(mat.size));
             value.setProperty(runtime, "cols", jsi::Value(mat.cols));
             value.setProperty(runtime, "rows", jsi::Value(mat.rows));
-            
+            value.setProperty(runtime, "data", valueArray);
         } break;
         case hashString("mat_vector", 9): {
             std::vector<cv::Mat> mats = FOCV_Storage::get<std::vector<cv::Mat>>(id);

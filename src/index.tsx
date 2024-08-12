@@ -81,6 +81,7 @@ export interface OpenCVModel {
     size: number;
     cols: number;
     rows: number;
+    data: Uint8Array;
   };
   toJSValue(matVector: MatVector): {
     array: { size: number; cols: number; rows: number }[];
@@ -215,3 +216,4 @@ export type * from './objects/Objects';
 export * from './constants/ColorConversionsCodes';
 export * from './constants/DataTypes';
 export * from './constants/ImageProcessing';
+export * from './utils/file';

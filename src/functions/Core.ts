@@ -6,6 +6,8 @@ import type {
   DftFlags,
   GemmFlags,
   NormTypes,
+  ReduceTypes,
+  SortFlags,
 } from '../constants/Core';
 import type { DataTypes } from '../constants/DataTypes';
 import type {
@@ -451,19 +453,14 @@ export type Core = {
    * @param mask optional operation mask
    */
   meanStdDev(src: Mat, mean: Mat, stddev: Mat, mask?: Mat): void;
-  /**
-   * Creates one multi-channel array out of several single-channel ones
-   * @param mv input array of matrices to be merged; all the matrices in mv must have the same size and the same depth
-   * @param count number of input matrices when mv is a plain C array; it must be greater than zero
-   * @param dst output array of the same size and the same depth as mv[0]; The number of channels will be equal to the parameter count
-   */
-  merge(mv: Mat | MatVector, count: number, dst: Mat): void;
+
   /**
    * This is an overloaded member function, provided for convenience.
    * @param mv input vector of matrices to be merged; all the matrices in mv must have the same size and the same depth
    * @param dst output array of the same size and the same depth as mv[0]; The number of channels will be the total number of channels in the matrix array
    */
-  merge(mv: Mat | MatVector, dst: Mat): void;
+  merge(mv: MatVector, dst: Mat): void;
+
   /**
    * Calculates per-element minimum of two arrays or an array and a scalar
    * @param src1 first input array
@@ -471,55 +468,14 @@ export type Core = {
    * @param dst output array of the same size and type as src1
    */
   min(src1: Mat, src2: Mat, dst: Mat): void;
-  /**
-   * Finds the global minimum and maximum in an array
-   * @param src input single-channel array
-   * @param minVal pointer to the returned minimum value; NULL is used if not required
-   * @param maxVal pointer to the returned maximum value; NULL is used if not required
-   * @param minIdx pointer to the returned minimum location (in nD case); NULL is used if not required; Otherwise, it must point to an array of src.dims elements, the coordinates of the minimum element in each dimension are stored there sequentially
-   * @param maxIdx pointer to the returned maximum location (in nD case). NULL is used if not required
-   * @param mask specified array region
-   */
-  minMaxIdx(
-    src: Mat,
-    minVal: number,
-    maxVal: number,
-    minIdx: number,
-    maxIdx: number,
-    mask: Mat
-  ): void;
+
   /**
    * Finds the global minimum and maximum in an array
    * @param src input single-channel array
    * @param mask optional mask used to select a sub-array
    */
-  minMaxLoc(
-    src: Mat,
-    mask?: Mat
-  ): { minVal: number; maxVal: number; minLoc: Point; maxLoc: Point };
-  /**
-   * Copies specified channels from input arrays to the specified channels of output arrays
-   * @param src input array or vector of matrices; all of the matrices must have the same size and the same depth
-   * @param nsrcs number of matrices in src.
-   * @param dst output array or vector of matrices; all the matrices must be allocated; their size and depth must be the same as in src[0].
-   * @param ndsts number of matrices in dst.
-   * @param fromTo array of index pairs specifying which channels are copied and where; fromTo[k*2] is a 0-based index of the input channel in src, fromTo[k*2+1] is an index of the output channel in dst; the continuous channel numbering is used: the first input image channels are indexed from 0 to src[0].channels()-1, the second input image channels are indexed from src[0].channels() to src[0].channels() + src[1].channels()-1, and so on, the same scheme is used for the output image channels; as a special case, when fromTo[k*2] is negative, the corresponding output channel is filled with zero .
-   * @param npairs number of index pairs in fromTo.
-   */
-  mixChannels(
-    src: Mat,
-    nsrcs: number,
-    dst: Mat,
-    ndsts: number,
-    fromTo: number,
-    npairs: number
-  ): void;
-  mixChannels(src: Mat, dst: Mat, fromTo: number, npairs: number): void;
-  mixChannels(
-    src: Mat | MatVector,
-    dst: Mat | MatVector,
-    fromTo: MatVector
-  ): void;
+  minMaxLoc(src: Mat, mask?: Mat): { minVal: number; maxVal: number };
+
   /**
    * Performs the per-element multiplication of two Fourier spectrums
    * @param a first input array
@@ -529,6 +485,7 @@ export type Core = {
    * @param conjB optional flag that conjugates the second input array before the multiplication (true) or not (false).
    */
   mulSpectrums(a: Mat, b: Mat, c: Mat, flags: DftFlags, conjB?: boolean): void;
+
   /**
    * Calculates the per-element scaled product of two arrays
    * @param src1 first input array
@@ -544,6 +501,7 @@ export type Core = {
     scale: number,
     dtype?: DataTypes
   ): void;
+
   /**
    * Calculates the product of a matrix and its transposition
    * @param src input single-channel matrix. Note that unlike gemm, the function can multiply not only floating-point matrices
@@ -561,56 +519,16 @@ export type Core = {
     scale: number,
     dtype?: DataTypes
   ): void;
+
   /**
    * Calculates the absolute norm of an array
-   * @param src1 first input array
+   * @param src first input array
    * @param normType type of the norm (see cv.NormTypes).
    * @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
    * @returns the absolute norm of an array
    */
-  norm(src1: Mat, normType: NormTypes, mask?: Mat): number;
-  /**
-   * Calculates an absolute difference norm or a relative difference norm
-   * @param src1 first input array
-   * @param src2 second input array of the same size and the same type as src1
-   * @param normType type of the norm (see cv.NormTypes).
-   * @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
-   * @returns the absolute norm of an array
-   */
-  norm(src1: Mat, src2: Mat, normType: NormTypes, mask?: Mat): number;
-  /**
-   * Calculates the absolute norm of an array
-   * @param src first input array.
-   * @param normType type of the norm (see NormTypes).
-   */
-  norm(src: Mat, normType: NormTypes): number;
-  /**
-   * Normalizes the norm or value range of an array.
-   * @param src input array
-   * @param dst output array of the same size as src
-   * @param alpha norm value to normalize to or the lower range boundary in case of the range normalization
-   * @param beta upper range boundary in case of the range normalization; it is not used for the norm normalization
-   * @param normType normalization type (see cv::NormTypes).
-   * @param dtype when negative, the output array has the same type as src; otherwise, it has the same number of channels as src and the depth =CV_MAT_DEPTH(dtype).
-   * @param mask optional operation mask
-   */
-  normalize(
-    src: Mat,
-    dst: Mat,
-    alpha: number,
-    beta: number,
-    normType: NormTypes,
-    dtype: DataTypes,
-    mask?: Mat
-  ): void;
-  normalize(
-    src: Mat,
-    dst: Mat,
-    alpha: number,
-    beta: number,
-    normType: NormTypes,
-    dtype?: DataTypes
-  ): void;
+  norm(src: Mat, normType: NormTypes, mask?: Mat): { norm: number };
+
   /**
    * Normalizes the norm or value range of an array.
    * @param src input array
@@ -619,32 +537,22 @@ export type Core = {
    * @param normType normalization type (see cv::NormTypes).
    */
   normalize(src: Mat, dst: Mat, alpha: number, normType: NormTypes): void;
+
   /**
    * converts NaNs to the given number
    * @param a input/output matrix (CV_32F type).
    * @param val value to convert the NaNs
    */
   patchNaNs(a: Mat | MatVector, val: number): void;
-  /**
-   * @todo update when documentation for this function is added
-   * @param data
-   * @param mean
-   * @param eigenvectors
-   * @param result
-   */
-  PCABackProject(
-    data: Mat | MatVector,
-    mean: Mat | MatVector,
-    eigenvectors: Mat | MatVector,
-    result: Mat | MatVector
-  ): void;
+
   /**
    * Performs the perspective matrix transformation of vectors
    * @param src input two-channel or three-channel floating-point array; each element is a 2D/3D vector to be transformed
    * @param dst output array of the same size and type as src
    * @param m 3x3 or 4x4 floating-point transformation matrix.
    */
-  perspectiveTransform(src: Mat, dst: Mat, m: MatVector | Mat): void;
+  perspectiveTransform(src: Mat, dst: Mat, m: Mat): void;
+
   /**
    * Calculates the rotation angle of 2D vectors
    * @param x input floating-point array of x-coordinates of 2D vectors
@@ -658,21 +566,7 @@ export type Core = {
     angle: Mat,
     angleInDegrees: boolean
   ): void;
-  /**
-   * Calculates x and y coordinates of 2D vectors from their magnitude and angle
-   * @param magnitude input floating-point array of magnitudes of 2D vectors; it can be an empty matrix (=Mat()), in this case, the function assumes that all the magnitudes are =1; if it is not empty, it must have the same size and type as angle
-   * @param angle input floating-point array of angles of 2D vectors
-   * @param x output array of x-coordinates of 2D vectors; it has the same size and type as angle
-   * @param y output array of y-coordinates of 2D vectors; it has the same size and type as angle
-   * @param angleInDegrees when true, the input angles are measured in degrees, otherwise, they are measured in radians
-   */
-  polarToCart(
-    magnitude: MatVector | Mat,
-    angle: MatVector | Mat,
-    x: MatVector | Mat,
-    y: MatVector | Mat,
-    angleInDegrees: boolean
-  ): void;
+
   /**
    * Raises every array element to a power
    * @param src input array
@@ -680,6 +574,7 @@ export type Core = {
    * @param dst output array of the same size and type as src
    */
   pow(src: Mat, power: number, dst: Mat): void;
+
   /**
    * Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric
    * @param src1 first input array
@@ -688,27 +583,7 @@ export type Core = {
    * @returns the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB)
    */
   PSNR(src1: Mat, src2: Mat, R: number): number;
-  /**
-   * Shuffles the array elements randomly
-   * @param dst output array of random numbers; the array must be pre-allocated and have 1 to 4 channels
-   * @param mean mean value (expectation) of the generated random numbers
-   * @param stddev standard deviation of the generated random numbers; it can be either a vector (in which case a diagonal standard deviation matrix is assumed) or a square matrix.
-   */
-  randn(dst: Mat, mean: MatVector | Mat, stddev: MatVector | Mat): void;
-  /**
-   * Shuffles the array elements randomly
-   * @param dst input/output numerical 1D array
-   * @param iterFactor scale factor that determines the number of random swap operations (see the details below)
-   * @param rng optional random number generator used for shuffling; if it is zero, theRNG () is used instead
-   */
-  randShuffle(dst: Mat, iterFactor: number, rng: number): void;
-  /**
-   * Generates a single uniformly-distributed random number or an array of random numbers
-   * @param dst output array of random numbers; the array must be pre-allocated
-   * @param low inclusive lower boundary of the generated random numbers
-   * @param high exclusive upper boundary of the generated random numbers
-   */
-  randu(dst: Mat, low: MatVector | Mat, high: MatVector | Mat): void;
+
   /**
    * Reduces a matrix to a vector.
    * @param src input 2D matrix
@@ -722,8 +597,9 @@ export type Core = {
     dst: Mat,
     dim: number,
     rtype: ReduceTypes,
-    dtype: number | DataTypes
+    dtype: DataTypes
   ): void;
+
   /**
    * Fills the output array with repeated copies of the input array
    * @param src input array to replicate
@@ -732,7 +608,7 @@ export type Core = {
    * @param dst output array of the same type as src.
    */
   repeat(src: Mat, ny: number, nx: number, dst: Mat): void;
-  repeat(src: Mat, ny: number, nx: number): Mat;
+
   /**
    * Calculates the sum of a scaled array and another array
    * @param src1 first input array.
@@ -741,17 +617,7 @@ export type Core = {
    * @param dst output array of the same size and type as src1
    */
   scaleAdd(src1: Mat, alpha: number, src2: Mat, dst: Mat): void;
-  /**
-   * Initializes a scaled identity matrix
-   * @param mtx matrix to initialize (not necessarily square).
-   * @param s value to assign to diagonal elements
-   */
-  setIdentity(mtx: Mat, s: Scalar): void;
-  /**
-   * Sets state of default random number generator
-   * @param seed new state for default random number generator
-   */
-  setRNGSeed(seed: number): void;
+
   /**
    * Solves one or more linear systems or least-squares problems
    * @param src1 input matrix on the left-hand side of the system
@@ -759,13 +625,20 @@ export type Core = {
    * @param dst output solution
    * @param flags solution (matrix inversion) method (DecompTypes)
    */
-  solve(src1: Mat, src2: Mat, dst: Mat, flags: DecompTypes): boolean;
+  solve(
+    src1: Mat,
+    src2: Mat,
+    dst: Mat,
+    flags: DecompTypes
+  ): { resolved: boolean };
+
   /**
    * Finds the real roots of a cubic equation
    * @param coeffs equation coefficients, an array of 3 or 4 elements
    * @param roots output array of real roots that has 1 or 3 elements
    */
-  solveCubic(coeffs: Mat, roots: Mat): number;
+  solveCubic(coeffs: Mat, roots: Mat): { value: boolean };
+
   /**
    * Finds the real or complex roots of a polynomial equation
    * @param src array of polynomial coefficients
@@ -773,6 +646,7 @@ export type Core = {
    * @param maxIters maximum number of iterations the algorithm does
    */
   solvePoly(src: Mat, dst: Mat, maxIters: number): number;
+
   /**
    * Sorts each row or each column of a matrix.
    * @param src input single-channel array
@@ -780,6 +654,7 @@ export type Core = {
    * @param flags operation flags, a combination of SortFlags
    */
   sort(src: Mat, dst: Mat, flags: SortFlags): void;
+
   /**
    * Sorts each row or each column of a matrix
    * @param src input single-channel array
@@ -787,24 +662,21 @@ export type Core = {
    * @param flags operation flags, a combination of SortFlags
    */
   sortIdx(src: Mat, dst: Mat, flags: SortFlags): void;
-  /**
-   * Divides a multi-channel array into several single-channel arrays
-   * @param src input multi-channel array
-   * @param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are reallocated, if needed.
-   */
-  split(src: Mat, mvbegin: Mat): void;
+
   /**
    * Divides a multi-channel array into several single-channel arrays
    * @param src input multi-channel array.
-   * @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
+   * @param dst output vector of arrays; the arrays themselves are reallocated, if needed.
    */
-  split(src: Mat, mv: Mat): void;
+  split(src: Mat, dst: MatVector): void;
+
   /**
    * Calculates a square root of array elements
    * @param src input floating-point array.
    * @param dst output array of the same size and type as src
    */
   sqrt(src: Mat, dst: Mat): void;
+
   /**
    *
    * @param src1 first input array or a scalar
@@ -813,38 +685,37 @@ export type Core = {
    * @param mask optional operation mask; this is an 8-bit single channel array that specifies elements of the output array to be changed
    * @param dtype optional depth of the output array
    */
-  subtract(
-    src1: Mat,
-    src2: Mat,
-    dst: Mat,
-    mask: Mat,
-    dtype: number | DataTypes
-  ): void;
+  subtract(src1: Mat, src2: Mat, dst: Mat, mask: Mat, dtype: DataTypes): void;
   subtract(src1: Mat, src2: Mat, dst: Mat, mask: Mat): void;
   subtract(src1: Mat, src2: Mat, dst: Mat): void;
+
   /**
    * Calculates the sum of array elements
    * @param src input array that must have from 1 to 4 channels
    */
   sum(src: MatVector | Mat): Scalar;
+
   /**
    * Returns the trace of a matrix
    * @param mtx input matrix
    */
   trace(mtx: Mat): Scalar;
+
   /**
    * Performs the matrix transformation of every array element
    * @param src input array that must have as many channels (1 to 4) as m.cols or m.cols-1.
    * @param dst output array of the same size and depth as src; it has as many channels as m.rows
    * @param m transformation 2x2 or 2x3 floating-point matrix
    */
-  transform(src: Mat, dst: Mat, m: MatVector | Mat): void;
+  transform(src: Mat, dst: Mat, m: Mat): void;
+
   /**
    * Transposes a matrix
    * @param src input array.
    * @param dst output array of the same type as src
    */
   transpose(src: Mat, dst: Mat): void;
+
   /**
    * Applies vertical concatenation to given matrices
    * @param src input array or vector of matrices. all of the matrices must have the same number of cols and the same depth
