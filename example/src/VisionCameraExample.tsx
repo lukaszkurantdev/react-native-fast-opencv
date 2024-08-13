@@ -53,8 +53,16 @@ export function VisionCameraExample() {
     OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2RGB);
     OpenCV.invoke('cvtColor', dst, dst, ColorConversionCodes.COLOR_BGR2HSV);
 
-    const lowerBound = OpenCV.createObject(ObjectType.Vec3b, 37, 120, 120);
-    const upperBound = OpenCV.createObject(ObjectType.Vec3b, 60, 255, 255);
+    const lowerBound = OpenCV.frameBufferToMat(
+      1,
+      3,
+      new Uint8Array([37, 120, 120])
+    );
+    const upperBound = OpenCV.frameBufferToMat(
+      1,
+      3,
+      new Uint8Array([60, 255, 255])
+    );
 
     OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
 
@@ -64,21 +72,25 @@ export function VisionCameraExample() {
     const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
     const rectangles: Rect[] = [];
 
-    const contours = OpenCV.invoke(
+    const contours = OpenCV.createObject(ObjectType.MatVector);
+
+    OpenCV.invoke(
       'findContours',
       grayChannel,
+      contours,
       RetrievalModes.RETR_TREE,
       ContourApproximationModes.CHAIN_APPROX_SIMPLE
     );
 
-    for (const contour of contours) {
-      const { value: area } = OpenCV.invoke('contourArea', contour, false);
+    // TO CHECK!
+    // for (const contour of contours) {
+    //   const { value: area } = OpenCV.invoke('contourArea', contour, false);
 
-      if (area > 3000) {
-        const rect = OpenCV.invoke('boundingRect', contour);
-        rectangles.push(rect);
-      }
-    }
+    //   if (area > 3000) {
+    //     const rect = OpenCV.invoke('boundingRect', contour);
+    //     rectangles.push(rect);
+    //   }
+    // }
 
     frame.render();
 

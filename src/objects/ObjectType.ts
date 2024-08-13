@@ -8,4 +8,5 @@ export enum ObjectType {
   Size = 'size',
   Vec3b = 'vec3b',
   Scalar = 'scalar',
+  RotatedRect = 'rotated_rect',
 }

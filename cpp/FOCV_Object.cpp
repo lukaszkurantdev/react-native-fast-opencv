@@ -86,6 +86,15 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 object = cv::Scalar(a);
             }
         } break;
+        case hashString("rotated_rect", 11): {
+            int x = arguments[1].asNumber();
+            int y = arguments[2].asNumber();
+            int width  = arguments[3].asNumber();
+            int height = arguments[4].asNumber();
+            int angle = arguments[5].asNumber();
+            
+            object = cv::RotatedRect(cv::Point(x,y), cv::Size(width, height), angle);
+        } break;
     }
     
     std::string id = FOCV_Storage::save(object);
@@ -188,6 +197,15 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "b", jsi::Value(scalar.val[1]));
             value.setProperty(runtime, "c", jsi::Value(scalar.val[2]));
             value.setProperty(runtime, "d", jsi::Value(scalar.val[3]));
+        } break;
+        case hashString("rotated_rect", 11): {
+            cv::RotatedRect rect = FOCV_Storage::get<cv::RotatedRect>(id);
+            
+            value.setProperty(runtime, "centerX", jsi::Value(rect.center.x));
+            value.setProperty(runtime, "centerY", jsi::Value(rect.center.y));
+            value.setProperty(runtime, "width", jsi::Value(rect.size.width));
+            value.setProperty(runtime, "height", jsi::Value(rect.size.height));
+            value.setProperty(runtime, "angle", jsi::Value(rect.angle));
         } break;
     }
   

@@ -31,7 +31,7 @@ export function ImageExample() {
       const lowerBound = OpenCV.createObject(ObjectType.Vec3b, 0, 120, 120);
       const upperBound = OpenCV.createObject(ObjectType.Vec3b, 255, 255, 255);
 
-      OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+      // OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
 
       const result = OpenCV.toJSValue(dst);
       setB64(result.base64);
