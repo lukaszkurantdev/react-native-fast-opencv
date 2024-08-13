@@ -10,6 +10,7 @@
 #include "FOCV_JsiObject.hpp"
 #include "jsi/TypedArray.h"
 #include <opencv2/opencv.hpp>
+#include "ConvertImage.hpp"
 
 constexpr uint64_t hashString(const char* str, size_t length) {
   uint64_t hash = 14695981039346656037ull;
@@ -92,7 +93,6 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
 }
 
 jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* arguments) {
-
     jsi::Object value(runtime);
     std::string objectType = FOCV_JsiObject::type_from_wrap(runtime, arguments[0]);
     std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
@@ -100,25 +100,11 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat", 3): {
             cv::Mat mat = FOCV_Storage::get<cv::Mat>(id);
-//            cv::Mat flat = mat.reshape(1, mat.total()*mat.channels());
-//            std::vector<uchar> vec = mat.isContinuous() ? flat : flat.clone();
-//            
-//            jsi::Array valueArray(runtime, vec.size());
-//            
-//            for (unsigned int i = 0; i < vec.size(); i++) {
-//                valueArray.setValueAtIndex(runtime, i, jsi::Value(vec.at(i)));
-//            }
-//            //TODO
-//            mrousavy::TypedArray<mrousavy::TypedArrayKind::Uint8Array>(runtime, mat.total() * mat.channels());
-//            getTypedArray(runtime, jsBuffer)
-//                      .as<TypedArrayKind::Uint8Array>(runtime)
-//                      .updateUnsafe(runtime, (uint8_t*)data, size);
-            
      
+            value.setProperty(runtime, "base64", jsi::String::createFromUtf8(runtime, ImageConverter::mat2str(mat)));
             value.setProperty(runtime, "size", jsi::Value(mat.size));
             value.setProperty(runtime, "cols", jsi::Value(mat.cols));
             value.setProperty(runtime, "rows", jsi::Value(mat.rows));
-            value.setProperty(runtime, "data", valueArray);
         } break;
         case hashString("mat_vector", 9): {
             std::vector<cv::Mat> mats = FOCV_Storage::get<std::vector<cv::Mat>>(id);

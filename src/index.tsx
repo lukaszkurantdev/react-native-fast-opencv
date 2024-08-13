@@ -55,6 +55,7 @@ export const OpenCV = global.__loadOpenCV();
 export interface OpenCVModel {
   clearBuffers(): void;
   frameBufferToMat(rows: number, cols: number, input: Uint8Array): Mat;
+  base64ToMat(path: string): Mat;
 
   // Creation
   createObject(
@@ -81,7 +82,7 @@ export interface OpenCVModel {
     size: number;
     cols: number;
     rows: number;
-    data: Uint8Array;
+    base64: string;
   };
   toJSValue(matVector: MatVector): {
     array: { size: number; cols: number; rows: number }[];

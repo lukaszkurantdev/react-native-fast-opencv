@@ -7,6 +7,7 @@
 #include <FOCV_Storage.hpp>
 #include <FOCV_Function.hpp>
 #include "FOCV_Object.hpp"
+#include "ConvertImage.hpp"
 #include "FOCV_JsiObject.hpp"
 #include "opencv2/opencv.hpp"
 
@@ -35,7 +36,6 @@ void OpenCVPlugin::installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::C
 
 OpenCVPlugin::OpenCVPlugin(std::shared_ptr<react::CallInvoker> callInvoker) : _callInvoker(callInvoker) {}
 
-
 jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propNameId) {
   auto propName = propNameId.utf8(runtime);
 
@@ -55,6 +55,20 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
         return FOCV_JsiObject::wrap(runtime, "mat", id);
     });
   }
+    if (propName == "base64ToMat") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Object {
+               
+          std::string base64 = arguments[0].asString(runtime).utf8(runtime);
+
+          auto mat = ImageConverter::str2mat(base64);
+          auto id = FOCV_Storage::save(mat);
+
+          return FOCV_JsiObject::wrap(runtime, "mat", id);
+      });
+    }
   else if (propName == "createObject") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "createObject"), 1,
@@ -108,6 +122,7 @@ std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtim
     std::vector<jsi::PropNameID> result;
 
     result.push_back(jsi::PropNameID::forAscii(runtime, "frameBufferToMat"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "base64ToMat"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "createObject"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "toJSValue"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "copyObjectFromVector"));
