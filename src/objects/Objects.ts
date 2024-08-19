@@ -35,7 +35,20 @@ export type Objects = {
   ): Rect;
   createObject(type: ObjectType.RectVector): RectVector;
   createObject(type: ObjectType.Size, width: number, height: number): Size;
-  createObject(type: ObjectType.Vec3b, a: number, b: number, c: number): Vec3b;
+  createObject(type: ObjectType.Scalar, a: number): Scalar;
+  createObject(
+    type: ObjectType.Scalar,
+    a: number,
+    b: number,
+    c: number
+  ): Scalar;
+  createObject(
+    type: ObjectType.Scalar,
+    a: number,
+    b: number,
+    c: number,
+    d: number
+  ): Scalar;
 
   toJSValue(mat: Mat): {
     size: number;
@@ -74,10 +87,11 @@ export type Objects = {
     width: number;
     height: number;
   };
-  toJSValue(vec3b: Vec3b): {
+  toJSValue(scalar: Scalar): {
     a: number;
-    b: number;
-    c: number;
+    b?: number;
+    c?: number;
+    d?: number;
   };
 
   copyObjectFromVector(vector: MatVector, itemIndex: number): Mat;

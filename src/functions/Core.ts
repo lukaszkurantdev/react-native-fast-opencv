@@ -457,15 +457,15 @@ export type Core = {
    * Checks if array elements lie between the elements of two other arrays.
    * @param name Function name.
    * @param src first input array
-   * @param lowerb inclusive lower boundary array or a scalar
-   * @param upperb inclusive upper boundary array or a scalar
+   * @param lowerb inclusive lower boundary scalar
+   * @param upperb inclusive upper boundary scalar
    * @param dst output array of the same size as src and CV_8U type
    */
   invoke(
     name: 'inRange',
     src: Mat,
-    lowerb: MatVector | Mat,
-    upperb: MatVector | Mat,
+    lowerb: Scalar,
+    upperb: Scalar,
     dst: Mat
   ): void;
 

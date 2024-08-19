@@ -86,7 +86,7 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 object = cv::Scalar(a);
             }
         } break;
-        case hashString("rotated_rect", 11): {
+        case hashString("rotated_rect", 12): {
             int x = arguments[1].asNumber();
             int y = arguments[2].asNumber();
             int width  = arguments[3].asNumber();
@@ -115,7 +115,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "cols", jsi::Value(mat.cols));
             value.setProperty(runtime, "rows", jsi::Value(mat.rows));
         } break;
-        case hashString("mat_vector", 9): {
+        case hashString("mat_vector", 10): {
             std::vector<cv::Mat> mats = FOCV_Storage::get<std::vector<cv::Mat>>(id);
             
             auto array = jsi::Array(runtime, mats.size());
@@ -139,7 +139,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "width", jsi::Value(rect.width));
             value.setProperty(runtime, "height", jsi::Value(rect.height));
         } break;
-        case hashString("rect_vector", 10): {
+        case hashString("rect_vector", 11): {
             std::vector<cv::Rect> rects = FOCV_Storage::get<std::vector<cv::Rect>>(id);
             
             auto array = jsi::Array(runtime, rects.size());
@@ -162,7 +162,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "x", jsi::Value(point.x));
             value.setProperty(runtime, "y", jsi::Value(point.y));
         } break;
-        case hashString("point_vector", 11): {
+        case hashString("point_vector", 12): {
             std::vector<cv::Point> points = FOCV_Storage::get<std::vector<cv::Point>>(id);
             
             auto array = jsi::Array(runtime, points.size());
@@ -183,7 +183,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "width", jsi::Value(size.width));
             value.setProperty(runtime, "height", jsi::Value(size.height));
         } break;
-        case hashString("vec3b", 4): {
+        case hashString("vec3b", 5): {
             cv::Vec3b vec = FOCV_Storage::get<cv::Vec3b>(id);
             
             value.setProperty(runtime, "a", jsi::Value(vec.val[0]));
@@ -198,7 +198,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "c", jsi::Value(scalar.val[2]));
             value.setProperty(runtime, "d", jsi::Value(scalar.val[3]));
         } break;
-        case hashString("rotated_rect", 11): {
+        case hashString("rotated_rect", 12): {
             cv::RotatedRect rect = FOCV_Storage::get<cv::RotatedRect>(id);
             
             value.setProperty(runtime, "centerX", jsi::Value(rect.center.x));

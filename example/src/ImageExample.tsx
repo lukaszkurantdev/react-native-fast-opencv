@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Button, Image, SafeAreaView, Text } from 'react-native';
 import {
   ColorConversionCodes,
+  ContourApproximationModes,
   DataTypes,
   ObjectType,
   OpenCV,
+  RetrievalModes,
+  type Rect,
 } from 'react-native-fast-opencv';
 import { launchImageLibrary, type Asset } from 'react-native-image-picker';
 
@@ -25,15 +28,58 @@ export function ImageExample() {
       const src = OpenCV.base64ToMat(photo.base64);
       const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
 
-      OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2RGB);
-      OpenCV.invoke('cvtColor', dst, dst, ColorConversionCodes.COLOR_BGR2HSV);
+      OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
 
-      const lowerBound = OpenCV.createObject(ObjectType.Vec3b, 0, 120, 120);
-      const upperBound = OpenCV.createObject(ObjectType.Vec3b, 255, 255, 255);
+      const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
+      const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
+
+      OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+
+      const channels = OpenCV.createObject(ObjectType.MatVector);
+      OpenCV.invoke('split', dst, channels);
+      const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
+
+      const contours = OpenCV.createObject(ObjectType.MatVector);
+
+      OpenCV.invoke(
+        'findContours',
+        grayChannel,
+        contours,
+        RetrievalModes.RETR_TREE,
+        ContourApproximationModes.CHAIN_APPROX_SIMPLE
+      );
+
+      const contoursMats = OpenCV.toJSValue(contours);
+
+      const rectangles: Rect[] = [];
+
+      for (let i = 0; i < contoursMats.array.length; i++) {
+        const contour = OpenCV.copyObjectFromVector(contours, i);
+        const { value: area } = OpenCV.invoke('contourArea', contour, false);
+
+        if (area > 3000) {
+          const rect = OpenCV.invoke('boundingRect', contour);
+          rectangles.push(rect);
+        }
+      }
+
+      console.log(rectangles);
+
+      // OpenCV.invoke('cvtColor', dst, dst, ColorConversionCodes.COLOR_HSV2BGR);
+      // OpenCV.invoke('cvtColor', dst, dst, ColorConversionCodes.COLOR_BGR2GRAY);
+
+      // const lowerBound = OpenCV.frameBufferToMat(
+      //   1,
+      //   3,
+      //   new Uint8Array([0, 120, 120])
+      // );
+
+      // const lowerBound = OpenCV.createObject(ObjectType.Vec3b, 0, 120, 120);
+      // const upperBound = OpenCV.createObject(ObjectType.Vec3b, 255, 255, 255);
 
       // OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
 
-      const result = OpenCV.toJSValue(dst);
+      const result = OpenCV.toJSValue(grayChannel);
       setB64(result.base64);
       // console.log(array.length);
     }

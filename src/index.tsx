@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import type { ColorMap } from './functions/ImageProcessing/ColorMap';
 import type { Drawing } from './functions/ImageProcessing/Drawing';
 import type { Feature } from './functions/ImageProcessing/Feature';
@@ -11,11 +11,11 @@ import type { Core } from './functions/Core';
 import type { UtilsFunctions } from './utils/UtilsFunctions';
 import type { Objects } from './objects/Objects';
 
-// const LINKING_ERROR =
-//   `The package 'react-native-fast-opencv' doesn't seem to be linked. Make sure: \n\n` +
-//   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-//   '- You rebuilt the app after installing the package\n' +
-//   '- You are not using Expo Go\n';
+const LINKING_ERROR =
+  `The package 'react-native-fast-opencv' doesn't seem to be linked. Make sure: \n\n` +
+  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  '- You rebuilt the app after installing the package\n' +
+  '- You are not using Expo Go\n';
 
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
@@ -24,18 +24,18 @@ const FastOpencvModule = isTurboModuleEnabled
   ? require('./NativeFastOpencv').default
   : NativeModules.FastOpencv;
 
-// const FastOpencv = FastOpencvModule
-//   ? FastOpencvModule
-//   : new Proxy(
-//       {},
-//       {
-//         get() {
-//           throw new Error(LINKING_ERROR);
-//         },
-//       }
-//     );
+const FastOpencv = FastOpencvModule
+  ? FastOpencvModule
+  : new Proxy(
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
 
-const result = FastOpencvModule.install() as boolean;
+const result = FastOpencv.install() as boolean;
 
 if (result !== true) {
   console.error('Failed to install Fast OpenCV bindings!');

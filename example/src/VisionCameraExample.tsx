@@ -1,6 +1,6 @@
 import { PaintStyle, Skia } from '@shopify/react-native-skia';
-import { useEffect } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import {
   OpenCV,
   ObjectType,
@@ -16,11 +16,15 @@ import {
   useCameraPermission,
   useSkiaFrameProcessor,
 } from 'react-native-vision-camera';
+import { useSharedValue } from 'react-native-worklets-core';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 
 export function VisionCameraExample() {
   const device = useCameraDevice('back');
   const { resize } = useResizePlugin();
+
+  const [b64, setB64] = useState<string>('');
+  const r = useSharedValue<string>('');
 
   const { hasPermission, requestPermission } = useCameraPermission();
 
@@ -43,35 +47,26 @@ export function VisionCameraExample() {
         width: width,
         height: height,
       },
-      pixelFormat: 'rgb',
+      pixelFormat: 'bgr',
       dataType: 'uint8',
     });
+    const rectangles: Rect[] = [];
 
     const src = OpenCV.frameBufferToMat(height, width, resized);
     const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
 
-    OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2RGB);
-    OpenCV.invoke('cvtColor', dst, dst, ColorConversionCodes.COLOR_BGR2HSV);
+    OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
 
-    const lowerBound = OpenCV.frameBufferToMat(
-      1,
-      3,
-      new Uint8Array([37, 120, 120])
-    );
-    const upperBound = OpenCV.frameBufferToMat(
-      1,
-      3,
-      new Uint8Array([60, 255, 255])
-    );
-
+    const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
+    const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
     OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+
+    r.value = OpenCV.toJSValue(dst).base64;
 
     const channels = OpenCV.createObject(ObjectType.MatVector);
     OpenCV.invoke('split', dst, channels);
 
     const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
-    const rectangles: Rect[] = [];
-
     const contours = OpenCV.createObject(ObjectType.MatVector);
 
     OpenCV.invoke(
@@ -82,15 +77,17 @@ export function VisionCameraExample() {
       ContourApproximationModes.CHAIN_APPROX_SIMPLE
     );
 
-    // TO CHECK!
-    // for (const contour of contours) {
-    //   const { value: area } = OpenCV.invoke('contourArea', contour, false);
+    const contoursMats = OpenCV.toJSValue(contours);
 
-    //   if (area > 3000) {
-    //     const rect = OpenCV.invoke('boundingRect', contour);
-    //     rectangles.push(rect);
-    //   }
-    // }
+    for (let i = 0; i < contoursMats.array.length; i++) {
+      const contour = OpenCV.copyObjectFromVector(contours, i);
+      const { value: area } = OpenCV.invoke('contourArea', contour, false);
+
+      if (area > 3000) {
+        const rect = OpenCV.invoke('boundingRect', contour);
+        rectangles.push(rect);
+      }
+    }
 
     frame.render();
 
@@ -118,11 +115,25 @@ export function VisionCameraExample() {
     return <Text>No device</Text>;
   }
   return (
-    <Camera
-      style={StyleSheet.absoluteFill}
-      device={device}
-      isActive={true}
-      frameProcessor={frameProcessor}
-    />
+    <>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={true}
+        frameProcessor={frameProcessor}
+      />
+      <View
+        style={{ height: 200, width: 200, top: 100, backgroundColor: 'white' }}
+      >
+        <Button title="test" onPress={() => setB64(r.value)} />
+        {b64 && (
+          <Image
+            source={{ uri: 'data:image/jpg;base64,' + b64 }}
+            height={100}
+            width={100}
+          />
+        )}
+      </View>
+    </>
   );
 }

@@ -79,7 +79,7 @@ export type Shape = {
     name: 'contourArea',
     contour: Mat | MatVector,
     oriented?: boolean
-  ): number;
+  ): { value: number };
 
   /**
    * Finds the convex hull of a point set.

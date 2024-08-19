@@ -429,8 +429,8 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         } break;
         case hashString("inRange", 7): {
             auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
-            auto lowerBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
-            auto upperBound = FOCV_Storage::get<cv::Vec3b>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
+            auto lowerBound = FOCV_Storage::get<cv::Scalar>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto upperBound = FOCV_Storage::get<cv::Scalar>(FOCV_JsiObject::id_from_wrap(runtime, arguments[3]));
             auto dst = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[4]));
             
             cv::inRange(src, lowerBound, upperBound, dst);
@@ -1350,12 +1350,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             value.setProperty(runtime, "value", jsi::Value(result));
         } break;
         case hashString("boundingRect", 12): {
-//            auto src = FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
-            auto array = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
-                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
-                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            cv::Rect rect;
+            if(FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat") {
+                rect = cv::boundingRect(FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])));
+            } else {
+                rect = cv::boundingRect(FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])));
+            }
             
-            cv::Rect rect = cv::boundingRect(array);
             std::string id = FOCV_Storage::save(rect);
             
             return FOCV_JsiObject::wrap(runtime, "rect", id);
@@ -1377,9 +1378,9 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             value.setProperty(runtime, "value", jsi::Value(result));
         } break;
         case hashString("contourArea", 11): {
-            auto src = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) == "mat" ?
-                FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1])) :
-                FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
+            auto type = FOCV_JsiObject::type_from_wrap(runtime, arguments[1]);
+            auto id = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+            auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
             auto oriented = arguments[2].getBool();
             
             value.setProperty(runtime, "value", contourArea(src, oriented));
@@ -1404,15 +1405,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         } break;
         case hashString("findContours", 12): {
             auto src = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
-            auto mode = arguments[2].getNumber();
-            auto method = arguments[3].getNumber();
-            
-            std::vector<cv::Mat> contours;
-            
-            cv::findContours(src, contours, mode, method);
+            auto dst = FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]));
+            auto mode = arguments[3].getNumber();
+            auto method = arguments[4].getNumber();
 
-            auto id = FOCV_Storage::save(contours);
-            return FOCV_JsiObject::wrap(runtime, "mat_vector", id);
+            cv::findContours(src, dst, mode, method);
+
+            FOCV_Storage::save(FOCV_JsiObject::id_from_wrap(runtime, arguments[2]), dst);
         } break;
         case hashString("fitLine", 7): {
             auto points = FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(runtime, arguments[1]));
