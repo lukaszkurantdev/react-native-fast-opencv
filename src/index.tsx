@@ -35,11 +35,14 @@ const FastOpencv = FastOpencvModule
       }
     );
 
-const result = FastOpencv.install() as boolean;
+if (!isTurboModuleEnabled) {
+  const result = FastOpencv.install?.() as boolean;
 
-if (result !== true) {
-  console.error('Failed to install Fast OpenCV bindings!');
+  if (result !== true) {
+    console.error('Failed to install Fast OpenCV bindings!');
+  }
 }
+
 declare global {
   var __loadOpenCV: () => OpenCVModel;
 }

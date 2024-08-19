@@ -3,26 +3,36 @@
 #import <React/RCTBridge+Private.h>
 #import <jsi/jsi.h>
 
-@interface RCTBridge (RCTTurboModule)
-- (std::shared_ptr<facebook::react::CallInvoker>)jsCallInvoker;
-@end
 
 using namespace facebook;
 
 @implementation FastOpencv
+
+@synthesize bridge = _bridge;
+
 RCT_EXPORT_MODULE()
 
+- (void)invalidate {
+  _bridge = nil;
+}
+
+- (void)setBridge:(RCTBridge *)bridge {
+  _bridge = bridge;
+}
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 {
-    RCTBridge* bridge = [RCTBridge currentBridge];
-    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
+    RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
+    
     if (!cxxBridge.runtime) {
         return @(false);
     }
     jsi::Runtime& runtime = *(jsi::Runtime*)cxxBridge.runtime;
+    auto callInvoker = cxxBridge.jsCallInvoker;
+        facebook::jsi::Runtime *jsRuntime =
+            (facebook::jsi::Runtime *)cxxBridge.runtime;
     
-    OpenCVPlugin::installOpenCV(runtime, [bridge jsCallInvoker]);
+    OpenCVPlugin::installOpenCV(*jsRuntime, callInvoker);
     
     return @(true);
 }
@@ -32,8 +42,19 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
+    RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
+      auto callInvoker = cxxBridge.jsCallInvoker;
+      facebook::jsi::Runtime *jsRuntime =
+          (facebook::jsi::Runtime *)cxxBridge.runtime;
+    
+    OpenCVPlugin::installOpenCV(*jsRuntime, callInvoker);
+    
     return std::make_shared<facebook::react::NativeFastOpencvSpecJSI>(params);
 }
 #endif
+
+- (void)install:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject { 
+    <#code#>
+}
 
 @end
