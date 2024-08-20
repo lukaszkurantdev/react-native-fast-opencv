@@ -519,12 +519,8 @@ export type Core = {
    * @param y floating-point array of y-coordinates of the vectors; it must have the same size as x.
    * @param magnitude output array of the same size and type as x
    */
-  invoke(
-    name: 'magnitude',
-    x: MatVector | Mat,
-    y: MatVector | Mat,
-    magnitude: Mat
-  ): void;
+  invoke(name: 'magnitude', x: Mat, y: Mat, magnitude: Mat): void;
+  invoke(name: 'magnitude', x: MatVector, y: MatVector, magnitude: Mat): void;
 
   /**
    * Calculates the Mahalanobis distance between two vectors
@@ -533,12 +529,8 @@ export type Core = {
    * @param v2 second 1D input vector
    * @param icovar inverse covariance matrix
    */
-  invoke(
-    name: 'Mahalanobis',
-    v1: MatVector | Mat,
-    v2: MatVector | Mat,
-    icovar: Mat
-  ): void;
+  invoke(name: 'Mahalanobis', v1: Mat, v2: Mat, icovar: Mat): void;
+  invoke(name: 'Mahalanobis', v1: MatVector, v2: MatVector, icovar: Mat): void;
 
   /**
    * Calculates per-element maximum of two arrays or an array and a scalar
@@ -717,8 +709,15 @@ export type Core = {
    */
   invoke(
     name: 'phase',
-    x: MatVector | Mat,
-    y: MatVector | Mat,
+    x: Mat,
+    y: Mat,
+    angle: Mat,
+    angleInDegrees: boolean
+  ): void;
+  invoke(
+    name: 'phase',
+    x: MatVector,
+    y: MatVector,
     angle: Mat,
     angleInDegrees: boolean
   ): void;
