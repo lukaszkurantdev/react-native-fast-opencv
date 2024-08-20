@@ -166,10 +166,18 @@ export type Core = {
    */
   invoke(
     name: 'cartToPolar',
-    x: MatVector | Mat,
-    y: MatVector | Mat,
-    magnitude: MatVector | Mat,
-    angle: MatVector | Mat,
+    x: Mat,
+    y: Mat,
+    magnitude: Mat,
+    angle: Mat,
+    angleInDegrees?: boolean
+  ): void;
+  invoke(
+    name: 'cartToPolar',
+    x: MatVector,
+    y: MatVector,
+    magnitude: MatVector,
+    angle: MatVector,
     angleInDegrees?: boolean
   ): void;
 

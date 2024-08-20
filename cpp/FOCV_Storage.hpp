@@ -26,7 +26,7 @@ private:
     
 public:
     template <typename T>
-    static T get(std::string key);
+    static std::shared_ptr<T> get(std::string key);
     
     template <typename T>
     static std::string save(T &item);
@@ -48,25 +48,25 @@ std::string FOCV_Storage::save(T &item) {
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
     std::string key = boost::uuids::to_string(uuid);
     
-    items.insert_or_assign(key, item);
+    items.insert_or_assign(key, std::make_shared<T>(item));
     
     return key;
 }
 
 template <typename T>
 std::string FOCV_Storage::save(std::string key, T &item) {
-    items.insert_or_assign(key, item);
+    items.insert_or_assign(key, std::make_shared<T>(item));
     
     return key;
 }
 
 template <typename T>
-T FOCV_Storage::get(std::string key) {
+std::shared_ptr<T> FOCV_Storage::get(std::string key) {
     if(!items.contains(key)) {
 //        Error here!
     }
     
-    return std::any_cast<T>(items.at(key));
+    return std::any_cast<std::shared_ptr<T>>(items.at(key));
 }
 
 

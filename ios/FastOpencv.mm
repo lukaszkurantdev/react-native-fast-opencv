@@ -27,9 +27,9 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     if (!cxxBridge.runtime) {
         return @(false);
     }
-    jsi::Runtime& runtime = *(jsi::Runtime*)cxxBridge.runtime;
+
     auto callInvoker = cxxBridge.jsCallInvoker;
-        facebook::jsi::Runtime *jsRuntime =
+    facebook::jsi::Runtime *jsRuntime =
             (facebook::jsi::Runtime *)cxxBridge.runtime;
     
     OpenCVPlugin::installOpenCV(*jsRuntime, callInvoker);
@@ -54,7 +54,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 #endif
 
 - (void)install:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject { 
-    <#code#>
+    
 }
 
 @end
