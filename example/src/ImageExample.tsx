@@ -30,40 +30,40 @@ export function ImageExample() {
 
       OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
 
-      // const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
-      // const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
+      const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
+      const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
 
-      // OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+      OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
 
-      // const channels = OpenCV.createObject(ObjectType.MatVector);
-      // OpenCV.invoke('split', dst, channels);
-      // const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
+      const channels = OpenCV.createObject(ObjectType.MatVector);
+      OpenCV.invoke('split', dst, channels);
+      const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
 
-      // const contours = OpenCV.createObject(ObjectType.MatVector);
+      const contours = OpenCV.createObject(ObjectType.MatVector);
 
-      // OpenCV.invoke(
-      //   'findContours',
-      //   grayChannel,
-      //   contours,
-      //   RetrievalModes.RETR_TREE,
-      //   ContourApproximationModes.CHAIN_APPROX_SIMPLE
-      // );
+      OpenCV.invoke(
+        'findContours',
+        grayChannel,
+        contours,
+        RetrievalModes.RETR_TREE,
+        ContourApproximationModes.CHAIN_APPROX_SIMPLE
+      );
 
-      // const contoursMats = OpenCV.toJSValue(contours);
+      const contoursMats = OpenCV.toJSValue(contours);
 
-      // const rectangles: Rect[] = [];
+      const rectangles: Rect[] = [];
 
-      // for (let i = 0; i < contoursMats.array.length; i++) {
-      //   const contour = OpenCV.copyObjectFromVector(contours, i);
-      //   const { value: area } = OpenCV.invoke('contourArea', contour, false);
+      for (let i = 0; i < contoursMats.array.length; i++) {
+        const contour = OpenCV.copyObjectFromVector(contours, i);
+        const { value: area } = OpenCV.invoke('contourArea', contour, false);
 
-      //   if (area > 3000) {
-      //     const rect = OpenCV.invoke('boundingRect', contour);
-      //     rectangles.push(rect);
-      //   }
-      // }
+        if (area > 3000) {
+          const rect = OpenCV.invoke('boundingRect', contour);
+          rectangles.push(rect);
+        }
+      }
 
-      // console.log(rectangles);
+      console.log(rectangles);
 
 
       const result = OpenCV.toJSValue(dst);

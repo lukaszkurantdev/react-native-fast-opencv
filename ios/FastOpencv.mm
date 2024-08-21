@@ -3,6 +3,9 @@
 #import <React/RCTBridge+Private.h>
 #import <jsi/jsi.h>
 
+@interface RCTBridge (RCTTurboModule)
+- (std::shared_ptr<facebook::react::CallInvoker>)jsCallInvoker;
+@end
 
 using namespace facebook;
 
@@ -22,13 +25,15 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 {
+    RCTBridge* bridge = [RCTBridge currentBridge];
     RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
     
     if (!cxxBridge.runtime) {
         return @(false);
     }
 
-    auto callInvoker = cxxBridge.jsCallInvoker;
+    auto callInvoker = [bridge jsCallInvoker];
+    
     facebook::jsi::Runtime *jsRuntime =
             (facebook::jsi::Runtime *)cxxBridge.runtime;
     
