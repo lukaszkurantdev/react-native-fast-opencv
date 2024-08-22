@@ -10,10 +10,7 @@
 
 #include <stdio.h>
 #include <any>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
-
+#include "UUID.hpp"
 
 #ifdef __cplusplus
     #include <opencv2/opencv.hpp>
@@ -23,40 +20,33 @@ class FOCV_Storage {
 public:
 private:
     static std::unordered_map<std::string, std::any> items;
-    
+
 public:
     template <typename T>
     static std::shared_ptr<T> get(std::string key);
-    
+
     template <typename T>
     static std::string save(T &item);
-    
+
     template <typename T>
     static std::string save(std::string key, T &item);
-    
+
     static void clear();
 };
 
-std::unordered_map<std::string, std::any> FOCV_Storage::items = std::unordered_map<std::string, std::any>();
-
-void FOCV_Storage::clear() {
-    items.clear();
-}
-
 template <typename T>
 std::string FOCV_Storage::save(T &item) {
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    std::string key = boost::uuids::to_string(uuid);
-    
+    std::string key = uuid::generate_uuid_v4();
+
     items.insert_or_assign(key, std::make_shared<T>(item));
-    
+
     return key;
 }
 
 template <typename T>
 std::string FOCV_Storage::save(std::string key, T &item) {
     items.insert_or_assign(key, std::make_shared<T>(item));
-    
+
     return key;
 }
 
@@ -65,7 +55,7 @@ std::shared_ptr<T> FOCV_Storage::get(std::string key) {
     if(!items.contains(key)) {
 //        Error here!
     }
-    
+
     return std::any_cast<std::shared_ptr<T>>(items.at(key));
 }
 
