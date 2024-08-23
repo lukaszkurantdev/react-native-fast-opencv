@@ -3,6 +3,7 @@
   "installation": "Installation",
   "usage": "Usage",
   "apidetails": "API",
+  "availablefunctions": "Available functions",
   "---": {
     "type": "separator"
   },
