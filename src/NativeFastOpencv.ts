@@ -7,8 +7,6 @@ export interface Spec extends TurboModule {
 
 const OpenCVInstaller = TurboModuleRegistry.getEnforcing<Spec>('FastOpencv');
 
-console.log('try to install', OpenCVInstaller);
-
 if (global.__loadOpenCV == null) {
   if (
     OpenCVInstaller == null ||

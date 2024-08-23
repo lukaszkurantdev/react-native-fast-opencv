@@ -10,6 +10,7 @@ import {
   type Rect,
 } from 'react-native-fast-opencv';
 import { launchImageLibrary, type Asset } from 'react-native-image-picker';
+import { useRunOnJS, useWorklet, Worklets } from 'react-native-worklets-core';
 
 export function ImageExample() {
   const [photo, setPhoto] = useState<Asset | null>(null);
@@ -28,12 +29,17 @@ export function ImageExample() {
       const src = OpenCV.base64ToMat(photo.base64);
       const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
 
-      OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
+      await OpenCV.invokeAsync(
+        'cvtColor',
+        src,
+        dst,
+        ColorConversionCodes.COLOR_BGR2HSV
+      );
 
       const lowerBound = OpenCV.createObject(ObjectType.Scalar, 40, 40, 40);
       const upperBound = OpenCV.createObject(ObjectType.Scalar, 100, 255, 255);
 
-      OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+      await OpenCV.invokeAsync('inRange', dst, lowerBound, upperBound, dst);
 
       // const channels = OpenCV.createObject(ObjectType.MatVector);
       // OpenCV.invoke('split', dst, channels);
@@ -65,12 +71,43 @@ export function ImageExample() {
 
       // console.log(rectangles);
 
-
-      const result = OpenCV.toJSValue(dst);
-      setB64(result.base64);
+      // const result = OpenCV.toJSValue(dst);
+      // setB64(result.base64);
       // console.log(array.length);
     }
   };
+
+  const test2 = useRunOnJS((data: string) => {
+    setB64(data);
+  }, []);
+
+  const worklet = useWorklet(
+    'default',
+    () => {
+      'worklet';
+      if (photo && photo.base64 && photo.width && photo.height) {
+        const src = OpenCV.base64ToMat(photo.base64);
+        const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
+
+        OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
+
+        const lowerBound = OpenCV.createObject(ObjectType.Scalar, 40, 40, 40);
+        const upperBound = OpenCV.createObject(
+          ObjectType.Scalar,
+          100,
+          255,
+          255
+        );
+
+        OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+
+        const result = OpenCV.toJSValue(dst);
+
+        test2(result.base64);
+      }
+    },
+    []
+  );
 
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
@@ -78,7 +115,7 @@ export function ImageExample() {
       <Text>
         URI: {photo?.uri} {photo?.height} {photo?.width}
       </Text>
-      <Button title="Process" onPress={process} />
+      <Button title="Process" onPress={() => worklet()} />
       {photo?.base64 && photo?.width && photo?.height && (
         <Image
           source={{ uri: 'data:image/jpg;base64,' + photo.base64 }}

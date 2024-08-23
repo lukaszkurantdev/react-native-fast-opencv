@@ -1257,40 +1257,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.0)
-  - vision-camera-resize-plugin (3.1.0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Codegen
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - VisionCamera
-    - Yoga
-  - VisionCamera (4.5.2):
-    - VisionCamera/Core (= 4.5.2)
-    - VisionCamera/FrameProcessors (= 4.5.2)
-    - VisionCamera/React (= 4.5.2)
-  - VisionCamera/Core (4.5.2)
-  - VisionCamera/FrameProcessors (4.5.2):
-    - React
-    - React-callinvoker
-    - react-native-worklets-core
-  - VisionCamera/React (4.5.2):
-    - React-Core
-    - VisionCamera/FrameProcessors
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1354,8 +1320,6 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
-  - vision-camera-resize-plugin (from `../node_modules/vision-camera-resize-plugin`)
-  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1481,10 +1445,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
-  vision-camera-resize-plugin:
-    :path: "../node_modules/vision-camera-resize-plugin"
-  VisionCamera:
-    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1549,8 +1509,6 @@ SPEC CHECKSUMS:
   ReactCommon: eebffb37a90138c6db6eb8b2d952e7e5c6bc083c
   RNReanimated: f4ff116e33e0afc3d127f70efe928847c7c66355
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
-  vision-camera-resize-plugin: 4306d5df9bce0e603bbe6ab04337f21a606f4ad1
-  VisionCamera: 057aff621f7801b7d99a00d157fa39244bbd4fd2
   Yoga: 6259f968a4fdf516d76a4432dead624d71aa0fb1
 
 PODFILE CHECKSUM: ded8a41f26047703e900afe99b8a72ca375b02ca
