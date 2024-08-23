@@ -28,6 +28,7 @@ Due to the size of the OpenCV library, this port currently only supports selecte
 
 List of available functions are available [here](./availablefunctions.md).
 
+---
 
 ### Credits
 Special thanks to:

@@ -77,8 +77,10 @@ export function ImageExample() {
     }
   };
 
-  const test2 = useRunOnJS((data: string) => {
-    setB64(data);
+  const [base64, setBase64] = useState<string>('');
+
+  const setImage = useRunOnJS((data: string) => {
+    setBase64(data);
   }, []);
 
   const worklet = useWorklet(
@@ -103,7 +105,7 @@ export function ImageExample() {
 
         const result = OpenCV.toJSValue(dst);
 
-        test2(result.base64);
+        setImage(result.base64);
       }
     },
     []
