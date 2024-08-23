@@ -51,4 +51,4 @@ You can find a detailed description of the installation process [here](https://r
 
 ### Usage
 
-The methods of use are [here](../usage.md).
+The methods of use are [here](../usage#mat-creation-from-vision-camera-frame).

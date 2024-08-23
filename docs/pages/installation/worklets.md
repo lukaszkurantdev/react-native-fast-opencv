@@ -38,4 +38,4 @@ You can find a detailed description of the installation process [here](https://g
 
 ### Usage
 
-The methods of use are [here](../usage.md).
+The methods of use are [here](../usage#calculations-from-separated-thread).
