@@ -1,0 +1,10 @@
+{
+  "index": "Introduction",
+  "installation": "Installation",
+  "usage": "Usage",
+  "apidetails": "API",
+  "---": {
+    "type": "separator"
+  },
+  "examples": "Examples"
+}
