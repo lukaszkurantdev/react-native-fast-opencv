@@ -1,0 +1,1 @@
+In special cases where you need maximum performance, you can easily create your own code in C++ and run it from within the JS code.

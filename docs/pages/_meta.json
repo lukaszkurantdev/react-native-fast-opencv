@@ -2,8 +2,9 @@
   "index": "Introduction",
   "installation": "Installation",
   "usage": "Usage",
-  "availablefunctions": "Available functions",
   "apidetails": "API",
+  "availablefunctions": "Available OpenCV functions",
+  "customized": "Customized calculations (C++)",
   "---": {
     "type": "separator"
   },
