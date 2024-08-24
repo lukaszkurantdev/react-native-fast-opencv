@@ -1,3 +1,6 @@
+// Copied from https://github.com/mrousavy/react-native-fast-tflite/blob/main/cpp/jsi/Promise.cpp
+// Credits to Marc Rousavy
+
 #include "Promise.h"
 #include <future>
 #include <jsi/jsi.h>

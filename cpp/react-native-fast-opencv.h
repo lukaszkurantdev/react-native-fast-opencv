@@ -36,7 +36,6 @@ public:
     
     jsi::Value get(jsi::Runtime& runtime, const jsi::PropNameID& name) override;
     std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& runtime) override;
-
 };
 
 #endif /* FASTOPENCV_H */

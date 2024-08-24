@@ -4,6 +4,8 @@
 //
 //  Created by Łukasz Kurant on 13/08/2024.
 //
+// This methods are from https://stackoverflow.com/a/32270463
+// Credits to Miki
 
 #include "ConvertImage.hpp"
 #include <opencv2/opencv.hpp>

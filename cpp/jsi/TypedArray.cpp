@@ -1,14 +1,5 @@
-//
-//  TypedArray.cpp
-//  VisionCamera
-//
-//  Created by Marc Rousavy on 21.02.23.
-//  Copyright © 2023 mrousavy. All rights reserved.
-//
-
-// Copied & Adapted from
-// https://github.com/expo/expo/blob/main/packages/expo-gl/common/EXTypedArrayApi.cpp Credits to
-// Expo
+// Copied from https://github.com/mrousavy/react-native-fast-tflite/blob/main/cpp/jsi/TypedArray.cpp
+// Credits to Marc Rousavy and Expo
 
 #include "TypedArray.h"
 

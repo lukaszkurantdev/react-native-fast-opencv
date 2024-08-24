@@ -32,15 +32,12 @@ List of available functions are available [here](./availablefunctions.md).
 
 ### Credits
 Special thanks to:
-- The creators of the [Vision Camera](https://github.com/mrousavy/react-native-vision-camera) and [WorkletsCore](https://github.com/margelo/react-native-worklets-core) libraries, especially Marc Rousavy - thanks for the amazing libraries.
+- The creators of the [Vision Camera](https://github.com/mrousavy/react-native-vision-camera), [WorkletsCore](https://github.com/margelo/react-native-worklets-core) and [FastTFLite](https://github.com/mrousavy/react-native-fast-tflite) libraries, especially Marc Rousavy - thanks for the amazing libraries.
 - Creator of the [react-native-opencv3](https://github.com/adamgf/react-native-opencv3) library (Adam G. Freeman) - your library was an important starting point for creating my port.
 - Creator of the [TS definition for OpenCV](https://github.com/peteruhnak/opencv-ts) (Peter Uhnak) - the library was an important support for this port.
 
 
 
 ### License
-MIT
+MIT © 2024 Lukasz Kurant
 
----
-
-2024 Lukasz Kurant

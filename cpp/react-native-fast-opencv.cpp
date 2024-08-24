@@ -26,9 +26,9 @@ void OpenCVPlugin::installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::C
     };
 
     auto jsiFunc = jsi::Function::createFromHostFunction(runtime,
-                                                         jsi::PropNameID::forUtf8(runtime, "__loadOpenCV"),
-                                                         1,
-                                                         func);
+        jsi::PropNameID::forUtf8(runtime, "__loadOpenCV"),
+        1,
+        func);
 
     runtime.global().setProperty(runtime, "__loadOpenCV", jsiFunc);
     

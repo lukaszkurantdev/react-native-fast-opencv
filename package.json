@@ -91,8 +91,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-native-fs": "*"
+    "react-native": "*"
   },
   "workspaces": [
     "example"

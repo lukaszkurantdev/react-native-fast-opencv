@@ -12,6 +12,8 @@
 #include <opencv2/opencv.hpp>
 #include "FOCV_FunctionArguments.hpp"
 
+// General idea and this function for hashing is from
+// https://mrousavy.com/blog/Hashing-String-Ifs
 constexpr uint64_t hashString(const char* str, size_t length) {
   uint64_t hash = 14695981039346656037ull;
   const uint64_t fnv_prime = 1099511628211ull;
@@ -24,6 +26,8 @@ constexpr uint64_t hashString(const char* str, size_t length) {
   return hash;
 }
 
+// General idea of invocation switch is from react-native-opencv3 library,
+// but it was adapted and optimized.
 jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* arguments) {
     jsi::Object value(runtime);
     

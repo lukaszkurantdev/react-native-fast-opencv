@@ -12,6 +12,8 @@
 #include <opencv2/opencv.hpp>
 #include "ConvertImage.hpp"
 
+// General idea and this function for hashing is from
+// https://mrousavy.com/blog/Hashing-String-Ifs
 constexpr uint64_t hashString(const char* str, size_t length) {
   uint64_t hash = 14695981039346656037ull;
   const uint64_t fnv_prime = 1099511628211ull;
