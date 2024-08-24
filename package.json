@@ -80,7 +80,7 @@
     "react-native": "0.74.4",
     "react-native-builder-bob": "^0.29.0",
     "react-native-fs": "2.20.0",
-    "release-it": "^15.0.0",
+    "release-it": "17.6.0",
     "turbo": "^1.10.7",
     "typedoc": "^0.26.6",
     "typedoc-plugin-markdown": "^4.2.5",
