@@ -11047,7 +11047,6 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-    react-native-fs: "*"
   languageName: unknown
   linkType: soft
 
