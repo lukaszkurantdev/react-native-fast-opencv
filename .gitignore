@@ -80,3 +80,4 @@ lib/
 .yarn/cache/*
 docs/.yarn
 .next
+docs/out/*
