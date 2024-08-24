@@ -20,13 +20,13 @@ Currently, there is a port of the OpenCV library but due to the change in standa
 
 ### Documentation
 
-Docs are available [here](./docs/pages/index.md).
+Docs are available [here](https://lukaszkurantdev.github.io/react-native-fast-opencv).
 
 ### State of development
 
 Due to the size of the OpenCV library, this port currently only supports selected objects and functions. However, development is simple enough to only require the addition of specific code in C++ using the functionality.
 
-List of available functions are available [here](./docs/pages/availablefunctions.md).
+List of available functions are available [here](https://lukaszkurantdev.github.io/react-native-fast-opencv/availablefunctions).
 
 ---
 
