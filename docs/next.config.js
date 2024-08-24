@@ -4,7 +4,8 @@ const withNextra = require('nextra')({
 });
 
 module.exports = {
-  ...withNextra({
-    output: 'export',
-  }),
+  ...withNextra(),
+  basePath: '/react-native-fast-opencv',
+  output: 'export',
+  images: { unoptimized: true },
 };
