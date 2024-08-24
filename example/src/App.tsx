@@ -2,7 +2,7 @@ import { ImageExample } from './ImageExample';
 import { VisionCameraExample } from './VisionCameraExample';
 
 export default function App() {
-  const camera = true;
+  const camera = false;
 
   if (camera) {
     return <VisionCameraExample />;

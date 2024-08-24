@@ -1,22 +1,15 @@
 import { useState } from 'react';
-import { Button, Image, SafeAreaView, Text } from 'react-native';
-import {
-  ColorConversionCodes,
-  ContourApproximationModes,
-  DataTypes,
-  ObjectType,
-  OpenCV,
-  RetrievalModes,
-  type Rect,
-} from 'react-native-fast-opencv';
+import { Button, Image, SafeAreaView } from 'react-native';
+import { DataTypes, ObjectType, OpenCV } from 'react-native-fast-opencv';
 import { launchImageLibrary, type Asset } from 'react-native-image-picker';
-import { useRunOnJS, useWorklet, Worklets } from 'react-native-worklets-core';
+import { useRunOnJS, useWorklet } from 'react-native-worklets-core';
+import { BorderTypes } from '../../src/constants/Core';
 
 export function ImageExample() {
   const [photo, setPhoto] = useState<Asset | null>(null);
-  const [b64, setB64] = useState<string>('');
+  const [result, setResult] = useState<string>('');
 
-  const test = async () => {
+  const getImageFromGallery = async () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
       includeBase64: true,
@@ -24,112 +17,44 @@ export function ImageExample() {
     setPhoto(result.assets?.at(0) || null);
   };
 
-  const process = async () => {
-    if (photo && photo.base64 && photo.width && photo.height) {
-      const src = OpenCV.base64ToMat(photo.base64);
-      const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
-
-      await OpenCV.invokeAsync(
-        'cvtColor',
-        src,
-        dst,
-        ColorConversionCodes.COLOR_BGR2HSV
-      );
-
-      const lowerBound = OpenCV.createObject(ObjectType.Scalar, 40, 40, 40);
-      const upperBound = OpenCV.createObject(ObjectType.Scalar, 100, 255, 255);
-
-      await OpenCV.invokeAsync('inRange', dst, lowerBound, upperBound, dst);
-
-      // const channels = OpenCV.createObject(ObjectType.MatVector);
-      // OpenCV.invoke('split', dst, channels);
-      // const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
-
-      // const contours = OpenCV.createObject(ObjectType.MatVector);
-
-      // OpenCV.invoke(
-      //   'findContours',
-      //   grayChannel,
-      //   contours,
-      //   RetrievalModes.RETR_TREE,
-      //   ContourApproximationModes.CHAIN_APPROX_SIMPLE
-      // );
-
-      // const contoursMats = OpenCV.toJSValue(contours);
-
-      // const rectangles: Rect[] = [];
-
-      // for (let i = 0; i < contoursMats.array.length; i++) {
-      //   const contour = OpenCV.copyObjectFromVector(contours, i);
-      //   const { value: area } = OpenCV.invoke('contourArea', contour, false);
-
-      //   if (area > 3000) {
-      //     const rect = OpenCV.invoke('boundingRect', contour);
-      //     rectangles.push(rect);
-      //   }
-      // }
-
-      // console.log(rectangles);
-
-      // const result = OpenCV.toJSValue(dst);
-      // setB64(result.base64);
-      // console.log(array.length);
-    }
-  };
-
-  const [base64, setBase64] = useState<string>('');
-
   const setImage = useRunOnJS((data: string) => {
-    setBase64(data);
+    setResult(data);
   }, []);
 
-  const worklet = useWorklet(
-    'default',
-    () => {
-      'worklet';
-      if (photo && photo.base64 && photo.width && photo.height) {
-        const src = OpenCV.base64ToMat(photo.base64);
-        const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
+  const worklet = useWorklet('default', () => {
+    'worklet';
+    if (photo?.base64) {
+      const src = OpenCV.base64ToMat(photo.base64);
+      const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
+      const kernel = OpenCV.createObject(ObjectType.Size, 20, 20);
+      const point = OpenCV.createObject(ObjectType.Point, 0, 0);
 
-        OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
+      OpenCV.invoke(
+        'blur',
+        src,
+        dst,
+        kernel,
+        point,
+        BorderTypes.BORDER_DEFAULT
+      );
+      const dstResult = OpenCV.toJSValue(dst);
 
-        const lowerBound = OpenCV.createObject(ObjectType.Scalar, 40, 40, 40);
-        const upperBound = OpenCV.createObject(
-          ObjectType.Scalar,
-          100,
-          255,
-          255
-        );
+      setImage(dstResult.base64);
 
-        OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
-
-        const result = OpenCV.toJSValue(dst);
-
-        setImage(result.base64);
-      }
-    },
-    []
-  );
+      OpenCV.clearBuffers(); // IMPORTANT
+    }
+  });
 
   return (
     <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
-      <Button title="Select photo" onPress={test} />
-      <Text>
-        URI: {photo?.uri} {photo?.height} {photo?.width}
-      </Text>
+      <Button title="Select photo" onPress={getImageFromGallery} />
       <Button title="Process" onPress={() => worklet()} />
-      {photo?.base64 && photo?.width && photo?.height && (
+
+      {result && (
         <Image
-          source={{ uri: 'data:image/jpg;base64,' + photo.base64 }}
-          height={300}
-          width={300}
-        />
-      )}
-      {b64 && photo?.width && photo?.height && (
-        <Image
-          source={{ uri: 'data:image/png;base64,' + b64 }}
-          height={300}
-          width={300}
+          source={{ uri: 'data:image/png;base64,' + result }}
+          height={530}
+          width={390}
         />
       )}
     </SafeAreaView>
