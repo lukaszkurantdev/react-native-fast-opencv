@@ -21,7 +21,8 @@ export type Objects = {
     type: ObjectType.Mat,
     rows: number,
     cols: number,
-    dataType: DataTypes
+    dataType: DataTypes,
+    data?: number[]
   ): Mat;
   createObject(type: ObjectType.MatVector): MatVector;
   createObject(type: ObjectType.Point, x: number, y: number): Point;
