@@ -66,3 +66,4 @@ export type * from './objects/Objects';
 export * from './constants/ColorConversionsCodes';
 export * from './constants/DataTypes';
 export * from './constants/ImageProcessing';
+export * from './constants/Core';
