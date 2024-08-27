@@ -11,6 +11,9 @@
 #include "jsi/TypedArray.h"
 #include <opencv2/opencv.hpp>
 #include "ConvertImage.hpp"
+#include "jsi/TypedArray.h"
+
+using namespace mrousavy;
 
 // General idea and this function for hashing is from
 // https://mrousavy.com/blog/Hashing-String-Ifs
@@ -35,8 +38,29 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             int rows = arguments[1].asNumber();
             int cols = arguments[2].asNumber();
             int type = arguments[3].asNumber();
-            cv::Mat object(rows, cols, type);
-            id = FOCV_Storage::save(object);
+            
+            if(arguments[4].isObject()) {
+                auto rawArray = arguments[4].asObject(runtime);
+                auto array = rawArray.asArray(runtime);
+                
+                auto rawLength = rawArray.getProperty(runtime, "length");
+                auto length = rawLength.asNumber();
+                
+                std::vector<float> vec;
+                
+                for(auto i = 0; i < length; i++) {
+                    vec.push_back(array.getValueAtIndex(runtime, i).asNumber());
+                }
+
+                cv::Mat mat{vec, true};
+                mat = mat.reshape(1, rows);
+                mat.convertTo(mat, type);
+                
+                id = FOCV_Storage::save(mat);
+            } else {
+                cv::Mat object(rows, cols, type);
+                id = FOCV_Storage::save(object);
+            }
         } break;
         case hashString("mat_vector", 10): {
             std::vector<cv::Mat> object;
@@ -123,6 +147,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat", 3): {
             auto mat = *FOCV_Storage::get<cv::Mat>(id);
+            mat.convertTo(mat, CV_8U);
 
             value.setProperty(runtime, "base64", jsi::String::createFromUtf8(runtime, ImageConverter::mat2str(mat)));
             value.setProperty(runtime, "size", jsi::Value(mat.size));

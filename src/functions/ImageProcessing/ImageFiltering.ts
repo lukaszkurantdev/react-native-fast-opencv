@@ -132,7 +132,7 @@ export type ImageFiltering = {
     name: 'filter2D',
     src: Mat,
     dst: Mat,
-    ddepth: DataTypes,
+    ddepth: number,
     kernel: Mat,
     anchor: Point,
     delat: number,
