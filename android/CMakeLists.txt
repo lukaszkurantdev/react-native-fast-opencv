@@ -4,13 +4,15 @@ project(FastOpencv)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 20)
 
+file(TO_CMAKE_PATH "${NODE_MODULES_DIR}" NODE_MODULES_DIR)
+
 find_package(ReactAndroid REQUIRED CONFIG)
 find_package(fbjni REQUIRED CONFIG)
 find_package(OpenCV REQUIRED COMPONENTS OpenCV::opencv_java4)
 
 add_library(react-native-fast-opencv
         SHARED
-        ../node_modules/react-native/ReactCommon/jsi/jsi/jsi.cpp
+        "${NODE_MODULES_DIR}/react-native/ReactCommon/jsi/jsi/jsi.cpp"
         ../cpp/react-native-fast-opencv.cpp
         ../cpp/react-native-fast-opencv.h
         cpp-adapter.cpp
