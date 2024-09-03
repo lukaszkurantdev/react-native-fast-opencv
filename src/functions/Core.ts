@@ -903,4 +903,13 @@ export type Core = {
    * @param dst output array. It has the same number of cols and depth as the src, and the sum of rows of the src. same depth
    */
   invoke(name: 'vconcat', src: MatVector, dst: Mat): void;
+
+  /**
+   * Converts an array to another data type with optional scaling.
+   * @param name Function name.
+   * @param src input array.
+   * @param dst output array of the same type as src
+   * @param rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+   */
+  invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
 };

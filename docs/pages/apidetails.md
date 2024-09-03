@@ -10,7 +10,8 @@ createObject(
   type: ObjectType.Mat,
   rows: number,
   cols: number,
-  dataType: DataTypes
+  dataType: DataTypes,
+  data?: number[]
 ): Mat;
 createObject(type: ObjectType.MatVector): MatVector;
 createObject(type: ObjectType.Point, x: number, y: number): Point;
@@ -123,6 +124,21 @@ Creates an object of type Mat based on image in Base64.
 
 ```js
 base64ToMat(data: string): Mat;
+```
+
+### Mat to Buffer
+Convert Mat object to Uint8Array or Float32Array based on value of parameter and returns with number of cols, rows and channels.
+
+```js
+matToBuffer(
+  mat: Mat,
+  type: 'uint8'
+): { cols: number; rows: number; channels: number; buffer: Uint8Array };
+
+matToBuffer(
+  mat: Mat,
+  type: 'float32'
+): { cols: number; rows: number; channels: number; buffer: Float32Array };
 ```
 
 ## Functions
