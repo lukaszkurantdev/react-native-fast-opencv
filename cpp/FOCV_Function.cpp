@@ -1266,6 +1266,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             auto id = FOCV_Storage::save(rect);
             return FOCV_JsiObject::wrap(runtime, "rotated_rect", id);
         } break;
+        case hashString("convertTo", 9): {
+            auto src = args.asMatPtr(1);
+            auto dst = args.asMatPtr(2);
+            auto rtype = args.asNumber(3);
+            
+            (*src).convertTo(*dst, rtype);
+        } break;
     }
     
     return value;

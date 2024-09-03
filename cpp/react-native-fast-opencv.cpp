@@ -55,7 +55,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
         return FOCV_JsiObject::wrap(runtime, "mat", id);
     });
   }
-    if (propName == "base64ToMat") {
+  else if (propName == "base64ToMat") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
@@ -69,7 +69,37 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           return FOCV_JsiObject::wrap(runtime, "mat", id);
       });
     }
-  else if (propName == "createObject") {
+  else if (propName == "matToBuffer") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "matToBuffer"), 1,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Object {
+                  
+                  std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+                  auto mat = *FOCV_Storage::get<cv::Mat>(id);
+                        
+                  jsi::Object value(runtime);
+                        
+                  value.setProperty(runtime, "cols", jsi::Value(mat.cols));
+                  value.setProperty(runtime, "rows", jsi::Value(mat.rows));
+                  value.setProperty(runtime, "channels", jsi::Value(mat.channels()));
+                  
+                  auto type = arguments[1].asString(runtime).utf8(runtime);
+                  int size = mat.cols * mat.rows * mat.channels();
+                  
+                  if(type == "uint8") {
+                      auto arr = TypedArray<TypedArrayKind::Uint8Array>(runtime, size);
+                      arr.updateUnsafe(runtime, (uint8_t*)mat.data, size * sizeof(uint8_t));
+                      value.setProperty(runtime, "buffer", arr);
+                  } else if(type == "float32") {
+                      auto arr = TypedArray<TypedArrayKind::Float32Array>(runtime, size);
+                      arr.updateUnsafe(runtime, (float32_t*)mat.data, size * sizeof(float32_t));
+                      value.setProperty(runtime, "buffer", arr);
+                  }
+                  
+                  return value;
+      });
+    } else if (propName == "createObject") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "createObject"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
@@ -123,6 +153,7 @@ std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtim
 
     result.push_back(jsi::PropNameID::forAscii(runtime, "frameBufferToMat"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "base64ToMat"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "matToBuffer"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "createObject"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "toJSValue"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "copyObjectFromVector"));

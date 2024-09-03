@@ -249,7 +249,7 @@ invoke(name: 'completeSymm', m: MatVector | Mat, lowerToUpper: boolean): void;
 
 ### convertFp16
 
-Converts an array to half precision floating number.\
+Converts an array to half precision floating number.
 
 - src input array
 - dst output array
@@ -283,6 +283,18 @@ invoke(
   alpha: number,
   beta: number
 ): void;
+```
+
+### convertTo
+
+Converts an array to another data type with optional scaling.
+
+- src input array
+- dst output array of the same type as src
+- rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+
+```js
+invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
 ```
 
 ### copyMakeBorder
