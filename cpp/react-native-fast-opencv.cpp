@@ -14,14 +14,14 @@
 using namespace mrousavy;
 
 void OpenCVPlugin::installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::CallInvoker> callInvoker) {
-    
+
     auto func = [=](jsi::Runtime& runtime,
                         const jsi::Value& thisArg,
                         const jsi::Value* args,
                         size_t count) -> jsi::Value {
         auto plugin = std::make_shared<OpenCVPlugin>(callInvoker);
         auto result = jsi::Object::createFromHostObject(runtime, plugin);
-        
+
         return result;
     };
 
@@ -31,7 +31,7 @@ void OpenCVPlugin::installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::C
         func);
 
     runtime.global().setProperty(runtime, "__loadOpenCV", jsiFunc);
-    
+
 }
 
 OpenCVPlugin::OpenCVPlugin(std::shared_ptr<react::CallInvoker> callInvoker) : _callInvoker(callInvoker) {}
@@ -44,7 +44,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
         runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
         [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
             size_t count) -> jsi::Object {
-             
+
         jsi::Object input = arguments[2].asObject(runtime);
         TypedArrayBase inputBuffer = getTypedArray(runtime, std::move(input));
         auto vec = inputBuffer.toVector(runtime);
@@ -60,7 +60,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
-               
+
           std::string base64 = arguments[0].asString(runtime).utf8(runtime);
 
           auto mat = ImageConverter::str2mat(base64);
@@ -74,29 +74,29 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           runtime, jsi::PropNameID::forAscii(runtime, "matToBuffer"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
-                  
+
                   std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
                   auto mat = *FOCV_Storage::get<cv::Mat>(id);
-                        
+
                   jsi::Object value(runtime);
-                        
+
                   value.setProperty(runtime, "cols", jsi::Value(mat.cols));
                   value.setProperty(runtime, "rows", jsi::Value(mat.rows));
                   value.setProperty(runtime, "channels", jsi::Value(mat.channels()));
-                  
+
                   auto type = arguments[1].asString(runtime).utf8(runtime);
                   int size = mat.cols * mat.rows * mat.channels();
-                  
+
                   if(type == "uint8") {
                       auto arr = TypedArray<TypedArrayKind::Uint8Array>(runtime, size);
                       arr.updateUnsafe(runtime, (uint8_t*)mat.data, size * sizeof(uint8_t));
                       value.setProperty(runtime, "buffer", arr);
                   } else if(type == "float32") {
                       auto arr = TypedArray<TypedArrayKind::Float32Array>(runtime, size);
-                      arr.updateUnsafe(runtime, (float32_t*)mat.data, size * sizeof(float32_t));
+                      arr.updateUnsafe(runtime, (float*)mat.data, size * sizeof(float));
                       value.setProperty(runtime, "buffer", arr);
                   }
-                  
+
                   return value;
       });
     } else if (propName == "createObject") {
@@ -139,7 +139,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           runtime, jsi::PropNameID::forAscii(runtime, "clearBuffers"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Value {
-                  
+
           FOCV_Storage::clear();
           return true;
       });
