@@ -1183,8 +1183,10 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             
             if(args.isMat(1)) {
                 rect = cv::boundingRect(*args.asMatPtr(1));
-            } else {
+            } else if(args.isMatVector(1)) {
                 rect = cv::boundingRect(*args.asMatVectorPtr(1));
+            } else {
+                rect = cv::boundingRect(*args.asPointVectorPtr(1));
             }
             
             std::string id = FOCV_Storage::save(rect);
@@ -1208,10 +1210,15 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             value.setProperty(runtime, "value", jsi::Value(result));
         } break;
         case hashString("contourArea", 11): {
-            auto src = args.asMatPtr(1);
             auto oriented = args.asBool(2);
             
-            value.setProperty(runtime, "value", contourArea(*src, oriented));
+            if(args.isMat(1)) {
+                auto src = args.asMatPtr(1);
+                value.setProperty(runtime, "value", contourArea(*src, oriented));
+            } else {
+                auto src = args.asPointVectorPtr(1);
+                value.setProperty(runtime, "value", contourArea(*src, oriented));
+            }
         } break;
         case hashString("convexHull", 10): {
             auto src = args.asMatPtr(1);
@@ -1228,11 +1235,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         } break;
         case hashString("findContours", 12): {
             auto src = args.asMatPtr(1);
-            auto dst = args.asMatVectorPtr(2);
             auto mode = args.asNumber(3);
             auto method = args.asNumber(4);
-
-            cv::findContours(*src, *dst, mode, method);
+            
+            if(args.isMatVector(2)) {
+                auto dst = args.asMatVectorPtr(2);
+                cv::findContours(*src, *dst, mode, method);
+            } else {
+                auto dst = args.asPointVectorOfVectorsPtr(2);
+                cv::findContours(*src, *dst, mode, method);
+            }
         } break;
         case hashString("fitLine", 7): {
             auto points = args.asMatPtr(1);

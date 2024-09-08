@@ -43,6 +43,10 @@ std::shared_ptr<std::vector<cv::Point>> FOCV_FunctionArguments::asPointVectorPtr
     return FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
 }
 
+std::shared_ptr<std::vector<std::vector<cv::Point>>> FOCV_FunctionArguments::asPointVectorOfVectorsPtr(int index) {
+    return FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+}
+
 std::shared_ptr<cv::Rect> FOCV_FunctionArguments::asRectPtr(int index) {
     return FOCV_Storage::get<cv::Rect>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
 }
@@ -81,4 +85,8 @@ bool FOCV_FunctionArguments::isObject(int index) {
 
 bool FOCV_FunctionArguments::isMat(int index) {
     return FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "mat";
+}
+
+bool FOCV_FunctionArguments::isMatVector(int index) {
+    return FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "mat_vector";
 }

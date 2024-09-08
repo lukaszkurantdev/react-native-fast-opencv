@@ -43,6 +43,7 @@ public:
     std::shared_ptr<std::vector<cv::Mat>> asMatVectorPtr(int index);
     std::shared_ptr<cv::Point> asPointPtr(int index);
     std::shared_ptr<std::vector<cv::Point>> asPointVectorPtr(int index);
+    std::shared_ptr<std::vector<std::vector<cv::Point>>> asPointVectorOfVectorsPtr(int index);
     std::shared_ptr<cv::Rect> asRectPtr(int index);
     std::shared_ptr<std::vector<cv::Rect>> asRectVectorPtr(int index);
     std::shared_ptr<cv::Size> asSizePtr(int index);
@@ -54,6 +55,7 @@ public:
     bool isString(int index);
     bool isObject(int index);
     bool isMat(int index);
+    bool isMatVector(int index);
 };
 
 #endif /* FOCV_FunctionArguments_hpp */

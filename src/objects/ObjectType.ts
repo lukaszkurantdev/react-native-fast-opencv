@@ -3,6 +3,7 @@ export enum ObjectType {
   MatVector = 'mat_vector',
   Point = 'point',
   PointVector = 'point_vector',
+  PointVectorOfVectors = 'point_vector_vector',
   Rect = 'rect',
   RectVector = 'rect_vector',
   Size = 'size',

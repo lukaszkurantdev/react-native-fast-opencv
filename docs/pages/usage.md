@@ -15,7 +15,7 @@ You can do this e.g. after a calculation, or after a specific step. **Remember t
 
 ## Objects
 
-The library currently supports the following OpenCV objects: **Mat, MatVector, Point, Point Vector, Rect, RectVector, Size, Scalar and RotatedRect.**
+The library currently supports the following OpenCV objects: **Mat, MatVector, Point, Point Vector, Point Vector of Vectors, Rect, RectVector, Size, Scalar and RotatedRect.**
 
 > A vector is simply an array in which individual objects are held.
 
