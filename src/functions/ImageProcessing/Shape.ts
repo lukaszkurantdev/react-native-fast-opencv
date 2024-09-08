@@ -4,7 +4,14 @@ import type {
   RetrievalModes,
   ShapeMatchModes,
 } from '../../constants/ImageProcessing';
-import type { Mat, MatVector, Rect, RotatedRect } from '../../objects/Objects';
+import type {
+  Mat,
+  MatVector,
+  PointVector,
+  PointVectorOfVectors,
+  Rect,
+  RotatedRect,
+} from '../../objects/Objects';
 
 export type Shape = {
   /**
@@ -39,7 +46,7 @@ export type Shape = {
    * @param array Input gray-scale image or 2D point set, stored in std::vector or Mat.
    * @returns the minimal up-right bounding rectangle for the specified point set or non-zero pixels of gray-scale image
    */
-  invoke(name: 'boundingRect', array: Mat | MatVector): Rect;
+  invoke(name: 'boundingRect', array: Mat | MatVector | PointVector): Rect;
 
   /**
    * computes the connected components labeled image of boolean image
@@ -77,7 +84,7 @@ export type Shape = {
    */
   invoke(
     name: 'contourArea',
-    contour: Mat | MatVector,
+    contour: Mat | MatVector | PointVector,
     oriented?: boolean
   ): { value: number };
 
@@ -110,8 +117,8 @@ export type Shape = {
    */
   invoke(
     name: 'findContours',
-    image: Mat | MatVector,
-    contours: Mat | MatVector,
+    image: Mat,
+    contours: MatVector | PointVectorOfVectors,
     mode: RetrievalModes,
     method: ContourApproximationModes
   ): void;

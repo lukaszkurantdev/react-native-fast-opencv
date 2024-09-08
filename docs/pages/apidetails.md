@@ -16,6 +16,7 @@ createObject(
 createObject(type: ObjectType.MatVector): MatVector;
 createObject(type: ObjectType.Point, x: number, y: number): Point;
 createObject(type: ObjectType.PointVector): PointVector;
+createObject(type: ObjectType.PointVectorOfVectors): PointVectorOfVectors;
 createObject(
   type: ObjectType.Rect,
   x: number,
@@ -49,6 +50,10 @@ Copies an object from a vector to a separate object.
 ```js
 copyObjectFromVector(vector: MatVector, itemIndex: number): Mat;
 copyObjectFromVector(vector: PointVector, itemIndex: number): Point;
+copyObjectFromVector(
+  vector: PointVectorOfVectors,
+  itemIndex: number
+): PointVector;
 copyObjectFromVector(vector: RectVector, itemIndex: number): Rect;
 ```
 
@@ -76,6 +81,12 @@ toJSValue(pointVector: PointVector): {
     x: number;
     y: number;
   }[];
+};
+toJSValue(pointVector: PointVectorOfVectors): {
+  array: {
+    x: number;
+    y: number;
+  }[][];
 };
 toJSValue(rect: Rect): {
   x: number;

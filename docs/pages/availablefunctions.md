@@ -1998,7 +1998,7 @@ Calculates the up-right bounding rectangle of a point set or non-zero pixels of 
 @returns the minimal up-right bounding rectangle for the specified point set or non-zero pixels of gray-scale image
 
 ```js
-invoke(name: 'boundingRect', array: Mat | MatVector): Rect;
+invoke(name: 'boundingRect', array: Mat | MatVector | PointVector): Rect;
 ```
 
 ### connectedComponents
@@ -2042,7 +2042,7 @@ Calculates a contour area
 ```js
 invoke(
   name: 'contourArea',
-  contour: Mat | MatVector,
+  contour: Mat | MatVector | PointVector,
   oriented?: boolean
 ): { value: number };
 ```
@@ -2082,7 +2082,7 @@ Finds contours in a binary image
 invoke(
   name: 'findContours',
   image: Mat | MatVector,
-  contours: Mat | MatVector,
+  contours: MatVector | PointVectorOfVectors,
   mode: RetrievalModes,
   method: ContourApproximationModes
 ): void;
