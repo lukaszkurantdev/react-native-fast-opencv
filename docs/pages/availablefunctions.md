@@ -1971,7 +1971,7 @@ Approximates a polygonal curve(s) with the specified precision
 ```js
 invoke(
   name: 'approxPolyDP',
-  curve: Mat | MatVector,
+  curve: Mat | MatVector | PointVector,
   approxCurve: Mat,
   epsilon: number,
   closed: boolean
@@ -1987,7 +1987,7 @@ Calculates a contour perimeter or a curve length.
 ```js
 invoke(
   name: 'arcLength',
-  curve: Mat | MatVector,
+  curve: Mat | MatVector | PointVector,
   closed: boolean
 ): { value: number };
 ```
