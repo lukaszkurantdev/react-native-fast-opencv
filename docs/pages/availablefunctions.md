@@ -1940,6 +1940,36 @@ Calculates the integral of an image
 invoke(name: 'integral', src: Mat, sum: Mat): void;
 ```
 
+### Sobel
+
+Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
+
+- name Function name.
+- src input image.
+- dst output image of the same size and the same number of channels as src .
+- ddepth output image depth, see combinations; in the case of 8-bit input images it will result in truncated derivatives.
+- dx order of the derivative x.
+- dy order of the derivative y.
+- ksize size of the extended Sobel kernel; it must be 1, 3, 5, or 7.
+- scale scale factor for the computed derivative values; by default, no scaling is applied (see getDerivKernels for details).
+- delta delta value that is added to the results prior to storing them in dst.
+- borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
+
+```js
+invoke(
+  name: 'Sobel',
+  src: Mat,
+  dst: Mat,
+  ddepth: number,
+  dx: number,
+  dy: number,
+  ksize: 1 | 3 | 5 | 7,
+  scale: number,
+  delta: number,
+  borderType: Exclude<BorderTypes, BorderTypes.BORDER_WRAP>
+): void;
+```
+
 ### threshold
 Applies a fixed-level threshold to each array element
 - name Function name.

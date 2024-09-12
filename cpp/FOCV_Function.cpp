@@ -1151,6 +1151,19 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::integral(*src, *dst);
       } break;
+      case hashString("Sobel", 5): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto ddepth = args.asNumber(3);
+        auto dx = args.asNumber(4);
+        auto dy = args.asNumber(5);
+        auto ksize = args.asNumber(6);
+        auto scale = args.asNumber(7);
+        auto delta = args.asNumber(8);
+        auto borderType = args.asNumber(9);
+
+        cv::Sobel(*src, *dst, ddepth, dx, dy, ksize, scale, delta, borderType);
+      } break;
       case hashString("threshold", 9): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
