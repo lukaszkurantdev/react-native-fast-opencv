@@ -1,6 +1,6 @@
 import type { BorderTypes } from '../../constants/Core';
 import type { DataTypes } from '../../constants/DataTypes';
-import type { MorphTypes } from '../../constants/ImageProcessing';
+import type { MorphShapes, MorphTypes } from '../../constants/ImageProcessing';
 import type { Mat, Point, Scalar, Size } from '../../objects/Objects';
 
 export type ImageFiltering = {
@@ -190,6 +190,19 @@ export type ImageFiltering = {
     ksize: number,
     sigma: number,
     ktype: DataTypes.CV_32F | DataTypes.CV_64F
+  ): Mat;
+
+  /**
+   * Returns a structuring element of the specified size and shape for morphological operations.
+   * @param shape Element shape that could be one of MorphShapes
+   * @param ksize Size of the structuring element.
+   * @param anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted.
+   */
+  invoke(
+    name: 'getStructuringElement',
+    shape: MorphShapes,
+    ksize: Size,
+    anchor: Point
   ): Mat;
 
   /**

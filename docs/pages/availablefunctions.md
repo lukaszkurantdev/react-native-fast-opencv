@@ -1793,6 +1793,23 @@ invoke(
 ): Mat;
 ```
 
+### getStructuringElement
+
+Returns a structuring element of the specified size and shape for morphological operations.
+
+- shape Element shape that could be one of MorphShapes
+- ksize Size of the structuring element.
+- anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted..
+
+```js
+invoke(
+  name: 'getGaussianKernel',
+    shape: MorphShapes,
+    ksize: Size,
+    anchor: Point
+): Mat;
+```
+
 ### Laplacian
 Calculates the Laplacian of an image.
 - name Function name.

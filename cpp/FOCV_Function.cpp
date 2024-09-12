@@ -1080,6 +1080,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
+      case hashString("getStructuringElement", 21): {
+        auto shape = args.asNumber(1);
+        auto ksize = args.asSizePtr(2);
+        auto anchor = args.asPointPtr(3);
+
+        cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
+        std::string id = FOCV_Storage::save(result);
+
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+      } break;
       case hashString("Laplacian", 9): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
