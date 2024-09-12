@@ -22,7 +22,7 @@ const paint = Skia.Paint();
 paint.setStyle(PaintStyle.Fill);
 paint.setColor(Skia.Color('red'));
 
-export function VisionCameraExample() {
+export function CameraRealtimeDetection() {
   const device = useCameraDevice('back');
   const { hasPermission, requestPermission } = useCameraPermission();
 
