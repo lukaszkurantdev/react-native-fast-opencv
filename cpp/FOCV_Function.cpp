@@ -1108,6 +1108,12 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::medianBlur(*src, *dst, ksize);
       } break;
+      case hashString("morphologyDefaultBorderValue", 28): {
+        auto scalar = cv::morphologyDefaultBorderValue();
+        std::string id = FOCV_Storage::save(scalar);
+
+        return FOCV_JsiObject::wrap(runtime, "scalar", id);
+      } break;
       case hashString("morphologyEx", 12): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);

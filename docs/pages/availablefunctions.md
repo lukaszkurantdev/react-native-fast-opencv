@@ -1846,6 +1846,14 @@ The function smoothes an image using the median filter with the 𝚔𝚜𝚒𝚣
 invoke(name: 'medianBlur', src: Mat, dst: Mat, ksize: number): void;
 ```
 
+### morphologyDefaultBorderValue
+
+@returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
+
+```js
+invoke(name: 'morphologyDefaultBorderValue'): Scalar;
+```
+
 ### morphologyEx
 Performs advanced morphological transformations.
 The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as basic operations.

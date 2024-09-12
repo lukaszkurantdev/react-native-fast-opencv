@@ -238,6 +238,11 @@ export type ImageFiltering = {
   invoke(name: 'medianBlur', src: Mat, dst: Mat, ksize: number): void;
 
   /**
+   * returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
+   */
+  invoke(name: 'morphologyDefaultBorderValue'): Scalar;
+
+  /**
    * Performs advanced morphological transformations.
    * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as basic operations.
    * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed independently.
