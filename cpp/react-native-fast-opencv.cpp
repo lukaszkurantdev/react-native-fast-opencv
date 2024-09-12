@@ -41,15 +41,34 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
 
   if (propName == "frameBufferToMat") {
     return jsi::Function::createFromHostFunction(
-        runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
+        runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 4,
         [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
             size_t count) -> jsi::Object {
+        double rows = arguments[0].asNumber();
+        double cols = arguments[1].asNumber();
+        int channels = arguments[2].asNumber();
+        jsi::Object input = arguments[3].asObject(runtime);
 
-        jsi::Object input = arguments[2].asObject(runtime);
+        int type = -1;
+        if (channels == 1) {
+          type = CV_8U;
+        }
+        if (channels == 3) {
+          type = CV_8UC3;
+        }
+        if (channels == 4) {
+          type = CV_8UC4;
+        }
+              
+        if (channels == -1) {
+          throw std::runtime_error("Fast OpenCV Error: Invalid channel count passed to frameBufferToMat!");
+        }
+
         TypedArrayBase inputBuffer = getTypedArray(runtime, std::move(input));
         auto vec = inputBuffer.toVector(runtime);
 
-        cv::Mat mat(arguments[0].asNumber(), arguments[1].asNumber(), CV_8UC3, vec.data());
+        cv::Mat mat(rows, cols, type);
+        memcpy(mat.data, vec.data(), (int)rows * (int)cols * channels);
         auto id = FOCV_Storage::save(mat);
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);

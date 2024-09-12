@@ -1,15 +1,40 @@
 import type { Mat } from '../objects/Objects';
 
 export type UtilsFunctions = {
+  /**
+   * Clears any buffers that were allocate to back Mats on the native side.
+   */
   clearBuffers(): void;
-  frameBufferToMat(rows: number, cols: number, input: Uint8Array): Mat;
+  /**
+   * Converts a byte array to a Mat.
+   * @param rows - the number of rows in the Mat
+   * @param cols - the number of columns in the Mat
+   * @param channels - the number of channels in the Mat
+   * @param input - the byte array to convert
+   */
+  frameBufferToMat(
+    rows: number,
+    cols: number,
+    channels: number,
+    input: Uint8Array
+  ): Mat;
+  /**
+   * Converts a base64 string to a Mat.
+   * @param data - the base64 string to convert
+   */
   base64ToMat(data: string): Mat;
-  matToBuffer(
+  /**
+   * Converts a Mat to a byte array.
+   * @param mat - the Mat to convert
+   * @param type - the type of the buffer to return ('uint8' or 'float32')
+   */
+  matToBuffer<T extends 'uint8' | 'float32'>(
     mat: Mat,
-    type: 'uint8'
-  ): { cols: number; rows: number; channels: number; buffer: Uint8Array };
-  matToBuffer(
-    mat: Mat,
-    type: 'float32'
-  ): { cols: number; rows: number; channels: number; buffer: Float32Array };
+    type: T
+  ): {
+    cols: number;
+    rows: number;
+    channels: number;
+    buffer: T extends 'uint8' ? Uint8Array : Float32Array;
+  };
 };
