@@ -67,9 +67,9 @@ export enum LineSegmentDetectorModes {
 }
 
 export enum MorphShapes {
-  MORPH_RECT = 'MORPH_RECT',
-  MORPH_CROSS = 'MORPH_CROSS',
-  MORPH_ELLIPSE = 'MORPH_ELLIPSE',
+  MORPH_RECT = 0,
+  MORPH_CROSS = 1,
+  MORPH_ELLIPSE = 2,
 }
 
 export enum MorphTypes {
