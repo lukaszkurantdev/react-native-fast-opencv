@@ -1,12 +1,32 @@
-import { ImageExample } from './ImageExample';
-import { VisionCameraExample } from './VisionCameraExample';
+import { ImageExample } from './examples/ImageExample';
+import { Route, type StackParamList } from './types';
+import { CameraRealtimeDetection } from './examples/CameraRealtimeDetection';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Home } from './home/Home';
+import { CameraPassthrough } from './examples/CameraPassthrough';
+
+const Stack = createNativeStackNavigator<StackParamList>();
 
 export default function App() {
-  const camera = false;
-
-  if (camera) {
-    return <VisionCameraExample />;
-  }
-
-  return <ImageExample />;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name={Route.Home}
+          component={Home}
+          options={{ title: 'Examples' }}
+        />
+        <Stack.Screen name={Route.ImageBlur} component={ImageExample} />
+        <Stack.Screen
+          name={Route.CameraPassthrough}
+          component={CameraPassthrough}
+        />
+        <Stack.Screen
+          name={Route.CameraRealtimeDetection}
+          component={CameraRealtimeDetection}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

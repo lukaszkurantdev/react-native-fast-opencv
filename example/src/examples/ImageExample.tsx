@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Button, Image, SafeAreaView } from 'react-native';
-import { DataTypes, ObjectType, OpenCV } from 'react-native-fast-opencv';
+import {
+  DataTypes,
+  ObjectType,
+  OpenCV,
+  BorderTypes,
+} from 'react-native-fast-opencv';
 import { launchImageLibrary, type Asset } from 'react-native-image-picker';
 import { useRunOnJS, useWorklet } from 'react-native-worklets-core';
-import { BorderTypes } from '../../src/constants/Core';
 
 export function ImageExample() {
   const [photo, setPhoto] = useState<Asset | null>(null);
