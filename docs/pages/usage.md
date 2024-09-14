@@ -61,7 +61,7 @@ const frameProcessor = useFrameProcessor((frame) => {
     dataType: 'uint8',
   });
 
-  const mat = OpenCV.frameBufferToMat(height, width, resized);
+  const mat = OpenCV.frameBufferToMat(height, width, 3, resized);
 
   // calculations ...
 
