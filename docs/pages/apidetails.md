@@ -127,7 +127,7 @@ clearBuffers(): void;
 Creates an object of type Mat based on an array of Uint8Array.
 
 ```js
-frameBufferToMat(rows: number, cols: number, input: Uint8Array): Mat;
+frameBufferToMat(rows: number, cols: number, channels: number, input: Uint8Array): Mat;
 ```
 
 ### Base64 to Mat
