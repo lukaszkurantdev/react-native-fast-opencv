@@ -1793,6 +1793,23 @@ invoke(
 ): Mat;
 ```
 
+### getStructuringElement
+
+Returns a structuring element of the specified size and shape for morphological operations.
+
+- shape Element shape that could be one of MorphShapes
+- ksize Size of the structuring element.
+- anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted..
+
+```js
+invoke(
+  name: 'getGaussianKernel',
+    shape: MorphShapes,
+    ksize: Size,
+    anchor: Point
+): Mat;
+```
+
 ### Laplacian
 Calculates the Laplacian of an image.
 - name Function name.
@@ -1827,6 +1844,14 @@ The function smoothes an image using the median filter with the 𝚔𝚜𝚒𝚣
 
 ```js
 invoke(name: 'medianBlur', src: Mat, dst: Mat, ksize: number): void;
+```
+
+### morphologyDefaultBorderValue
+
+@returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
+
+```js
+invoke(name: 'morphologyDefaultBorderValue'): Scalar;
 ```
 
 ### morphologyEx
@@ -1915,6 +1940,36 @@ Calculates the integral of an image
 invoke(name: 'integral', src: Mat, sum: Mat): void;
 ```
 
+### Sobel
+
+Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
+
+- name Function name.
+- src input image.
+- dst output image of the same size and the same number of channels as src .
+- ddepth output image depth, see combinations; in the case of 8-bit input images it will result in truncated derivatives.
+- dx order of the derivative x.
+- dy order of the derivative y.
+- ksize size of the extended Sobel kernel; it must be 1, 3, 5, or 7.
+- scale scale factor for the computed derivative values; by default, no scaling is applied (see getDerivKernels for details).
+- delta delta value that is added to the results prior to storing them in dst.
+- borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
+
+```js
+invoke(
+  name: 'Sobel',
+  src: Mat,
+  dst: Mat,
+  ddepth: number,
+  dx: number,
+  dy: number,
+  ksize: 1 | 3 | 5 | 7,
+  scale: number,
+  delta: number,
+  borderType: Exclude<BorderTypes, BorderTypes.BORDER_WRAP>
+): void;
+```
+
 ### threshold
 Applies a fixed-level threshold to each array element
 - name Function name.
@@ -1971,7 +2026,7 @@ Approximates a polygonal curve(s) with the specified precision
 ```js
 invoke(
   name: 'approxPolyDP',
-  curve: Mat | MatVector,
+  curve: Mat | MatVector | PointVector,
   approxCurve: Mat,
   epsilon: number,
   closed: boolean
@@ -1987,7 +2042,7 @@ Calculates a contour perimeter or a curve length.
 ```js
 invoke(
   name: 'arcLength',
-  curve: Mat | MatVector,
+  curve: Mat | MatVector | PointVector,
   closed: boolean
 ): { value: number };
 ```

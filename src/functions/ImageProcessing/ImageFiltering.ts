@@ -1,6 +1,6 @@
 import type { BorderTypes } from '../../constants/Core';
 import type { DataTypes } from '../../constants/DataTypes';
-import type { MorphTypes } from '../../constants/ImageProcessing';
+import type { MorphShapes, MorphTypes } from '../../constants/ImageProcessing';
 import type { Mat, Point, Scalar, Size } from '../../objects/Objects';
 
 export type ImageFiltering = {
@@ -193,6 +193,19 @@ export type ImageFiltering = {
   ): Mat;
 
   /**
+   * Returns a structuring element of the specified size and shape for morphological operations.
+   * @param shape Element shape that could be one of MorphShapes
+   * @param ksize Size of the structuring element.
+   * @param anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted.
+   */
+  invoke(
+    name: 'getStructuringElement',
+    shape: MorphShapes,
+    ksize: Size,
+    anchor: Point
+  ): Mat;
+
+  /**
    * Calculates the Laplacian of an image.
    * @param name Function name.
    * @param src Source image.
@@ -225,6 +238,11 @@ export type ImageFiltering = {
   invoke(name: 'medianBlur', src: Mat, dst: Mat, ksize: number): void;
 
   /**
+   * returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
+   */
+  invoke(name: 'morphologyDefaultBorderValue'): Scalar;
+
+  /**
    * Performs advanced morphological transformations.
    * The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as basic operations.
    * Any of the operations can be done in-place. In case of multi-channel images, each channel is processed independently.
@@ -248,5 +266,31 @@ export type ImageFiltering = {
     iterations: number,
     borderType: BorderTypes,
     borderValue: Scalar
+  ): void;
+
+  /**
+   * Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.
+   * @param name Function name.
+   * @param src input image.
+   * @param dst output image of the same size and the same number of channels as src .
+   * @param ddepth output image depth, see combinations; in the case of 8-bit input images it will result in truncated derivatives.
+   * @param dx order of the derivative x.
+   * @param dy order of the derivative y.
+   * @param ksize size of the extended Sobel kernel; it must be 1, 3, 5, or 7.
+   * @param scale scale factor for the computed derivative values; by default, no scaling is applied (see getDerivKernels for details).
+   * @param delta delta value that is added to the results prior to storing them in dst.
+   * @param borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
+   */
+  invoke(
+    name: 'Sobel',
+    src: Mat,
+    dst: Mat,
+    ddepth: number,
+    dx: number,
+    dy: number,
+    ksize: 1 | 3 | 5 | 7,
+    scale: number,
+    delta: number,
+    borderType: Exclude<BorderTypes, BorderTypes.BORDER_WRAP>
   ): void;
 };

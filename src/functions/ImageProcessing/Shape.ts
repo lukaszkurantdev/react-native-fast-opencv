@@ -23,8 +23,8 @@ export type Shape = {
    */
   invoke(
     name: 'approxPolyDP',
-    curve: Mat | MatVector,
-    approxCurve: Mat,
+    curve: Mat | MatVector | PointVector,
+    approxCurve: Mat | PointVector,
     epsilon: number,
     closed: boolean
   ): void;
@@ -37,7 +37,7 @@ export type Shape = {
    */
   invoke(
     name: 'arcLength',
-    curve: Mat | MatVector,
+    curve: Mat | MatVector | PointVector,
     closed: boolean
   ): { value: number };
 

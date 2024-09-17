@@ -1080,6 +1080,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
+      case hashString("getStructuringElement", 21): {
+        auto shape = args.asNumber(1);
+        auto ksize = args.asSizePtr(2);
+        auto anchor = args.asPointPtr(3);
+
+        cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
+        std::string id = FOCV_Storage::save(result);
+
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+      } break;
       case hashString("Laplacian", 9): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
@@ -1097,6 +1107,12 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ksize = args.asNumber(3);
         
         cv::medianBlur(*src, *dst, ksize);
+      } break;
+      case hashString("morphologyDefaultBorderValue", 28): {
+        auto scalar = cv::morphologyDefaultBorderValue();
+        std::string id = FOCV_Storage::save(scalar);
+
+        return FOCV_JsiObject::wrap(runtime, "scalar", id);
       } break;
       case hashString("morphologyEx", 12): {
         auto src = args.asMatPtr(1);
@@ -1135,6 +1151,19 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::integral(*src, *dst);
       } break;
+      case hashString("Sobel", 5): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto ddepth = args.asNumber(3);
+        auto dx = args.asNumber(4);
+        auto dy = args.asNumber(5);
+        auto ksize = args.asNumber(6);
+        auto scale = args.asNumber(7);
+        auto delta = args.asNumber(8);
+        auto borderType = args.asNumber(9);
+
+        cv::Sobel(*src, *dst, ddepth, dx, dy, ksize, scale, delta, borderType);
+      } break;
       case hashString("threshold", 9): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
@@ -1154,16 +1183,36 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::matchTemplate(*image, *templ, *result, method, *mask);
       } break;
       case hashString("approxPolyDP", 12): {
-        auto approxCurve = args.asMatPtr(2);
         auto epsilon = args.asNumber(3);
         auto closed = args.asBool(4);
-        
+
         if(args.isMat(1)) {
-          auto curve = args.asMatPtr(1);
-          cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            auto curve = args.asMatPtr(1);
+            if (args.isMat(2)) {
+                auto approxCurve = args.asMatPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            } else {
+                auto approxCurve = args.asPointVectorPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            }
+        } else if (args.isMatVector(1)) {
+            auto curve = args.asMatVectorPtr(1);
+            if (args.isMat(2)) {
+                auto approxCurve = args.asMatPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            } else {
+                auto approxCurve = args.asPointVectorPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            }
         } else {
-          auto curve = args.asMatVectorPtr(1);
-          cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            auto curve = args.asPointVectorPtr(1);
+            if (args.isMat(2)) {
+                auto approxCurve = args.asMatPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            } else {
+                auto approxCurve = args.asPointVectorPtr(2);
+                cv::approxPolyDP(*curve, *approxCurve, epsilon, closed);
+            }
         }
       } break;
       case hashString("arcLength", 9): {
@@ -1173,10 +1222,14 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto curve = args.asMatPtr(1);
           auto result = cv::arcLength(*curve, closed);
           value.setProperty(runtime, "value", jsi::Value(result));
+        } else if(args.isMatVector(1)) {
+            auto curve = args.asMatVectorPtr(1);
+            auto result = cv::arcLength(*curve, closed);
+            value.setProperty(runtime, "value", jsi::Value(result));
         } else {
-          auto curve = args.asMatVectorPtr(1);
-          auto result = cv::arcLength(*curve, closed);
-          value.setProperty(runtime, "value", jsi::Value(result));
+            auto curve = args.asPointVectorPtr(1);
+            auto result = cv::arcLength(*curve, closed);
+            value.setProperty(runtime, "value", jsi::Value(result));
         }
       } break;
       case hashString("boundingRect", 12): {
