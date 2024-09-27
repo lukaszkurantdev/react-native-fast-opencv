@@ -5,6 +5,7 @@ export enum Route {
   ImageBlur = 'ImageBlur',
   CameraPassthrough = 'CameraPassthrough',
   CameraRealtimeDetection = 'CameraRealtimeDetection',
+  CameraAffineTransform = 'CameraAffineTransform',
 }
 
 export interface StackParamList extends ParamListBase {
@@ -12,6 +13,7 @@ export interface StackParamList extends ParamListBase {
   ImageBlur: undefined;
   CameraPassthrough: undefined;
   CameraRealtimeDetection: undefined;
+  CameraAffineTransform: undefined;
 }
 
 // https://reactnavigation.org/docs/typescript#specifying-default-types-for-usenavigation-link-ref-etc
