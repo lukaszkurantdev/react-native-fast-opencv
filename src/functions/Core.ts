@@ -919,6 +919,15 @@ export type Core = {
    * @param src input array.
    * @param dst output array of the same type as src
    * @param rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+   * @param scale optional scale factor
+   * @param offset optional delta added to the scaled values
    */
-  invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
+  invoke(
+    name: 'convertTo',
+    src: Mat,
+    dst: Mat,
+    rtype: DataTypes,
+    scale?: number,
+    offset?: number
+  ): void;
 };

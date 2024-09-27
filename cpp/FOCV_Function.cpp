@@ -1343,8 +1343,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
         auto rtype = args.asNumber(3);
-        
-        (*src).convertTo(*dst, rtype);
+        double scale = 1.0;
+        double offset = 0.0;
+        if (args.asNumber(4)) {
+          scale = args.asNumber(4);
+        }
+        if (args.asNumber(5)) {
+          offset = args.asNumber(5);
+        }
+    
+        (*src).convertTo(*dst, rtype, scale, offset);
       } break;
     }
   } catch (cv::Exception& e) {
