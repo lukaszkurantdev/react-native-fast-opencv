@@ -96,6 +96,7 @@
   "workspaces": [
     "example"
   ],
+  "private": true,
   "packageManager": "yarn@4.4.1",
   "jest": {
     "preset": "react-native",
