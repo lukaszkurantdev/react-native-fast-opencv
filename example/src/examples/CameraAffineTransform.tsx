@@ -9,7 +9,12 @@ import {
 } from '@shopify/react-native-skia';
 import { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { DataTypes, ObjectType, OpenCV } from 'react-native-fast-opencv';
+import {
+  ColorConversionCodes,
+  DataTypes,
+  ObjectType,
+  OpenCV,
+} from 'react-native-fast-opencv';
 import { useSharedValue } from 'react-native-reanimated';
 import {
   Camera,
@@ -22,10 +27,10 @@ import { useResizePlugin, type Options } from 'vision-camera-resize-plugin';
 
 type PixelFormat = Options<'uint8'>['pixelFormat'];
 
-const WIDTH = 300;
-const HEIGHT = 300;
-const TARGET_TYPE = 'uint8' as const;
-const TARGET_FORMAT: PixelFormat = 'rgba';
+const WIDTH = 50;
+const HEIGHT = 50;
+const TARGET_TYPE = 'float32' as const;
+const TARGET_FORMAT: PixelFormat = 'rgb';
 
 let lastWarn: PixelFormat | undefined;
 lastWarn = undefined;
@@ -114,6 +119,7 @@ export function CameraAffineTransform() {
     (frame) => {
       'worklet';
 
+      // Step 1. Resize the frame to the target size
       const resized = resize(frame, {
         scale: {
           width: WIDTH,
@@ -130,18 +136,26 @@ export function CameraAffineTransform() {
         rotation: '90deg',
       });
 
-      const frameMat = OpenCV.frameBufferToMat(HEIGHT, WIDTH, 4, resized);
-      const outputMat = OpenCV.createObject(
+      // Step 2. Create an OpenCV Mat from the resized frame
+      const frameMat = OpenCV.frameBufferToMat(
+        HEIGHT,
+        WIDTH,
+        3,
+        'float32',
+        resized
+      );
+
+      // Step 3. Apply affine transform to the frame
+      const transformedMat = OpenCV.createObject(
         ObjectType.Mat,
         HEIGHT,
         WIDTH,
-        DataTypes.CV_8UC4
+        DataTypes.CV_32FC3,
+        undefined
       );
-
       const scaleX = frame.height / frame.width;
       const scaledFrameWidth = WIDTH * scaleX;
       const translateX = (scaledFrameWidth - WIDTH) / 2;
-
       // 2x3 affine matrix has the following form (for scale and translation only):
       // | sx 0  tx |
       // | 0  sy ty |
@@ -149,7 +163,6 @@ export function CameraAffineTransform() {
         [scaleX, 0.0, -translateX],
         [0.0, 1.0, 0.0],
       ];
-
       const transformMat = OpenCV.createObject(
         ObjectType.Mat,
         2,
@@ -157,14 +170,43 @@ export function CameraAffineTransform() {
         DataTypes.CV_32F,
         matrix.flat()
       );
+      OpenCV.invoke('warpAffine', frameMat, transformedMat, transformMat);
 
-      OpenCV.invoke('warpAffine', frameMat, outputMat, transformMat);
+      // Step 4. Convert the transformed frame to RGBA
+      const uint8TransformedMat = OpenCV.createObject(
+        ObjectType.Mat,
+        HEIGHT,
+        WIDTH,
+        DataTypes.CV_8UC3,
+        undefined
+      );
+      OpenCV.invoke(
+        'convertTo',
+        transformedMat,
+        uint8TransformedMat,
+        DataTypes.CV_8UC3,
+        255.0,
+        0
+      );
+      const rgbaOutputMat = OpenCV.createObject(
+        ObjectType.Mat,
+        HEIGHT,
+        WIDTH,
+        DataTypes.CV_8UC4,
+        undefined
+      );
+      OpenCV.invoke(
+        'cvtColor',
+        uint8TransformedMat,
+        rgbaOutputMat,
+        ColorConversionCodes.COLOR_RGB2RGBA
+      );
 
-      const output = OpenCV.matToBuffer(outputMat, 'uint8');
-      const data = Skia.Data.fromBytes(output.buffer);
-
-      updatePreviewImageFromData(data, TARGET_FORMAT).then(() => {
-        data.dispose();
+      // Step 5. Convert the transformed frame to Skia Image
+      const output = OpenCV.matToBuffer(rgbaOutputMat, 'uint8');
+      const outputData = Skia.Data.fromBytes(output.buffer);
+      updatePreviewImageFromData(outputData, 'rgba').then(() => {
+        outputData.dispose();
       });
 
       OpenCV.clearBuffers(); // REMEMBER TO CLEAN
@@ -224,5 +266,7 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     borderColor: 'red',
     borderWidth: 2,
+    transformOrigin: 'bottom',
+    transform: [{ scale: 4 }],
   },
 });

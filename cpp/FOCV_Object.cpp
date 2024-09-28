@@ -29,7 +29,7 @@ constexpr uint64_t hashString(const char* str, size_t length) {
   return hash;
 }
 
-jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* arguments) {
+jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* arguments, size_t argCount) {
     std::string id = "";
     std::string objectType = arguments[0].asString(runtime).utf8(runtime);
 
@@ -38,29 +38,27 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             int rows = arguments[1].asNumber();
             int cols = arguments[2].asNumber();
             int type = arguments[3].asNumber();
-            
-            if(arguments[4].isObject()) {
-                auto rawArray = arguments[4].asObject(runtime);
-                auto array = rawArray.asArray(runtime);
-                
-                auto rawLength = rawArray.getProperty(runtime, "length");
-                auto length = rawLength.asNumber();
-                
-                std::vector<float> vec;
-                
-                for(auto i = 0; i < length; i++) {
-                    vec.push_back(array.getValueAtIndex(runtime, i).asNumber());
-                }
-
-                cv::Mat mat{vec, true};
-                mat = mat.reshape(1, rows);
-                mat.convertTo(mat, type);
-                
-                id = FOCV_Storage::save(mat);
-            } else {
-                cv::Mat object(rows, cols, type);
-                id = FOCV_Storage::save(object);
+          
+            cv::Mat mat(rows, cols, type);
+            memset(mat.data, 0, rows * cols * mat.elemSize1());
+          
+            if (argCount == 5 && arguments[4].isObject()) {
+              std::vector<float> vec;
+              auto rawArray = arguments[4].asObject(runtime);
+              auto array = rawArray.asArray(runtime);
+              
+              auto rawLength = rawArray.getProperty(runtime, "length");
+              auto length = rawLength.asNumber();
+              
+              for(auto i = 0; i < length; i++) {
+                vec.push_back(array.getValueAtIndex(runtime, i).asNumber());
+              }
+              memcpy(mat.data, vec.data(), vec.size() * mat.elemSize1());
+              mat = mat.reshape(1, rows);
+              mat.convertTo(mat, type);
             }
+            
+            id = FOCV_Storage::save(mat);
         } break;
         case hashString("mat_vector", 10): {
             std::vector<cv::Mat> object;
