@@ -43,6 +43,7 @@ public:
     std::shared_ptr<std::vector<cv::Mat>> asMatVectorPtr(int index);
     std::shared_ptr<cv::Point> asPointPtr(int index);
     std::shared_ptr<std::vector<cv::Point>> asPointVectorPtr(int index);
+    std::shared_ptr<std::vector<cv::Point2f>> asPoint2fVectorPtr(int index);
     std::shared_ptr<std::vector<std::vector<cv::Point>>> asPointVectorOfVectorsPtr(int index);
     std::shared_ptr<cv::Rect> asRectPtr(int index);
     std::shared_ptr<std::vector<cv::Rect>> asRectVectorPtr(int index);

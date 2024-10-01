@@ -43,6 +43,10 @@ std::shared_ptr<std::vector<cv::Point>> FOCV_FunctionArguments::asPointVectorPtr
     return FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
 }
 
+std::shared_ptr<std::vector<cv::Point2f>> FOCV_FunctionArguments::asPoint2fVectorPtr(int index) {
+    return FOCV_Storage::get<std::vector<cv::Point2f>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+}
+
 std::shared_ptr<std::vector<std::vector<cv::Point>>> FOCV_FunctionArguments::asPointVectorOfVectorsPtr(int index) {
     return FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
 }

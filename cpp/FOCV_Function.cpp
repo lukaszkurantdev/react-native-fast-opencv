@@ -1080,6 +1080,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
+      case hashString("getPerspectiveTransform", 23): {
+        auto src = args.asPoint2fVectorPtr(1);
+        auto dest = args.asPoint2fVectorPtr(2);
+        auto solveMethod = args.asNumber(3);
+
+        cv::Mat result = cv::getPerspectiveTransform(*src, *dest, solveMethod);
+        std::string id = FOCV_Storage::save(result);
+
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+      } break;
       case hashString("getStructuringElement", 21): {
         auto shape = args.asNumber(1);
         auto ksize = args.asSizePtr(2);
@@ -1338,6 +1348,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto rtype = args.asNumber(3);
         
         (*src).convertTo(*dst, rtype);
+      } break;
+      case hashString("warpPerspective", 15): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto M = args.asMatPtr(3);
+        auto size = args.asSizePtr(4);
+        auto flags = args.asNumber(5);
+        auto borderMode = args.asNumber(6);
+        auto borderValue = args.asScalarPtr(7);
+
+        cv::warpPerspective(*src, *dst, *M, *size, flags, borderMode, *borderValue);
       } break;
     }
   } catch (cv::Exception& e) {

@@ -10,6 +10,7 @@ import type { ColorConversion } from './functions/ColorConversion';
 import type { Core } from './functions/Core';
 import type { UtilsFunctions } from './utils/UtilsFunctions';
 import type { Objects } from './objects/Objects';
+import type { ImageTransform } from './functions/ImageProcessing/ImageTransform';
 
 const LINKING_ERROR =
   `The package 'react-native-fast-opencv' doesn't seem to be linked. Make sure: \n\n` +
@@ -53,6 +54,7 @@ export type OpenCVModel = ColorMap &
   Drawing &
   Feature &
   ImageFiltering &
+  ImageTransform &
   Misc &
   ObjectDetection &
   Shape &
@@ -66,4 +68,5 @@ export type * from './objects/Objects';
 export * from './constants/ColorConversionsCodes';
 export * from './constants/DataTypes';
 export * from './constants/ImageProcessing';
+export * from './constants/ImageTransform';
 export * from './constants/Core';

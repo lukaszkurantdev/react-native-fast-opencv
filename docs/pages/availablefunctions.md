@@ -1793,6 +1793,22 @@ invoke(
 ): Mat;
 ```
 
+### getPerspectiveTransform
+Calculates a perspective transform from four pairs of the corresponding points.
+- name Function name.
+- src Coordinates of quadrangle vertices in the source image.
+- dst Coordinates of the corresponding quadrangle vertices in the destination image.
+- solveMethod method passed to cv::solve (DecompTypes)
+
+```js
+invoke(
+  name: 'getPerspectiveTransform',
+  src: PointVector,
+  dst: PointVector,
+  solveMethod: DecompTypes
+): Mat;
+```
+
 ### getStructuringElement
 
 Returns a structuring element of the specified size and shape for morphological operations.
@@ -2198,4 +2214,29 @@ Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
 
 ```js
 invoke(name: 'minAreaRect', points: Mat): RotatedRect;
+```
+
+
+### warpPerspective
+Applies a perspective transformation to an image.
+- name Function name.
+- src input image.
+- dst output image that has the size dsize and the same type as src .
+- M 3x3 transformation matrix
+- size size of the output image
+- flags combination of interpolation methods (INTER_LINEAR or INTER_NEAREST) and the optional flag WARP_INVERSE_MAP, that sets M as the inverse transformation
+- borderMode pixel extrapolation method (BORDER_CONSTANT or BORDER_REPLICATE).
+- borderValue value used in case of a constant border; by default, it equals 0.
+
+```js
+invoke(
+  name: 'warpPerspective',
+  src: Mat,
+  dst: Mat,
+  M: Mat,
+  size: Size,
+  flags: InterpolationFlags,
+  borderMode: BorderTypes.BORDER_CONSTANT | BorderTypes.BORDER_REPLICATE,
+  borderValue: Scalar
+): void;
 ```
