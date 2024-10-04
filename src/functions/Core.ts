@@ -899,6 +899,15 @@ export type Core = {
   invoke(name: 'transform', src: Mat, dst: Mat, m: Mat): void;
 
   /**
+   * Performs the affine transformation of an image
+   * @param name Function name.
+   * @param src input array that must have as many channels (1 to 4) as m.cols or m.cols-1.
+   * @param dst output array of the same size and depth as src; it has as many channels as m.rows
+   * @param m 2x3 floating-point matrix
+   */
+  invoke(name: 'warpAffine', src: Mat, dst: Mat, m: Mat): void;
+
+  /**
    * Transposes a matrix
    * @param name Function name.
    * @param src input array.
@@ -920,6 +929,15 @@ export type Core = {
    * @param src input array.
    * @param dst output array of the same type as src
    * @param rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+   * @param scale optional scale factor
+   * @param offset optional delta added to the scaled values
    */
-  invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
+  invoke(
+    name: 'convertTo',
+    src: Mat,
+    dst: Mat,
+    rtype: DataTypes,
+    scale?: number,
+    offset?: number
+  ): void;
 };

@@ -750,6 +750,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::transform(*src, *dst, *m);
       } break;
+      case hashString("warpAffine", 10): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto m = args.asMatPtr(3);
+        
+        cv::warpAffine(*src, *dst, *m, dst->size());
+      } break;
       case hashString("transpose", 9): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
@@ -1353,8 +1360,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
         auto rtype = args.asNumber(3);
-        
-        (*src).convertTo(*dst, rtype);
+        double scale = 1.0;
+        double offset = 0.0;
+        if (args.asNumber(4)) {
+          scale = args.asNumber(4);
+        }
+        if (args.asNumber(5)) {
+          offset = args.asNumber(5);
+        }
+    
+        (*src).convertTo(*dst, rtype, scale, offset);
       } break;
       case hashString("warpPerspective", 15): {
         auto src = args.asMatPtr(1);

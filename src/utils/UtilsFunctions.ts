@@ -12,11 +12,12 @@ export type UtilsFunctions = {
    * @param channels - the number of channels in the Mat
    * @param input - the byte array to convert
    */
-  frameBufferToMat(
+  frameBufferToMat<T extends 'uint8' | 'float32'>(
     rows: number,
     cols: number,
     channels: number,
-    input: Uint8Array
+    type: T,
+    input: T extends 'uint8' ? Uint8Array : Float32Array
   ): Mat;
   /**
    * Converts a base64 string to a Mat.

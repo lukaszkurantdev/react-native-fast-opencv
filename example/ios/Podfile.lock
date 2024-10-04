@@ -936,7 +936,7 @@ PODS:
   - React-Mapbuffer (0.74.4):
     - glog
     - React-debug
-  - react-native-fast-opencv (0.2.4):
+  - react-native-fast-opencv (0.2.6):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1594,7 +1594,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 4e9c99e73a6269b27b0d4cbab277dd90df3e5ac0
   React-logger: fbfb50e2a2b1b46ee087f0a52739fadecc5e81a4
   React-Mapbuffer: d39610dff659d8cf1fea485abae08bbf6f9c8279
-  react-native-fast-opencv: 52cb988f5dee40a599381c4617b8560977ed983c
+  react-native-fast-opencv: 0c318e132001e3d5be0001db561e41cb331b0984
   react-native-image-picker: c3afe5472ef870d98a4b28415fc0b928161ee5f7
   react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
   react-native-skia: 8da84ea9410504bf27f0db229539a43f6caabb6a
@@ -1627,7 +1627,7 @@ SPEC CHECKSUMS:
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   vision-camera-resize-plugin: 4306d5df9bce0e603bbe6ab04337f21a606f4ad1
   VisionCamera: 057aff621f7801b7d99a00d157fa39244bbd4fd2
-  Yoga: 6259f968a4fdf516d76a4432dead624d71aa0fb1
+  Yoga: 0efb3e1bd40ba59b009f01badea863281101de78
 
 PODFILE CHECKSUM: ded8a41f26047703e900afe99b8a72ca375b02ca
 

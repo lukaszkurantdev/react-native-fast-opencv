@@ -29,6 +29,12 @@ const items: ItemDetails[] = [
     description: 'Detect objects in realtime',
     route: Route.CameraRealtimeDetection,
   },
+  {
+    title: 'Camera Affine Transform',
+    emoji: '📷',
+    description: 'Apply affine transform to camera feed',
+    route: Route.CameraAffineTransform,
+  },
 ];
 
 export const Home = () => {

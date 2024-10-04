@@ -47,36 +47,51 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
         double rows = arguments[0].asNumber();
         double cols = arguments[1].asNumber();
         int channels = arguments[2].asNumber();
-        jsi::Object input = arguments[3].asObject(runtime);
+        std::string dataType = arguments[3].asString(runtime).utf8(runtime);
+        jsi::Object input = arguments[4].asObject(runtime);
 
         int type = -1;
         if (channels == 1) {
-          type = CV_8U;
+          type = dataType == "float32" ? CV_32F : CV_8U;
         }
         if (channels == 3) {
-          type = CV_8UC3;
+          type = dataType == "float32" ? CV_32FC3 : CV_8UC3;
         }
         if (channels == 4) {
-          type = CV_8UC4;
+          type = dataType == "float32" ? CV_32FC4 : CV_8UC4;
         }
               
         if (channels == -1) {
           throw std::runtime_error("Fast OpenCV Error: Invalid channel count passed to frameBufferToMat!");
         }
+              
+        TypedArrayKind typedArrayType = dataType == "float32" ? TypedArrayKind::Float32Array : TypedArrayKind::Uint8Array;
+        
+        if (dataType == "float32") {
+          TypedArrayBase inputBuffer = getTypedArray(runtime, std::move(input));
+          auto vec = inputBuffer.toVector(runtime);
 
-        TypedArrayBase inputBuffer = getTypedArray(runtime, std::move(input));
-        auto vec = inputBuffer.toVector(runtime);
+          cv::Mat mat(rows, cols, type);
+          memcpy(mat.data, vec.data(), (int)rows * (int)cols * channels * 4);
+          auto id = FOCV_Storage::save(mat);
+          
+          return FOCV_JsiObject::wrap(runtime, "mat", id);
+        }
+        else {
+          TypedArrayBase inputBuffer = getTypedArray(runtime, std::move(input));
+          auto vec = inputBuffer.toVector(runtime);
 
-        cv::Mat mat(rows, cols, type);
-        memcpy(mat.data, vec.data(), (int)rows * (int)cols * channels);
-        auto id = FOCV_Storage::save(mat);
-
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+          cv::Mat mat(rows, cols, type);
+          memcpy(mat.data, vec.data(), (int)rows * (int)cols * channels);
+          auto id = FOCV_Storage::save(mat);
+          
+          return FOCV_JsiObject::wrap(runtime, "mat", id);
+        }
     });
   }
   else if (propName == "base64ToMat") {
       return jsi::Function::createFromHostFunction(
-          runtime, jsi::PropNameID::forAscii(runtime, "frameBufferToMat"), 1,
+          runtime, jsi::PropNameID::forAscii(runtime, "base64ToMat"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
 
@@ -123,8 +138,8 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           runtime, jsi::PropNameID::forAscii(runtime, "createObject"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
-
-          return FOCV_Object::create(runtime, arguments);
+                
+          return FOCV_Object::create(runtime, arguments, count);
       });
     }
   else if (propName == "toJSValue") {

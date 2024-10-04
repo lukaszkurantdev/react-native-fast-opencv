@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home } from './home/Home';
 import { CameraPassthrough } from './examples/CameraPassthrough';
+import { CameraAffineTransform } from './examples/CameraAffineTransform';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -25,6 +26,10 @@ export default function App() {
         <Stack.Screen
           name={Route.CameraRealtimeDetection}
           component={CameraRealtimeDetection}
+        />
+        <Stack.Screen
+          name={Route.CameraAffineTransform}
+          component={CameraAffineTransform}
         />
       </Stack.Navigator>
     </NavigationContainer>
