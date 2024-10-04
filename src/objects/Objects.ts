@@ -5,6 +5,8 @@ export type Mat = { id: string; type: ObjectType.Mat };
 export type MatVector = { id: string; type: ObjectType.MatVector };
 export type Point = { id: string; type: ObjectType.Point };
 export type PointVector = { id: string; type: ObjectType.PointVector };
+export type Point2f = { id: string; type: ObjectType.Point2f };
+export type Point2fVector = { id: string; type: ObjectType.Point2fVector };
 export type PointVectorOfVectors = {
   id: string;
   type: ObjectType.PointVectorOfVectors;
@@ -31,6 +33,8 @@ export type Objects = {
   createObject(type: ObjectType.MatVector): MatVector;
   createObject(type: ObjectType.Point, x: number, y: number): Point;
   createObject(type: ObjectType.PointVector): PointVector;
+  createObject(type: ObjectType.Point2f, x: number, y: number): Point2f;
+  createObject(type: ObjectType.Point2fVector, points: Point2f[]): PointVector;
   createObject(type: ObjectType.PointVectorOfVectors): PointVectorOfVectors;
   createObject(
     type: ObjectType.Rect,
@@ -104,6 +108,13 @@ export type Objects = {
     b?: number;
     c?: number;
     d?: number;
+  };
+  toJSValue(scalar: RotatedRect): {
+    centerX: number;
+    centerY: number;
+    width: number;
+    height: number;
+    angle: number;
   };
 
   copyObjectFromVector(vector: MatVector, itemIndex: number): Mat;

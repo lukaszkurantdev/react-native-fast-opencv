@@ -88,6 +88,31 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             std::vector<cv::Point> object;
             id = FOCV_Storage::save(object);
         } break;
+        case hashString("point2f", 7): {
+            int x = arguments[1].asNumber();
+            int y = arguments[2].asNumber();
+            cv::Point2f object(x, y);
+            id = FOCV_Storage::save(object);
+        } break;
+        case hashString("point2f_vector", 14): {
+            std::vector<cv::Point2f> vec;
+            if (arguments[1].isObject()) {
+                auto rawArray = arguments[1].asObject(runtime);
+                auto array = rawArray.asArray(runtime);
+                
+                auto rawLength = rawArray.getProperty(runtime, "length");
+                auto length = rawLength.asNumber();
+
+                for(auto i = 0; i < length; i++) {
+                    jsi::Value value = array.getValueAtIndex(runtime, i);
+                    std::string id = FOCV_JsiObject::id_from_wrap(runtime, value);
+                    auto point2fPtr = FOCV_Storage::get<cv::Point2f>(id);
+
+                    vec.push_back(*point2fPtr);
+                }
+            }
+            id = FOCV_Storage::save(vec);
+        } break;
         case hashString("point_vector_vector", 19): {
             std::vector<std::vector<cv::Point>> object;
             id = FOCV_Storage::save(object);
