@@ -637,6 +637,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::repeat(*src, ny, nx, *dst);
       } break;
+      case hashString("rotate", 6): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto code = args.asNumber(3);
+        
+        cv::rotate(*src, *dst, code);
+      } break;
       case hashString("scaleAdd", 8): {
         auto src1 = args.asMatPtr(1);
         auto alpha = args.asNumber(2);

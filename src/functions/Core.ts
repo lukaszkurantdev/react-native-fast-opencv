@@ -7,6 +7,7 @@ import type {
   GemmFlags,
   NormTypes,
   ReduceTypes,
+  RotateFlags,
   SortFlags,
 } from '../constants/Core';
 import type { DataTypes } from '../constants/DataTypes';
@@ -768,6 +769,15 @@ export type Core = {
    * @param dst output array of the same type as src.
    */
   invoke(name: 'repeat', src: Mat, ny: number, nx: number, dst: Mat): void;
+
+  /**
+   * Rotates matrix.
+   * @param name Function name.
+   * @param src input array to replicate
+   * @param dst output array of the same type as src
+   * @param code rotate flag
+   */
+  invoke(name: 'rotate', src: Mat, dst: Mat, code: RotateFlags): void;
 
   /**
    * Calculates the sum of a scaled array and another array

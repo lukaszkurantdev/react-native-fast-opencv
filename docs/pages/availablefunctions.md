@@ -936,6 +936,19 @@ Fills the output array with repeated copies of the input array
 invoke(name: 'repeat', src: Mat, ny: number, nx: number, dst: Mat): void;
 ```
 
+### rotate
+
+Rotates matrix.
+
+- src input array to replicate
+- dst output array of the same type as src.
+- code rotate flag
+
+
+```js
+invoke(name: 'repeat', src: Mat, dst: Mat, code: RotateFlags): void;
+```
+
 ### scaleAdd
 
 Calculates the sum of a scaled array and another array
