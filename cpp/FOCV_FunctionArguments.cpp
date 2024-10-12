@@ -76,15 +76,15 @@ bool FOCV_FunctionArguments::isNumber(int index) {
 }
 
 bool FOCV_FunctionArguments::isBool(int index) {
-    return this->arguments[index].isNumber();
+    return this->arguments[index].isBool();
 }
 
 bool FOCV_FunctionArguments::isString(int index) {
-    return this->arguments[index].isNumber();
+    return this->arguments[index].isString();
 }
 
 bool FOCV_FunctionArguments::isObject(int index) {
-    return this->arguments[index].isNumber();
+    return this->arguments[index].isObject();
 }
 
 bool FOCV_FunctionArguments::isMat(int index) {
