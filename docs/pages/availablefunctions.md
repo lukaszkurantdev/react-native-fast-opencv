@@ -1758,14 +1758,28 @@ Blurs an image using a Gaussian filter.
 
 ```js
 invoke(
-  name: 'GaussianBlur',
-  src: Mat,
-  dst: Mat,
-  ksize: Size,
-  sigmaX: number,
-  sigmaY: number,
-  borderType: BorderTypes
-): void;
+    name: 'GaussianBlur',
+    src: Mat,
+    dst: Mat,
+    ksize: Size,
+    sigmaX: number
+  ): void;
+  invoke(
+    name: 'GaussianBlur',
+    src: Mat,
+    dst: Mat,
+    ksize: Size,
+    sigmaX: number
+  ): void;
+  invoke(
+    name: 'GaussianBlur',
+    src: Mat,
+    dst: Mat,
+    ksize: Size,
+    sigmaX: number,
+    sigmaY: number,
+    borderType: BorderTypes
+  ): void;
 ```
 
 ### getGaborKernel
@@ -1831,11 +1845,12 @@ Returns a structuring element of the specified size and shape for morphological 
 - anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted..
 
 ```js
+invoke(name: 'getStructuringElement', shape: MorphShapes, ksize: Size): Mat;
 invoke(
-  name: 'getGaussianKernel',
-    shape: MorphShapes,
-    ksize: Size,
-    anchor: Point
+  name: 'getStructuringElement',
+  shape: MorphShapes,
+  ksize: Size,
+  anchor: Point
 ): Mat;
 ```
 
@@ -1898,6 +1913,27 @@ Any of the operations can be done in-place. In case of multi-channel images, eac
 - borderValue Border value in case of a constant border. The default value has a special meaning.
 
 ```js
+invoke( name: 'morphologyEx', src: Mat, dst: Mat, op: MorphTypes, kernel: Mat): void;
+invoke( name: 'morphologyEx', src: Mat, dst: Mat, op: MorphTypes, kernel: Mat, anchor: Point): void;
+invoke(
+  name: 'morphologyEx',
+  src: Mat,
+  dst: Mat,
+  op: MorphTypes,
+  kernel: Mat,
+  anchor: Point,
+  iterations: number
+): void;
+invoke(
+  name: 'morphologyEx',
+  src: Mat,
+  dst: Mat,
+  op: MorphTypes,
+  kernel: Mat,
+  anchor: Point,
+  iterations: number,
+  borderType: BorderTypes
+): void;
 invoke(
   name: 'morphologyEx',
   src: Mat,

@@ -94,3 +94,13 @@ bool FOCV_FunctionArguments::isMat(int index) {
 bool FOCV_FunctionArguments::isMatVector(int index) {
     return FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "mat_vector";
 }
+
+bool FOCV_FunctionArguments::isPoint(int index) {
+    return FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "point";
+}
+
+bool FOCV_FunctionArguments::isScalar(int index) {
+    return FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "scalar";
+}
+
+

@@ -1058,10 +1058,21 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(2);
         auto ksize = args.asSizePtr(3);
         auto sigmaX = args.asNumber(4);
-        auto sigmaY = args.asNumber(5);
-        auto borderType = args.asNumber(6);
         
-        cv::GaussianBlur(*src, *dst, *ksize, sigmaX, sigmaY, borderType);
+        if(args.isNumber(5)) {
+          auto sigmaY = args.asNumber(5);
+          
+          if(args.isNumber(6)) {
+            auto borderType = args.asNumber(6);
+            cv::GaussianBlur(*src, *dst, *ksize, sigmaX, sigmaY, borderType);
+            break;
+          }
+          
+          cv::GaussianBlur(*src, *dst, *ksize, sigmaX, sigmaY);
+          break;
+        }
+        
+        cv::GaussianBlur(*src, *dst, *ksize, sigmaX);
       } break;
       case hashString("getGaborKernel", 14): {
         auto ksize = args.asSizePtr(1);
@@ -1098,12 +1109,19 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
       case hashString("getStructuringElement", 21): {
+        std::string id;
+        
         auto shape = args.asNumber(1);
         auto ksize = args.asSizePtr(2);
-        auto anchor = args.asPointPtr(3);
 
-        cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
-        std::string id = FOCV_Storage::save(result);
+        if (args.isPoint(3)) {
+          auto anchor = args.asPointPtr(3);
+            cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
+            id = FOCV_Storage::save(result);
+        } else {
+            cv::Mat result = cv::getStructuringElement(shape, *ksize);
+            id = FOCV_Storage::save(result);
+        }
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
@@ -1136,12 +1154,35 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(2);
         auto op = args.asNumber(3);
         auto kernel = args.asMatPtr(4);
-        auto anchor = args.asPointPtr(5);
-        auto iterations = args.asNumber(6);
-        auto borderType = args.asNumber(7);
-        auto borderValue = args.asScalarPtr(8);
         
-        cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType, *borderValue);
+        if(args.isPoint(5)) {
+          auto anchor = args.asPointPtr(5);
+          
+          if(args.isNumber(6)) {
+            auto iterations = args.asNumber(6);
+            
+            if(args.isNumber(7)) {
+              auto borderType = args.asNumber(7);
+              
+              if(args.isScalar(8)) {
+                auto borderValue = args.asScalarPtr(8);
+                cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType, *borderValue);
+                break;
+              }
+              
+              cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType);
+              break;
+            }
+            
+            cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations);
+            break;
+          }
+          
+          cv::morphologyEx(*src, *dst, op, *kernel, *anchor);
+          break;
+        }
+        
+        cv::morphologyEx(*src, *dst, op, *kernel);
       } break;
       case hashString("adaptiveThreshold", 17): {
         auto src = args.asMatPtr(1);
