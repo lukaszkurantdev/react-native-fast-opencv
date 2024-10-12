@@ -1114,7 +1114,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto shape = args.asNumber(1);
         auto ksize = args.asSizePtr(2);
 
-        if (args.isPoint(3)) {
+        if (args.isObject(3) && args.isPoint(3)) {
           auto anchor = args.asPointPtr(3);
             cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
             id = FOCV_Storage::save(result);
@@ -1155,7 +1155,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto op = args.asNumber(3);
         auto kernel = args.asMatPtr(4);
         
-        if(args.isPoint(5)) {
+        if(args.isObject(5) && args.isPoint(5)) {
           auto anchor = args.asPointPtr(5);
           
           if(args.isNumber(6)) {
@@ -1164,7 +1164,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
             if(args.isNumber(7)) {
               auto borderType = args.asNumber(7);
               
-              if(args.isScalar(8)) {
+              if(args.isObject(8) && args.isScalar(8)) {
                 auto borderValue = args.asScalarPtr(8);
                 cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType, *borderValue);
                 break;
