@@ -57,6 +57,8 @@ public:
     bool isObject(int index);
     bool isMat(int index);
     bool isMatVector(int index);
+    bool isPoint(int index);
+    bool isScalar(int index);
 };
 
 #endif /* FOCV_FunctionArguments_hpp */

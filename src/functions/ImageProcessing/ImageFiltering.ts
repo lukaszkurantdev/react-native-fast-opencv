@@ -153,6 +153,20 @@ export type ImageFiltering = {
     src: Mat,
     dst: Mat,
     ksize: Size,
+    sigmaX: number
+  ): void;
+  invoke(
+    name: 'GaussianBlur',
+    src: Mat,
+    dst: Mat,
+    ksize: Size,
+    sigmaX: number
+  ): void;
+  invoke(
+    name: 'GaussianBlur',
+    src: Mat,
+    dst: Mat,
+    ksize: Size,
     sigmaX: number,
     sigmaY: number,
     borderType: BorderTypes
@@ -198,6 +212,7 @@ export type ImageFiltering = {
    * @param ksize Size of the structuring element.
    * @param anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted.
    */
+  invoke(name: 'getStructuringElement', shape: MorphShapes, ksize: Size): Mat;
   invoke(
     name: 'getStructuringElement',
     shape: MorphShapes,
@@ -256,6 +271,40 @@ export type ImageFiltering = {
    * @param borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    * @param borderValue Border value in case of a constant border. The default value has a special meaning.
    */
+  invoke(
+    name: 'morphologyEx',
+    src: Mat,
+    dst: Mat,
+    op: MorphTypes,
+    kernel: Mat
+  ): void;
+  invoke(
+    name: 'morphologyEx',
+    src: Mat,
+    dst: Mat,
+    op: MorphTypes,
+    kernel: Mat,
+    anchor: Point
+  ): void;
+  invoke(
+    name: 'morphologyEx',
+    src: Mat,
+    dst: Mat,
+    op: MorphTypes,
+    kernel: Mat,
+    anchor: Point,
+    iterations: number
+  ): void;
+  invoke(
+    name: 'morphologyEx',
+    src: Mat,
+    dst: Mat,
+    op: MorphTypes,
+    kernel: Mat,
+    anchor: Point,
+    iterations: number,
+    borderType: BorderTypes
+  ): void;
   invoke(
     name: 'morphologyEx',
     src: Mat,
