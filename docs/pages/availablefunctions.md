@@ -486,6 +486,33 @@ Flips a 2D array around vertical, horizontal, or both axes
 invoke(name: 'flip', src: Mat, dst: Mat, flipCode: number): void;
 ```
 
+### floodFill
+
+Fills a connected component with the given color. The function cv::floodFill fills a connected component starting from the seed point with the specified color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. Use these functions to either mark a connected component with the specified color in-place, or build a mask and then extract the contour, or copy the region to another image, and so on.
+
+- image Input/output 1- or 3-channel, 8-bit, or floating-point image. It is modified by the function unless the #FLOODFILL_MASK_ONLY flag is set in the second variant of the function. See the details below.
+- mask Operation mask that should be a single-channel 8-bit image, 2 pixels wider and 2 pixels taller than image. Since this is both an input and output parameter, you must take responsibility of initializing it. Flood-filling cannot go across non-zero pixels in the input mask. For example, an edge detector output can be used as a mask to stop filling at edges. On output, pixels in the mask corresponding to filled pixels in the image are set to 1 or to the a value specified in flags as described below. Additionally, the function fills the border of the mask with ones to simplify internal processing. It is therefore possible to use the same mask in multiple calls to the function to make sure the filled areas do not overlap.
+- seedPoint Starting point.
+- newVal New value of the repainted domain pixels.
+- rect Optional output parameter set by the function to the minimum bounding rectangle of the repainted domain.
+- loDiff Maximal lower brightness/color difference between the currently observed pixel and one of its neighbors belonging to the component, or a seed pixel being added to the component.
+- upDiff Maximal upper brightness/color difference between the currently observed pixel and one of its neighbors belonging to the component, or a seed pixel being added to the component.
+- flags Operation flags. The first 8 bits contain a connectivity value. The default value of 4 means that only the four nearest neighbor pixels (those that share an edge) are considered. A connectivity value of 8 means that the eight nearest neighbor pixels (those that share a corner) will be considered. The next 8 bits (8-16) contain a value between 1 and 255 with which to fill the mask (the default value is 1). For example, 4 | ( 255 \<\< 8 ) will consider 4 nearest neighbours and fill the mask with a value of 255. The following additional options occupy higher bits and therefore may be further combined with the connectivity and mask fill values using bit-wise or (|), see #FloodFillFlags.
+
+```js
+invoke(
+  name: 'floodFill',
+  image: Mat,
+  mask: Mat,
+  seedPoint: Point,
+  newVal: Scalar,
+  rect: Rect,
+  loDiff: Scalar,
+  upDiff: Scalar,
+  flags: FloodFillFlags | number
+): { value: number };
+```
+
 ### gemm
 
 Performs generalized matrix multiplication

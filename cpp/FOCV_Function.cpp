@@ -356,6 +356,19 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::flip(*src, *dst, flipCode);
       } break;
+      case hashString("floodFill", 9): {
+        auto src = args.asMatPtr(1);
+        auto mask = args.asMatPtr(2);
+        auto seedPoint = args.asPointPtr(3);
+        auto newVal = args.asScalarPtr(4);
+        auto rect = args.asRectPtr(5);
+        auto loDiff = args.asScalarPtr(6);
+        auto upDiff = args.asScalarPtr(7);
+        auto flags = args.asNumber(8);
+        
+        int area = floodFill(*src, *mask, *seedPoint, *newVal, &(*rect), *loDiff, *upDiff, flags);
+        value.setProperty(runtime, "value", area);
+      } break;
       case hashString("gemm", 4): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
