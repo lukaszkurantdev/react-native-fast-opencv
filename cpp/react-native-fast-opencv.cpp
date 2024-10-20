@@ -94,29 +94,53 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
 
-                  std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
-                  auto mat = *FOCV_Storage::get<cv::Mat>(id);
+                std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+                auto mat = *FOCV_Storage::get<cv::Mat>(id);
 
-                  jsi::Object value(runtime);
+                jsi::Object value(runtime);
 
-                  value.setProperty(runtime, "cols", jsi::Value(mat.cols));
-                  value.setProperty(runtime, "rows", jsi::Value(mat.rows));
-                  value.setProperty(runtime, "channels", jsi::Value(mat.channels()));
+                value.setProperty(runtime, "cols", jsi::Value(mat.cols));
+                value.setProperty(runtime, "rows", jsi::Value(mat.rows));
+                value.setProperty(runtime, "channels", jsi::Value(mat.channels()));
 
-                  auto type = arguments[1].asString(runtime).utf8(runtime);
-                  int size = mat.cols * mat.rows * mat.channels();
+                auto type = arguments[1].asString(runtime).utf8(runtime);
+                int size = mat.cols * mat.rows * mat.channels();
 
-                  if(type == "uint8") {
-                      auto arr = TypedArray<TypedArrayKind::Uint8Array>(runtime, size);
-                      arr.updateUnsafe(runtime, (uint8_t*)mat.data, size * sizeof(uint8_t));
-                      value.setProperty(runtime, "buffer", arr);
-                  } else if(type == "float32") {
-                      auto arr = TypedArray<TypedArrayKind::Float32Array>(runtime, size);
-                      arr.updateUnsafe(runtime, (float*)mat.data, size * sizeof(float));
-                      value.setProperty(runtime, "buffer", arr);
-                  }
+                if(type == "uint8") {
+                  auto arr = TypedArray<TypedArrayKind::Uint8Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (uint8_t*)mat.data, size * sizeof(uint8_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "uint16") {
+                  auto arr = TypedArray<TypedArrayKind::Uint16Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (uint16_t*)mat.data, size * sizeof(uint16_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "uint32") {
+                  auto arr = TypedArray<TypedArrayKind::Uint32Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (uint32_t*)mat.data, size * sizeof(uint32_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "int8") {
+                  auto arr = TypedArray<TypedArrayKind::Int8Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (int8_t*)mat.data, size * sizeof(int8_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "int16") {
+                  auto arr = TypedArray<TypedArrayKind::Int16Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (int16_t*)mat.data, size * sizeof(int16_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "int32") {
+                  auto arr = TypedArray<TypedArrayKind::Int32Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (int32_t*)mat.data, size * sizeof(int32_t));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "float32") {
+                  auto arr = TypedArray<TypedArrayKind::Float32Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (float*)mat.data, size * sizeof(float));
+                  value.setProperty(runtime, "buffer", arr);
+                } else if(type == "float64") {
+                  auto arr = TypedArray<TypedArrayKind::Float64Array>(runtime, size);
+                  arr.updateUnsafe(runtime, (double*)mat.data, size * sizeof(double));
+                  value.setProperty(runtime, "buffer", arr);
+                }
 
-                  return value;
+                return value;
       });
     } else if (propName == "createObject") {
       return jsi::Function::createFromHostFunction(

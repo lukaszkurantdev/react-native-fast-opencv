@@ -1,5 +1,16 @@
 import type { Mat } from '../objects/Objects';
 
+type BufferType = {
+  uint8: Uint8Array;
+  uint16: Uint16Array;
+  uint32: Uint32Array;
+  int8: Int8Array;
+  int16: Int16Array;
+  int32: Int32Array;
+  float32: Float32Array;
+  float64: Float64Array;
+};
+
 export type UtilsFunctions = {
   /**
    * Clears any buffers that were allocate to back Mats on the native side.
@@ -28,13 +39,13 @@ export type UtilsFunctions = {
    * @param mat - the Mat to convert
    * @param type - the type of the buffer to return ('uint8' or 'float32')
    */
-  matToBuffer<T extends 'uint8' | 'float32'>(
+  matToBuffer<T extends keyof BufferType>(
     mat: Mat,
     type: T
   ): {
     cols: number;
     rows: number;
     channels: number;
-    buffer: T extends 'uint8' ? Uint8Array : Float32Array;
+    buffer: BufferType[T];
   };
 };
