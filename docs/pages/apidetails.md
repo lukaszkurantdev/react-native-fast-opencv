@@ -140,16 +140,26 @@ base64ToMat(data: string): Mat;
 ### Mat to Buffer
 Convert Mat object to Uint8Array or Float32Array based on value of parameter and returns with number of cols, rows and channels.
 
-```js
-matToBuffer(
+```ts
+matToBuffer<T extends keyof BufferType>(
   mat: Mat,
-  type: 'uint8'
-): { cols: number; rows: number; channels: number; buffer: Uint8Array };
+  type: T
+): { cols: number; rows: number; channels: number; buffer: BufferType[T] };
+```
 
-matToBuffer(
-  mat: Mat,
-  type: 'float32'
-): { cols: number; rows: number; channels: number; buffer: Float32Array };
+where `BufferType` is:
+
+```ts
+type BufferType = {
+  uint8: Uint8Array;
+  uint16: Uint16Array;
+  uint32: Uint32Array;
+  int8: Int8Array;
+  int16: Int16Array;
+  int32: Int32Array;
+  float32: Float32Array;
+  float64: Float64Array;
+};
 ```
 
 ## Functions
