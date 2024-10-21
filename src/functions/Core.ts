@@ -16,6 +16,7 @@ import type {
   MatVector,
   Point,
   PointVector,
+  Rect,
   Scalar,
 } from '../objects/Objects';
 
@@ -296,6 +297,15 @@ export type Core = {
    * @returns the number of non-zero elements in src
    */
   invoke(name: 'countNonZero', src: MatVector | Mat): { value: number };
+
+  /**
+   * This functions allows to crop Mat to selected size using Rect.
+   * @param name Function name.
+   * @param src Source matrix
+   * @param dst Destination matrix. If it does not have a proper size or type before the operation, it is reallocated
+   * @param roi Rectangle as ROI
+   */
+  invoke(name: 'crop', src: Mat, dst: Mat, roi: Rect): void;
 
   /**
    * Performs a forward or inverse discrete Cosine transform of 1D or 2D array.

@@ -347,6 +347,18 @@ Counts non-zero array elements.
 invoke(name: 'countNonZero', src: MatVector | Mat): { value: number };
 ```
 
+### crop
+
+This functions allows to crop Mat to selected size using Rect.
+
+- src Source matrix
+- dst Destination matrix
+- roi Rectangle as ROI
+
+```js
+invoke(name: 'crop', src: Mat, dst: Mat, roi: Rect): void;
+```
+
 ### dct
 
 Performs a forward or inverse discrete Cosine transform of 1D or 2D array.
