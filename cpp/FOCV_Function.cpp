@@ -276,6 +276,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           value.setProperty(runtime, "value", result);
         }
       } break;
+      case hashString("crop", 4): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto rect = args.asRectPtr(3);
+        
+        (*src)(*rect).copyTo(*dst);
+      } break;
       case hashString("dct", 3): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
