@@ -1,7 +1,7 @@
 PODS:
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
-  - FastOpenCV-iOS (1.0.1)
+  - FastOpenCV-iOS (1.0.4)
   - FBLazyVector (0.74.4)
   - fmt (9.1.0)
   - glog (0.3.5)
@@ -938,7 +938,7 @@ PODS:
     - React-debug
   - react-native-fast-opencv (0.2.13):
     - DoubleConversion
-    - FastOpenCV-iOS (= 1.0.1)
+    - FastOpenCV-iOS (= 1.0.4)
     - glog
     - hermes-engine
     - RCT-Folly (= 2024.01.01.00)
@@ -1565,7 +1565,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
-  FastOpenCV-iOS: e111f83571f1f320bb7efb6f2443894dac472338
+  FastOpenCV-iOS: 2057f306db3ad068577e6fca38411f1b1920d71e
   FBLazyVector: 4c674c2d53de79c145d6a723910543d7b57ed74c
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
@@ -1594,7 +1594,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 4e9c99e73a6269b27b0d4cbab277dd90df3e5ac0
   React-logger: fbfb50e2a2b1b46ee087f0a52739fadecc5e81a4
   React-Mapbuffer: d39610dff659d8cf1fea485abae08bbf6f9c8279
-  react-native-fast-opencv: 4d99778805f515fb1f201256aee1a801a50aa0e5
+  react-native-fast-opencv: 42e907a906c94bd081a62de430ce3938865af7e9
   react-native-image-picker: c3afe5472ef870d98a4b28415fc0b928161ee5f7
   react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
   react-native-skia: 8da84ea9410504bf27f0db229539a43f6caabb6a
