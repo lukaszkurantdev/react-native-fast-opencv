@@ -1,13 +1,13 @@
 PODS:
   - boost (1.83.0)
   - DoubleConversion (1.1.6)
+  - FastOpenCV-iOS (1.0.4)
   - FBLazyVector (0.74.4)
   - fmt (9.1.0)
   - glog (0.3.5)
   - hermes-engine (0.74.4):
     - hermes-engine/Pre-built (= 0.74.4)
   - hermes-engine/Pre-built (0.74.4)
-  - OpenCV (4.3.0)
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -936,11 +936,11 @@ PODS:
   - React-Mapbuffer (0.74.4):
     - glog
     - React-debug
-  - react-native-fast-opencv (0.2.9):
+  - react-native-fast-opencv (0.2.13):
     - DoubleConversion
+    - FastOpenCV-iOS (= 1.0.4)
     - glog
     - hermes-engine
-    - OpenCV (~> 4.3.0)
     - RCT-Folly (= 2024.01.01.00)
     - RCTRequired
     - RCTTypeSafety
@@ -1430,7 +1430,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - OpenCV
+    - FastOpenCV-iOS
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1565,11 +1565,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
+  FastOpenCV-iOS: 2057f306db3ad068577e6fca38411f1b1920d71e
   FBLazyVector: 4c674c2d53de79c145d6a723910543d7b57ed74c
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
   hermes-engine: 6312f669c895e05f0f6029554061593711770ea6
-  OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
   RCTDeprecation: d83da85890d5bb18efd2809a733865c1c5c11487
   RCTRequired: e109419eacfb10fbb79a3ecb57ebcad198593d8a
@@ -1594,7 +1594,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 4e9c99e73a6269b27b0d4cbab277dd90df3e5ac0
   React-logger: fbfb50e2a2b1b46ee087f0a52739fadecc5e81a4
   React-Mapbuffer: d39610dff659d8cf1fea485abae08bbf6f9c8279
-  react-native-fast-opencv: dd72ca1a7a247326ffd83daa46a9c17487c3948b
+  react-native-fast-opencv: 42e907a906c94bd081a62de430ce3938865af7e9
   react-native-image-picker: c3afe5472ef870d98a4b28415fc0b928161ee5f7
   react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
   react-native-skia: 8da84ea9410504bf27f0db229539a43f6caabb6a
