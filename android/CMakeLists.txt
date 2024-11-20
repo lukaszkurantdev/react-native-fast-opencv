@@ -42,14 +42,25 @@ include_directories(
           "${NODE_MODULES_DIR}/react-native/ReactAndroid/src/main/jni/react/turbomodule"
 )
 
-target_link_libraries(
-        react-native-fast-opencv
-        log
-        android
-        ReactAndroid::folly_runtime
-        ReactAndroid::glog
-        ReactAndroid::jsi
-        ReactAndroid::reactnativejni
-        fbjni::fbjni
-        OpenCV::opencv_java4
-)
+if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
+  target_link_libraries(
+    react-native-fast-opencv
+    log
+    android
+    ReactAndroid::reactnative
+    fbjni::fbjni
+    OpenCV::opencv_java4
+  )
+else()
+  target_link_libraries(
+    react-native-fast-opencv
+    log
+    android
+    ReactAndroid::folly_runtime
+    ReactAndroid::glog
+    ReactAndroid::jsi
+    ReactAndroid::reactnativejni
+    fbjni::fbjni
+    OpenCV::opencv_java4
+  )
+endif()

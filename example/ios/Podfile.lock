@@ -936,7 +936,7 @@ PODS:
   - React-Mapbuffer (0.74.4):
     - glog
     - React-debug
-  - react-native-fast-opencv (0.2.13):
+  - react-native-fast-opencv (0.3.1):
     - DoubleConversion
     - FastOpenCV-iOS (= 1.0.4)
     - glog
@@ -1594,7 +1594,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 4e9c99e73a6269b27b0d4cbab277dd90df3e5ac0
   React-logger: fbfb50e2a2b1b46ee087f0a52739fadecc5e81a4
   React-Mapbuffer: d39610dff659d8cf1fea485abae08bbf6f9c8279
-  react-native-fast-opencv: 42e907a906c94bd081a62de430ce3938865af7e9
+  react-native-fast-opencv: 7b63cf65c463b153286f5556ef51b0cad47fb128
   react-native-image-picker: c3afe5472ef870d98a4b28415fc0b928161ee5f7
   react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
   react-native-skia: 8da84ea9410504bf27f0db229539a43f6caabb6a
