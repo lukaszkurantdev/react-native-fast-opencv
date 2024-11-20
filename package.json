@@ -1,6 +1,6 @@
 {
   "name": "react-native-fast-opencv",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "OpenCV port to React Native",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
