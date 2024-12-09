@@ -22,7 +22,7 @@ using namespace cv;
 class ImageConverter {
 public:
     static cv::Mat str2mat(const string& imageBase64);
-    static string mat2str(const Mat& img);
+    static string mat2str(const Mat& img, std::string &format);
 
 private:
     static std::string base64_encode(uchar const* bytesToEncode, unsigned int inLen);

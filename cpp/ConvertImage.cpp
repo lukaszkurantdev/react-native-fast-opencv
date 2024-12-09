@@ -139,10 +139,10 @@ std::string ImageConverter::base64_decode(std::string const& encoded_string)
     return ret;
 }
 
-string ImageConverter::mat2str(const Mat& m)
+string ImageConverter::mat2str(const Mat& m, std::string &format)
 {
     vector<uchar> buf;
-    cv::imencode(".jpeg", m, buf);
+    cv::imencode("." + format, m, buf);
     auto result = reinterpret_cast<const unsigned char*>(buf.data());
   
     return base64_encode(result, buf.size());
