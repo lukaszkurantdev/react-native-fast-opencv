@@ -60,7 +60,10 @@ export type Objects = {
     d: number
   ): Scalar;
 
-  toJSValue(mat: Mat): {
+  toJSValue(
+    mat: Mat,
+    outImageFormat?: 'jpeg' | 'png'
+  ): {
     size: number;
     cols: number;
     rows: number;

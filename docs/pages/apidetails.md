@@ -63,7 +63,10 @@ copyObjectFromVector(vector: RectVector, itemIndex: number): Rect;
 Converts an object to a JS-readable object.
 
 ```js
-toJSValue(mat: Mat): {
+toJSValue(
+    mat: Mat,
+    outImageFormat?: 'jpeg' | 'png'
+): {
   size: number;
   cols: number;
   rows: number;
