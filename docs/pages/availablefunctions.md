@@ -3,7 +3,9 @@
 ## Core
 
 ### absdiff
+
 Calculates the per-element absolute difference between two arrays or between an array and a scalar.
+
 - src1 first input array.
 - src2 second input array.
 - dst output array that has the same size and type as input arrays.
@@ -32,8 +34,6 @@ invoke(
   dtype: DataTypes
 ): void;
 ```
-
-
 
 ### addWeighted
 
@@ -132,6 +132,7 @@ invoke(name: 'bitwise_xor', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
 ### borderInterpolate
 
 Computes the source location of an extrapolated pixel.
+
 - p 0-based coordinate of the extrapolated pixel along one of the axes, likely <0 or >= len
 - len Length of the array along the corresponding axis.
 - borderType Border type, one of the BorderTypes, except for BORDER_TRANSPARENT and BORDER_ISOLATED . When borderType==BORDER_CONSTANT , the function always returns -1, regardless of p and len
@@ -240,6 +241,7 @@ invoke(
 ### completeSymm
 
 Copies the lower or the upper half of a square matrix to its another half.
+
 - m input-output floating-point square matrix
 - lowerToUpper operation flag; if true, the lower half is copied to the upper half. Otherwise, the upper half is copied to the lower half.
 
@@ -289,12 +291,14 @@ invoke(
 
 Converts an array to another data type with optional scaling.
 
-- src input array
-- dst output array of the same type as src
-- rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+- src input matrix.
+- dst output matrix; if it does not have a proper size or type before the operation, it is reallocated.
+- rtype desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+- alpha optional scale factor.
+- beta optional delta added to the scaled values.
 
 ```js
-invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
+invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes, alpha?: number, beta?: number): void;
 ```
 
 ### copyMakeBorder
@@ -764,7 +768,6 @@ invoke(
 ): { minVal: number; maxVal: number };
 ```
 
-
 ### mulSpectrums
 
 Performs the per-element multiplication of two Fourier spectrums
@@ -938,7 +941,7 @@ Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric
 @returns the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB)
 
 ```js
-invoke(name: 'PSNR', src1: Mat, src2: Mat, R: number): number;
+invoke(name: 'PSNR', src1: Mat, src2: Mat, R: number): { psnr: number };
 ```
 
 ### reduce
@@ -982,7 +985,6 @@ Rotates matrix.
 - src input array to replicate
 - dst output array of the same type as src.
 - code rotate flag
-
 
 ```js
 invoke(name: 'repeat', src: Mat, dst: Mat, code: RotateFlags): void;
@@ -1040,7 +1042,7 @@ Finds the real or complex roots of a polynomial equation
 - maxIters maximum number of iterations the algorithm does
 
 ```js
-invoke(name: 'solvePoly', src: Mat, dst: Mat, maxIters: number): number;
+invoke(name: 'solvePoly', src: Mat, dst: Mat, maxIters: number): { value: number };
 ```
 
 ### sort
@@ -1164,11 +1166,10 @@ Applies vertical concatenation to given matrices
 invoke(name: 'vconcat', src: MatVector, dst: Mat): void;
 ```
 
-
-
 ## ColorConversion
 
 ### cvtColor
+
 Converts an image from one color space to another.
 
 - src input image: 8-bit unsigned, 16-bit unsigned ( CV_16UC... ), or single-precision floating-point.
@@ -1267,9 +1268,10 @@ invoke(
 
 ## Imgproc – Drawing
 
-
 ### arrowedLine
+
 Draws a arrow segment pointing from the first point to the second one.
+
 - img Image
 - pt1 The point the arrow starts from.
 - pt2 The point the arrow points to.
@@ -1290,7 +1292,9 @@ invoke(
 ```
 
 ### circle
+
 Draws a circle.
+
 - img Image where the circle is drawn.
 - center Center of the circle.
 - radius Radius of the circle.
@@ -1310,7 +1314,9 @@ invoke(
 ```
 
 ### clipLine
+
 Clips the line against the image rectangle. The function cv::clipLine calculates a part of the line segment that is entirely within the specified rectangle. it returns false if the line segment is completely outside the rectangle. Otherwise, it returns true .
+
 - imgSize Image size
 - pt1 First line point.
 - pt2 Second line point.
@@ -1325,7 +1331,9 @@ invoke(
 ```
 
 ### drawContours
+
 Draws contours outlines or filled contours. The function draws contour outlines in the image if 𝚝𝚑𝚒𝚌𝚔𝚗𝚎𝚜𝚜≥0 or fills the area bounded by the contours if 𝚝𝚑𝚒𝚌𝚔𝚗𝚎𝚜𝚜<0.
+
 - image Destination image.
 - contours All the input contours. Each contour is stored as a point vector
 - contourIdx Parameter indicating a contour to draw. If it is negative, all the contours are drawn.
@@ -1346,7 +1354,9 @@ invoke(
 ```
 
 ### drawMarker
+
 Draws a marker on a predefined position in an image.
+
 - img Image
 - position The point where the crosshair is positioned
 - color Line color
@@ -1369,7 +1379,9 @@ invoke(
 ```
 
 ### ellipse
+
 Draws a simple or thick elliptic arc or fills an ellipse sector.
+
 - img Image
 - center Center of the ellipse
 - axes Half of the size of the ellipse main axes
@@ -1396,7 +1408,9 @@ invoke(
 ```
 
 ### fillConvexPoly
+
 Fills a convex polygon.
+
 - img Image
 - pts Polygon vertices.
 - color Polygon color
@@ -1413,7 +1427,9 @@ invoke(
 ```
 
 ### fillPoly
+
 Fills the area bounded by one or more polygons
+
 - img Image
 - pts Array of polygons where each polygon is represented as an array of points
 - color Polygon colo
@@ -1430,7 +1446,9 @@ invoke(
 ```
 
 ### line
+
 Draws a line segment connecting two points.
+
 - img Image
 - pt1 First point of the line segment
 - pt2 Second point of the line segment
@@ -1451,7 +1469,9 @@ invoke(
 ```
 
 ### polylines
+
 Draws several polygonal curves
+
 - img Image
 - pts Array of polygonal curves.
 - isClosed Flag indicating whether the drawn polylines are closed or not. If they are closed, the function draws a line from the last vertex of each curve to its first vertex
@@ -1472,7 +1492,9 @@ invoke(
 ```
 
 ### rectangle
+
 Draws a simple, thick, or filled up-right rectangle.
+
 - img Image
 - pt1 Vertex of the rectangle
 - pt2 Vertex of the rectangle opposite to pt1
@@ -1494,9 +1516,10 @@ invoke(
 
 ## Imgproc – Feature
 
-
 ### Canny
+
 Finds edges in an image using the Canny algorithm
+
 - name Function name.
 - image 8-bit input image.
 - edges output edge map; single channels 8-bit image, which has the same size as image
@@ -1515,7 +1538,9 @@ invoke(
 ```
 
 ### cornerHarris
+
 Harris corner detector
+
 - name Function name.
 - src Input single-channel 8-bit or floating-point image.
 - dst Image to store the Harris detector responses. It has the type CV_32FC1 and the same size as src
@@ -1535,7 +1560,9 @@ invoke(
 ```
 
 ### cornerMinEigenVal
+
 Calculates the minimal eigenvalue of gradient matrices for corner detection
+
 - name Function name.
 - src Input single-channel 8-bit or floating-point image
 - dst Image to store the minimal eigenvalues. It has the type CV_32FC1 and the same size as src
@@ -1551,7 +1578,9 @@ invoke(
 ```
 
 ### goodFeaturesToTrack
+
 Determines strong corners on an image
+
 - name Function name.
 - image Input 8-bit or floating-point 32-bit, single-channel image
 - corners Output vector of detected corners
@@ -1571,7 +1600,9 @@ invoke(
 ```
 
 ### HoughCircles
+
 Finds circles in a grayscale image using the Hough transform
+
 - name Function name.
 - image 8-bit, single-channel, grayscale input image.
 - circles Output vector of found circles. Each vector is encoded as 3 or 4 element floating-point vector (x,y,radius) or (x,y,radius,votes)
@@ -1595,7 +1626,9 @@ invoke(
 ```
 
 ### HoughLines
+
 Finds lines in a binary image using the standard Hough transform
+
 - name Function name.
 - image 8-bit, single-channel binary source image. The image may be modified by the function.
 - lines Output vector of lines. Each line is represented by a 2 or 3 element vector (ρ,θ) or (ρ,θ,votes) . ρ is the distance from the coordinate origin (0,0) (top-left corner of the image). θ is the line rotation angle in radians ( 0∼vertical line,π/2∼horizontal line ). votes is the value of accumulator
@@ -1615,7 +1648,9 @@ invoke(
 ```
 
 ### HoughLinesP
+
 Finds line segments in a binary image using the probabilistic Hough transform
+
 - name Function name.
 - image 8-bit, single-channel binary source image. The image may be modified by the function.
 - lines Output vector of lines. Each line is represented by a 2 or 3 element vector (ρ,θ) or (ρ,θ,votes) . ρ is the distance from the coordinate origin (0,0) (top-left corner of the image). θ is the line rotation angle in radians ( 0∼vertical line,π/2∼horizontal line ). votes is the value of accumulator
@@ -1634,12 +1669,12 @@ invoke(
 ): void;
 ```
 
-
 ## Imgproc – Image Filtering
 
-
 ### bilateralFilter
+
 Applies the bilateral filter to an image.
+
 - src Source 8-bit or floating-point, 1-channel or 3-channel image.
 - dst Destination image of the same size and type as src .
 - d Diameter of each pixel neighborhood that is used during filtering. If it is non-positive, it is computed from sigmaSpace.
@@ -1660,6 +1695,7 @@ invoke(
 ```
 
 ### blur
+
 - src input image; it can have any number of channels, which are processed independently, but the depth should be CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
 - dst output image of the same size and type as src.
 - ksize blurring kernel size.
@@ -1678,7 +1714,9 @@ invoke(
 ```
 
 ### boxFilter
+
 Blurs an image using the box filter.
+
 - src input image.
 - dst output image of the same size and type as src.
 - ddepth the output image depth (-1 to use src.depth()).
@@ -1701,7 +1739,9 @@ invoke(
 ```
 
 ### buildPyramid
+
 Constructs the Gaussian pyramid for an image.
+
 - src Source image. Check pyrDown for the list of supported types.
 - dst Destination vector of maxlevel+1 images of the same type as src. dst[0] will be the same as src. dst[1] is the next pyramid layer, a smoothed and down-sized src, and so on.
 - maxlevel 0-based index of the last (the smallest) pyramid layer. It must be non-negative.
@@ -1718,7 +1758,9 @@ invoke(
 ```
 
 ### dilate
+
 Dilates an image by using a specific structuring element.
+
 - src input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U, CV_16S, CV_32F or CV_64F
 - dst output image of the same size and type as src.
 - kernel structuring element used for dilation; if elemenat=Mat(), a 3 x 3 rectangular structuring element is used. Kernel can be created using getStructuringElement
@@ -1741,7 +1783,9 @@ invoke(
 ```
 
 ### erode
+
 Erodes an image by using a specific structuring element.
+
 - src input image; the number of channels can be arbitrary, but the depth should be one of CV_8U, CV_16U, CV_16S, CV_32F or CV_64F
 - dst output image of the same size and type as src.
 - kernel structuring element used for dilation; if elemenat=Mat(), a 3 x 3 rectangular structuring element is used. Kernel can be created using getStructuringElement
@@ -1764,7 +1808,9 @@ invoke(
 ```
 
 ### filter2D
+
 Convolves an image with the kernel.
+
 - src input image.
 - dst output image of the same size and the same number of channels as src.
 - ddepth desired depth of the destination image
@@ -1787,7 +1833,9 @@ invoke(
 ```
 
 ### GaussianBlur
+
 Blurs an image using a Gaussian filter.
+
 - src input image; the image can have any number of channels, which are processed independently, but the depth should be CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
 - dst output image of the same size and type as src.
 - ksize Gaussian kernel size. ksize.width and ksize.height can differ but they both must be positive and odd. Or, they can be zero's and then they are computed from sigma.
@@ -1845,7 +1893,9 @@ invoke(
 ```
 
 ### getGaussianKernel
+
 Returns Gaussian filter coefficients.
+
 - ksize Aperture size. It should be odd ( 𝚔𝚜𝚒𝚣𝚎mod2=1 ) and positive.
 - sigma Gaussian standard deviation. If it is non-positive, it is computed from ksize as sigma = 0.3*((ksize-1)*0.5 - 1) + 0.8.
 - ktype Type of filter coefficients. It can be CV_32F or CV_64F .
@@ -1860,7 +1910,9 @@ invoke(
 ```
 
 ### getPerspectiveTransform
+
 Calculates a perspective transform from four pairs of the corresponding points.
+
 - name Function name.
 - src Coordinates of quadrangle vertices in the source image.
 - dst Coordinates of the corresponding quadrangle vertices in the destination image.
@@ -1894,7 +1946,9 @@ invoke(
 ```
 
 ### Laplacian
+
 Calculates the Laplacian of an image.
+
 - name Function name.
 - src Source image.
 - dst Destination image of the same size and the same number of channels as src .
@@ -1918,8 +1972,10 @@ invoke(
 ```
 
 ### medianBlur
+
 Blurs an image using the median filter.
 The function smoothes an image using the median filter with the 𝚔𝚜𝚒𝚣𝚎×𝚔𝚜𝚒𝚣𝚎 aperture. Each channel of a multi-channel image is processed independently. In-place operation is supported.
+
 - name Function name.
 - src input 1-, 3-, or 4-channel image; when ksize is 3 or 5, the image depth should be CV_8U, CV_16U, or CV_32F, for larger aperture sizes, it can only be CV_8U.
 - dst destination array of the same size and type as src.
@@ -1938,9 +1994,11 @@ invoke(name: 'morphologyDefaultBorderValue'): Scalar;
 ```
 
 ### morphologyEx
+
 Performs advanced morphological transformations.
 The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as basic operations.
 Any of the operations can be done in-place. In case of multi-channel images, each channel is processed independently.
+
 - name Function name.
 - src Source image. The number of channels can be arbitrary. The depth should be one of CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
 - dst Destination image of the same size and type as source image.
@@ -1986,12 +2044,12 @@ invoke(
 ): void;
 ```
 
-
 ## Imgproc – Misc
 
-
 ### adaptiveThreshold
+
 Applies an adaptive threshold to an array
+
 - name Function name.
 - src Source 8-bit single-channel image.
 - dst Destination image of the same size and the same type as src
@@ -2017,14 +2075,16 @@ invoke(
 ```
 
 ### distanceTransform
+
 Calculates the distance to the closest zero pixel for each pixel of the source image
+
 - name Function name.
-- src 	8-bit, single-channel (binary) source image
+- src  8-bit, single-channel (binary) source image
 - dst Output image with calculated distances. It is a 8-bit or 32-bit floating-point, single-channel image of the same size as src
 - distanceType Type of distance, @see DistanceTypes
 - maskSize Size of the distance transform mask, @see DistanceTransformMasks. In case of the DIST_L1 or DIST_C distance type, the parameter is forced to 3 because a 3×3 mask gives the same result as 5×5 or any larger aperture.
 
-```js 
+```js
 invoke(
   name: 'distanceTransform',
   src: Mat,
@@ -2035,7 +2095,9 @@ invoke(
 ```
 
 ### integral
+
 Calculates the integral of an image
+
 - name Function name.
 - src input image as W×H, 8-bit or floating-point (32f or 64f).
 - sum integral image as (W+1)×(H+1) , 32-bit integer or floating-point (32f or 64f).
@@ -2075,7 +2137,9 @@ invoke(
 ```
 
 ### threshold
+
 Applies a fixed-level threshold to each array element
+
 - name Function name.
 - src input array (multiple-channel, 8-bit or 32-bit floating point).
 - dst output array of the same size and type and the same number of channels as src.
@@ -2094,12 +2158,12 @@ invoke(
 ): void;
 ```
 
-
 ## Imgproc – Object Detection
 
-
 ### matchTemplate
+
 Compares a template against overlapped image regions
+
 - image Image where the search is running. It must be 8-bit or 32-bit floating-point
 - templ Searched template. It must be not greater than the source image and have the same data type.
 - result Map of comparison results. It must be single-channel 32-bit floating-point. If image is W×H and templ is w×h , then result is (W−w+1)×(H−h+1) .
@@ -2119,9 +2183,10 @@ invoke(
 
 ## Imgproc – Shape
 
-
 ### approxPolyDP
+
 Approximates a polygonal curve(s) with the specified precision
+
 - curve Input vector of a 2D point stored in std::vector or Mat
 - approxCurve Result of the approximation. The type should match the type of the input curve
 - epsilonParameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation
@@ -2131,14 +2196,16 @@ Approximates a polygonal curve(s) with the specified precision
 invoke(
   name: 'approxPolyDP',
   curve: Mat | MatVector | PointVector,
-  approxCurve: Mat,
+  approxCurve: Mat | PointVector,
   epsilon: number,
   closed: boolean
 ): void;
 ```
 
 ### arcLength
+
 Calculates a contour perimeter or a curve length.
+
 - curve Input vector of 2D points, stored in std::vector or Mat.
 - closed Flag indicating whether the curve is closed or not.
 @returns a curve length or a closed contour perimeter.
@@ -2152,7 +2219,9 @@ invoke(
 ```
 
 ### boundingRect
+
 Calculates the up-right bounding rectangle of a point set or non-zero pixels of gray-scale image.
+
 - array Input gray-scale image or 2D point set, stored in std::vector or Mat.
 @returns the minimal up-right bounding rectangle for the specified point set or non-zero pixels of gray-scale image
 
@@ -2161,7 +2230,9 @@ invoke(name: 'boundingRect', array: Mat | MatVector | PointVector): Rect;
 ```
 
 ### connectedComponents
+
 computes the connected components labeled image of boolean image
+
 - image the 8-bit single-channel image to be labeled
 - labels destination labeled image
 @returns N, the total number of labels [0, N-1] where 0 represents the background label
@@ -2175,7 +2246,9 @@ invoke(
 ```
 
 ### connectedComponentsWithStats
+
 computes the connected components labeled image of boolean image and also produces a statistics output for each label
+
 - image the 8-bit single-channel image to be labeled
 - labels destination labeled image
 - stats statistics output for each label, including the background label. Statistics are accessed via stats(label, COLUMN) where COLUMN is one of ConnectedComponentsTypes, selecting the statistic. The data type is CV_32S.
@@ -2193,7 +2266,9 @@ invoke(
 ```
 
 ### contourArea
+
 Calculates a contour area
+
 - contour Input vector of 2D points (contour vertices), stored in std::vector or Mat.
 - oriented Oriented area flag. If it is true, the function returns a signed area value, depending on the contour orientation (clockwise or counter-clockwise). Using this feature you can determine orientation of a contour by taking the sign of an area. By default, the parameter is false, which means that the absolute value is returned
 @returns area and the number of non-zero pixels,
@@ -2207,7 +2282,9 @@ invoke(
 ```
 
 ### convexHull
+
 Finds the convex hull of a point set.
+
 - points Input 2D point set, stored in std::vector or Mat.
 - hull Output convex hull. It is either an integer vector of indices or vector of points. In the first case, the hull elements are 0-based indices of the convex hull points in the original array (since the set of convex hull points is a subset of the original point set). In the second case, hull elements are the convex hull points themselves
 
@@ -2216,7 +2293,9 @@ invoke(name: 'convexHull', points: Mat, hull: Mat): void;
 ```
 
 ### convexityDefects
+
 Finds the convexity defects of a contour.
+
 - contour Input contour
 - convexHull Convex hull obtained using convexHull that should contain indices of the contour points that make the hull
 - convexityDefects  output vector of convexity defects. In C++ and the new Python/Java interface each convexity defect is represented as 4-element integer vector (a.k.a. Vec4i): (start_index, end_index, farthest_pt_index, fixpt_depth), where indices are 0-based indices in the original contour of the convexity defect beginning, end and the farthest point, and fixpt_depth is fixed-point approximation (with 8 fractional bits) of the distance between the farthest contour point and the hull. That is, to get the floating-point value of the depth will be fixpt_depth/256.0.
@@ -2231,7 +2310,9 @@ invoke(
 ```
 
 ### findContours
+
 Finds contours in a binary image
+
 - image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1s. Zero pixels remain 0s, so the image is treated as binary . You can use compare, inRange, threshold , adaptiveThreshold, Canny, and others to create a binary image out of a grayscale or color one. If mode equals to RETR_CCOMP or RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
 - contours Detected contours. Each contour is stored as a vector of points
 - mode Contour retrieval mode, @see RetrievalModes
@@ -2248,7 +2329,9 @@ invoke(
 ```
 
 ### fitLine
+
 Fits a line to a 2D or 3D point set.
+
 - points Input vector of 2D or 3D points, stored in a Mat.
 - line Output line parameters. In case of 2D fitting, it should be a vector of 4 elements (like Vec4f) - (vx, vy, x0, y0), where (vx, vy) is a normalized vector collinear to the line and (x0, y0) is a point on the line. In case of 3D fitting, it should be a vector of 6 elements (like Vec6f) - (vx, vy, vz, x0, y0, z0), where (vx, vy, vz) is a normalized vector collinear to the line and (x0, y0, z0) is a point on the line
 - disType Distance used by the M-estimator, @see DistanceTypes
@@ -2269,16 +2352,20 @@ invoke(
 ```
 
 ### isContourConvex
+
 Tests a contour convexity.
+
 - contour
 @returns whether the input contour is convex or not
 
 ```js
-invoke(name: 'isContourConvex', contour: Mat): boolean;
+invoke(name: 'isContourConvex', contour: Mat): { value: boolean };
 ```
 
 ### matchShapes
+
 Compares two shapes
+
 - contour1 First contour or grayscale image
 - contour2 Second contour or grayscale image
 - method Comparison method, @see ShapeMatchModes
@@ -2292,11 +2379,13 @@ invoke(
   contour2: Mat,
   method: ShapeMatchModes,
   parameter: number
-): number;
+): { value: number };
 ```
 
 ### minAreaRect
+
 Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
+
 - points Input vector of 2D points, stored in a Mat
 @returns the minimum-area bounding rectangle (possibly rotated) for a specified point set
 
@@ -2304,9 +2393,10 @@ Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
 invoke(name: 'minAreaRect', points: Mat): RotatedRect;
 ```
 
-
 ### warpPerspective
+
 Applies a perspective transformation to an image.
+
 - name Function name.
 - src input image.
 - dst output image that has the size dsize and the same type as src .

@@ -147,7 +147,7 @@ export type Shape = {
    * @param contour
    * @returns whether the input contour is convex or not
    */
-  invoke(name: 'isContourConvex', contour: Mat): boolean;
+  invoke(name: 'isContourConvex', contour: Mat): { value: boolean };
 
   /**
    * Compares two shapes
@@ -163,7 +163,7 @@ export type Shape = {
     contour2: Mat,
     method: ShapeMatchModes,
     parameter: number
-  ): number;
+  ): { value: number };
 
   /**
    * Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
