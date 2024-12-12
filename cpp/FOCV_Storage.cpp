@@ -9,6 +9,13 @@
 
 std::unordered_map<std::string, std::any> FOCV_Storage::items = std::unordered_map<std::string, std::any>();
 
-void FOCV_Storage::clear() {
-  items.clear();
+void FOCV_Storage::clear(const std::set<std::string> &ids_to_keep) {
+  for (auto it = items.begin(); it != items.end();) {
+    auto id = it->first;
+    if (ids_to_keep.find(id) != ids_to_keep.end()) {
+      it++;
+    } else {
+      it = items.erase(it);
+    }
+  }
 }

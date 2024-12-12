@@ -31,7 +31,7 @@ public:
     template <typename T>
     static std::string save(std::string key, T &item);
 
-    static void clear();
+    static void clear(const std::set<std::string> &ids_to_keep);
 };
 
 template <typename T>
@@ -52,8 +52,8 @@ std::string FOCV_Storage::save(std::string key, T &item) {
 
 template <typename T>
 std::shared_ptr<T> FOCV_Storage::get(std::string key) {
-    if(!items.contains(key)) {
-        // TODO: Error here!
+    if (!items.contains(key)) {
+        throw std::runtime_error("Fast OpenCV Error: Object with id '" + key + "' not found in storage!");
     }
 
     return std::any_cast<std::shared_ptr<T>>(items.at(key));

@@ -30,7 +30,7 @@ using namespace facebook;
 
 class FOCV_Function {
 public:
-    static jsi::Object invoke(jsi::Runtime& runtime, const jsi::Value* arguments);
+    static jsi::Object invoke(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count);
 };
 
 

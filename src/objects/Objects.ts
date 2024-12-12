@@ -1,3 +1,4 @@
+import type { TermCriteriaType } from '../constants/Core';
 import type { DataTypes } from '../constants/DataTypes';
 import type { ObjectType } from './ObjectType';
 
@@ -17,6 +18,7 @@ export type Size = { id: string; type: ObjectType.Size };
 export type Vec3b = { id: string; type: ObjectType.Vec3b };
 export type Scalar = { id: string; type: ObjectType.Scalar };
 export type RotatedRect = { id: string; type: ObjectType.RotatedRect };
+export type TermCriteria = { id: string; type: ObjectType.TermCriteria };
 
 export type Vector = MatVector | PointVector | RectVector;
 export type Array = Mat | Vec3b;
@@ -59,6 +61,12 @@ export type Objects = {
     c: number,
     d: number
   ): Scalar;
+  createObject(
+    type: ObjectType.TermCriteria,
+    termCriteriaType: TermCriteriaType,
+    maxCount: number,
+    epsilon: number
+  ): TermCriteria;
 
   toJSValue(
     mat: Mat,
@@ -73,6 +81,10 @@ export type Objects = {
     array: { size: number; cols: number; rows: number }[];
   };
   toJSValue(point: Point): {
+    x: number;
+    y: number;
+  };
+  toJSValue(point2f: Point2f): {
     x: number;
     y: number;
   };
@@ -112,12 +124,17 @@ export type Objects = {
     c?: number;
     d?: number;
   };
-  toJSValue(scalar: RotatedRect): {
+  toJSValue(rotatedRect: RotatedRect): {
     centerX: number;
     centerY: number;
     width: number;
     height: number;
     angle: number;
+  };
+  toJSValue(termCriteria: TermCriteria): {
+    type: TermCriteriaType;
+    maxCount: number;
+    epsilon: number;
   };
 
   copyObjectFromVector(vector: MatVector, itemIndex: number): Mat;

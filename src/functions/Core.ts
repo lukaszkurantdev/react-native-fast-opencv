@@ -750,7 +750,7 @@ export type Core = {
    * @param R the maximum pixel value (255 by default)
    * @returns the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB)
    */
-  invoke(name: 'PSNR', src1: Mat, src2: Mat, R: number): number;
+  invoke(name: 'PSNR', src1: Mat, src2: Mat, R: number): { psnr: number };
 
   /**
    * Reduces a matrix to a vector.
@@ -830,7 +830,12 @@ export type Core = {
    * @param dst output (complex) array of roots
    * @param maxIters maximum number of iterations the algorithm does
    */
-  invoke(name: 'solvePoly', src: Mat, dst: Mat, maxIters: number): number;
+  invoke(
+    name: 'solvePoly',
+    src: Mat,
+    dst: Mat,
+    maxIters: number
+  ): { value: number };
 
   /**
    * Sorts each row or each column of a matrix.
@@ -927,9 +932,18 @@ export type Core = {
   /**
    * Converts an array to another data type with optional scaling.
    * @param name Function name.
-   * @param src input array.
-   * @param dst output array of the same type as src
-   * @param rtype  desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+   * @param src input matrix.
+   * @param dst output matrix; if it does not have a proper size or type before the operation, it is reallocated.
+   * @param rtype desired output matrix type or, rather, the depth since the number of channels are the same as the input has; if rtype is negative, the output matrix will have the same type as the input.
+   * @param alpha optional scale factor.
+   * @param beta optional delta added to the scaled values.
    */
-  invoke(name: 'convertTo', src: Mat, dst: Mat, rtype: DataTypes): void;
+  invoke(
+    name: 'convertTo',
+    src: Mat,
+    dst: Mat,
+    rtype: DataTypes,
+    alpha?: number,
+    beta?: number
+  ): void;
 };

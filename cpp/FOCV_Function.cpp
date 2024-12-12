@@ -28,12 +28,12 @@ constexpr uint64_t hashString(const char* str, size_t length) {
 
 // General idea of invocation switch is from react-native-opencv3 library,
 // but it was adapted and optimized.
-jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* arguments) {
+jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
   jsi::Object value(runtime);
   
-  FOCV_FunctionArguments args(runtime, arguments);
+  FOCV_FunctionArguments args(runtime, arguments, count);
   
-  std::string functionName = args.asString(0);
+  auto functionName = args.asString(0);
   
   try {
     switch (hashString(functionName.c_str(), functionName.size())) {
@@ -49,18 +49,18 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if(args.isNumber(5)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
-          auto dtype = args.asNumber(5);
-          
-          cv::add(*src1, *src2, *dst, *mask, dtype);
-        } else if(args.isObject(4)) {
-          auto mask = args.asMatPtr(4);
-          
+          if (count > 5) {
+            auto dtype = args.asNumber(5);
+            
+            cv::add(*src1, *src2, *dst, *mask, dtype);
+            break;
+          }
           cv::add(*src1, *src2, *dst, *mask);
-        } else {
-          cv::add(*src1, *src2, *dst);
+          break;
         }
+        cv::add(*src1, *src2, *dst);
       } break;
       case hashString("addWeighted", 11): {
         auto src1 = args.asMatPtr(1);
@@ -70,13 +70,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto gamma = args.asNumber(5);
         auto dst = args.asMatPtr(6);
         
-        if(args.isNumber(7)) {
+        if (count > 7) {
           auto dtype = args.asNumber(7);
           
           cv::addWeighted(*src1, alpha, *src2, beta, gamma, *dst, dtype);
-        } else {
-          cv::addWeighted(*src1, alpha, *src2, beta, gamma, *dst);
+          break;
         }
+        cv::addWeighted(*src1, alpha, *src2, beta, gamma, *dst);
       } break;
       case hashString("batchDistance", 13): {
         auto src1 = args.asMatPtr(1);
@@ -97,51 +97,51 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if(args.isObject(4)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
           
           cv::bitwise_and(*src1, *src2, *dst, *mask);
-        } else {
-          cv::bitwise_and(*src1, *src2, *dst);
+          break;
         }
+        cv::bitwise_and(*src1, *src2, *dst);
       } break;
       case hashString("bitwise_not", 11): {
-        auto src1 = args.asMatPtr(1);
+        auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
         
-        if(args.isObject(3)) {
+        if (count > 3) {
           auto mask = args.asMatPtr(3);
           
-          cv::bitwise_not(*src1, *dst, *mask);
-        } else {
-          cv::bitwise_not(*src1, *dst);
+          cv::bitwise_not(*src, *dst, *mask);
+          break;
         }
+        cv::bitwise_not(*src, *dst);
       } break;
       case hashString("bitwise_or", 10): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if(args.isObject(4)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
           
           cv::bitwise_or(*src1, *src2, *dst, *mask);
-        } else {
-          cv::bitwise_or(*src1, *src2, *dst);
+          break;
         }
+        cv::bitwise_or(*src1, *src2, *dst);
       } break;
       case hashString("bitwise_xor", 11): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if(args.isObject(4)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
           
           cv::bitwise_xor(*src1, *src2, *dst, *mask);
-        } else {
-          cv::bitwise_xor(*src1, *src2, *dst);
+          break;
         }
+        cv::bitwise_xor(*src1, *src2, *dst);
       } break;
       case hashString("borderInterpolate", 17): {
         auto p = args.asNumber(1);
@@ -162,41 +162,30 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::calcCovarMatrix((*samples).data(), nsamples, *covar, *mean, flags, dtype);
       } break;
       case hashString("cartToPolar", 11): {
-        if(args.isMat(1)) {
+        auto angleInDegrees = (count > 5) ? args.asBool(5) : false;
+        if (args.isMat(1)) {
           auto x = args.asMatPtr(1);
           auto y = args.asMatPtr(2);
           auto magnitude = args.asMatPtr(3);
           auto angle = args.asMatPtr(4);
           
-          if(args.isBool(5)) {
-            auto angleInDegrees = args.asBool(5);
-            
-            cv::cartToPolar(*x, *y, *magnitude, *angle, angleInDegrees);
-          } else {
-            cv::cartToPolar(*x, *y, *magnitude, *angle);
-          }
+          cv::cartToPolar(*x, *y, *magnitude, *angle, angleInDegrees);
         } else {
           auto x = args.asMatVectorPtr(1);
           auto y = args.asMatVectorPtr(2);
           auto magnitude = args.asMatVectorPtr(3);
           auto angle = args.asMatVectorPtr(4);
           
-          if(args.isBool(5)) {
-            auto angleInDegrees = args.asBool(5);
-            
-            cv::cartToPolar(*x, *y, *magnitude, *angle, angleInDegrees);
-          } else {
-            cv::cartToPolar(*x, *y, *magnitude, *angle);
-          }
+          cv::cartToPolar(*x, *y, *magnitude, *angle, angleInDegrees);
         }
       } break;
       case hashString("checkRange", 10): {
         auto quiet = args.asBool(2);
         auto pos = args.asPointPtr(3);
-        auto minVal = args.asNumber(2);
-        auto maxVal = args.asNumber(2);
+        auto minVal = args.asNumber(4);
+        auto maxVal = args.asNumber(5);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto a = args.asMatPtr(1);
           cv::checkRange(*a, quiet, &(*pos), minVal, maxVal);
         } else {
@@ -215,7 +204,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("completeSymm", 12): {
         auto lowerToUpper = args.asBool(2);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto m = args.asMatPtr(1);
           cv::completeSymm(*m, lowerToUpper);
         } else {
@@ -233,18 +222,18 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
         
-        if(args.isNumber(4)) {
+        if (count > 3) {
           auto alpha = args.asNumber(3);
-          auto beta = args.asNumber(4);
-          
-          cv::convertScaleAbs(*src, *dst, alpha, beta);
-        } else if(args.isNumber(3)) {
-          auto alpha = args.asNumber(3);
-          
+          if (count > 4) {
+            auto beta = args.asNumber(4);
+            
+            cv::convertScaleAbs(*src, *dst, alpha, beta);
+            break;
+          }
           cv::convertScaleAbs(*src, *dst, alpha);
-        } else {
-          cv::convertScaleAbs(*src, *dst);
+          break;
         }
+        cv::convertScaleAbs(*src, *dst);
       } break;
       case hashString("copyMakeBorder", 14): {
         auto src = args.asMatPtr(1);
@@ -266,7 +255,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::copyTo(*src, *dst, *mask);
       } break;
       case hashString("countNonZero", 12): {
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto src = args.asMatPtr(1);
           auto result = cv::countNonZero(*src);
           value.setProperty(runtime, "value", result);
@@ -310,13 +299,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(3);
         auto scale = args.asNumber(4);
         
-        if(args.isNumber(5)) {
+        if (count > 5) {
           auto dtype = args.asNumber(5);
           
           cv::divide(*src1, *src2, *dst, scale, dtype);
-        } else {
-          cv::divide(*src1, *src2, *dst, scale);
+          break;
         }
+        cv::divide(*src1, *src2, *dst, scale);
       } break;
       case hashString("eigen", 5): {
         auto src = args.asMatPtr(1);
@@ -348,7 +337,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("findNonZero", 11): {
         auto src = args.asMatPtr(1);
         
-        if(args.isMat(2)) {
+        if (args.isMat(2)) {
           auto idx = args.asMatPtr(2);
           cv::findNonZero(*src, *idx);
         } else {
@@ -445,7 +434,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("magnitude", 9): {
         auto magnitude = args.asMatPtr(3);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto x = args.asMatPtr(1);
           auto y = args.asMatPtr(2);
           cv::magnitude(*x, *y, *magnitude);
@@ -458,7 +447,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("Mahalanobis", 11): {
         auto icovar = args.asMatPtr(3);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto x = args.asMatPtr(1);
           auto y = args.asMatPtr(2);
           cv::Mahalanobis(*x, *y, *icovar);
@@ -476,17 +465,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::max(*src1, *src2, *dst);
       } break;
       case hashString("mean", 4): {
+        std::string id;
         auto src = args.asMatPtr(1);
-        std::string id = "";
         
-        if(args.isObject(2)) {
+        if (count > 2) {
           auto mask = args.asMatPtr(2);
           
           auto scalar = cv::mean(*src, *mask);
-          std::string id = FOCV_Storage::save(scalar);
+          id = FOCV_Storage::save(scalar);
         } else {
           auto scalar = cv::mean(*src);
-          std::string id = FOCV_Storage::save(scalar);
+          id = FOCV_Storage::save(scalar);
         }
         
         return FOCV_JsiObject::wrap(runtime, "scalar", id);
@@ -496,13 +485,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto mean = args.asMatPtr(2);
         auto stddev = args.asMatPtr(3);
         
-        if(args.isObject(4)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
           
           cv::meanStdDev(*src, *mean, *stddev, *mask);
-        } else {
-          cv::meanStdDev(*src, *mean, *stddev);
+          break;
         }
+        cv::meanStdDev(*src, *mean, *stddev);
       } break;
       case hashString("min", 3): {
         auto src1 = args.asMatPtr(1);
@@ -516,11 +505,10 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         double min = 0;
         double max = 0;
         
-        if(args.isObject(2)) {
+        if (count > 2) {
           auto mask = args.asMatPtr(2);
           
           cv::minMaxIdx(*src, &min, &max, NULL, NULL, *mask);
-          
         } else {
           cv::minMaxIdx(*src, &min, &max);
         }
@@ -534,13 +522,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto c = args.asMatPtr(3);
         auto flags = args.asNumber(4);
         
-        if(args.isBool(5)) {
+        if (count > 5) {
           auto conjB = args.asBool(5);
           
           cv::mulSpectrums(*a, *b, *c, flags, conjB);
-        } else {
-          cv::mulSpectrums(*a, *b, *c, flags);
+          break;
         }
+        cv::mulSpectrums(*a, *b, *c, flags);
       } break;
       case hashString("multiply", 8): {
         auto src1 = args.asMatPtr(1);
@@ -548,13 +536,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(3);
         auto scale = args.asNumber(4);
         
-        if(args.isNumber(5)) {
+        if (count > 5) {
           auto dtype = args.asNumber(5);
           
           cv::multiply(*src1, *src2, *dst, scale, dtype);
-        } else {
-          cv::multiply(*src1, *src2, *dst, scale);
+          break;
         }
+        cv::multiply(*src1, *src2, *dst, scale);
       } break;
       case hashString("mulTransposed", 13): {
         auto src = args.asMatPtr(1);
@@ -563,21 +551,22 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto delta = args.asMatPtr(4);
         auto scale = args.asNumber(5);
         
-        if(args.isNumber(6)) {
+        if (count > 6) {
           auto dtype = args.asNumber(6);
           
           cv::mulTransposed(*src, *dst, aTa, *delta, scale, dtype);
-        } else {
-          cv::mulTransposed(*src, *dst, aTa, *delta, scale);
+          break;
         }
+        cv::mulTransposed(*src, *dst, aTa, *delta, scale);
       } break;
       case hashString("norm", 4): {
         auto src = args.asMatPtr(1);
         auto normType = args.asNumber(2);
         double norm = 0;
         
-        if(args.isObject(3)) {
+        if (count > 3) {
           auto mask = args.asMatPtr(3);
+
           norm = cv::norm(*src, normType, *mask);
         } else {
           norm = cv::norm(*src, normType);
@@ -596,7 +585,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("patchNaNs", 9): {
         auto alpha = args.asNumber(2);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto a = args.asMatPtr(1);
           cv::patchNaNs(*a, alpha);
         } else {
@@ -615,7 +604,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto angle = args.asMatPtr(3);
         auto angleInDegrees = args.asBool(4);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto x = args.asMatPtr(1);
           auto y = args.asMatPtr(2);
           cv::phase(*x, *y, *angle, angleInDegrees);
@@ -727,23 +716,23 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if(args.isNumber(5)) {
+        if (count > 4) {
           auto mask = args.asMatPtr(4);
-          auto dtype = args.asNumber(5);
-          
-          cv::subtract(*src1, *src2, *dst, *mask, dtype);
-        } else if(args.isObject(4)) {
-          auto mask = args.asMatPtr(4);
-          
+          if (count > 5) {
+            auto dtype = args.asNumber(5);
+
+            cv::subtract(*src1, *src2, *dst, *mask, dtype);
+            break;
+          }
           cv::subtract(*src1, *src2, *dst, *mask);
-        } else {
-          cv::subtract(*src1, *src2, *dst);
+          break;
         }
+        cv::subtract(*src1, *src2, *dst);
       } break;
       case hashString("sum", 3): {
-        std::string id = "";
+        std::string id;
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto src = args.asMatPtr(1);
           auto scalar = cv::sum(*src);
           id = FOCV_Storage::save(scalar);
@@ -787,13 +776,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(2);
         auto code = args.asNumber(3);
         
-        if(args.isNumber(4)) {
+        if (count > 4) {
           auto dsnCn = args.asNumber(4);
           
           cv::cvtColor(*src, *dst, code, dsnCn);
-        } else {
-          cv::cvtColor(*src, *dst, code);
+          break;
         }
+        cv::cvtColor(*src, *dst, code);
       } break;
       case hashString("cvtColorTwoPlane", 16): {
         auto src1 = args.asMatPtr(1);
@@ -808,13 +797,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(2);
         auto code = args.asNumber(3);
         
-        if(args.isNumber(4)) {
+        if (count > 4) {
           auto dsnCn = args.asNumber(4);
           
           cv::demosaicing(*src, *dst, code, dsnCn);
-        } else {
-          cv::demosaicing(*src, *dst, code);
+          break;
         }
+        cv::demosaicing(*src, *dst, code);
       } break;
       case hashString("applyColorMap", 13): {
         auto src = args.asMatPtr(1);
@@ -971,18 +960,18 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dp = args.asNumber(4);
         auto minDist = args.asNumber(5);
         
-        if(args.isNumber(7)) {
+        if (count > 6) {
           auto param1 = args.asNumber(6);
-          auto param2 = args.asNumber(7);
-          
-          cv::HoughCircles(*image, *circles, method, dp, minDist, param1, param2);
-        } else if(args.isNumber(6)) {
-          auto param1 = args.asNumber(6);
-          
+          if (count > 7) {
+            auto param2 = args.asNumber(7);
+
+            cv::HoughCircles(*image, *circles, method, dp, minDist, param1, param2);
+            break;
+          }
           cv::HoughCircles(*image, *circles, method, dp, minDist, param1);
-        } else {
-          cv::HoughCircles(*image, *circles, method, dp, minDist);
+          break;
         }
+        cv::HoughCircles(*image, *circles, method, dp, minDist);
       } break;
       case hashString("HoughLines", 10): {
         auto image = args.asMatPtr(1);
@@ -1079,19 +1068,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ksize = args.asSizePtr(3);
         auto sigmaX = args.asNumber(4);
         
-        if(args.isNumber(5)) {
+        if (count > 5) {
           auto sigmaY = args.asNumber(5);
-          
-          if(args.isNumber(6)) {
+          if (count > 6) {
             auto borderType = args.asNumber(6);
+
             cv::GaussianBlur(*src, *dst, *ksize, sigmaX, sigmaY, borderType);
             break;
           }
-          
           cv::GaussianBlur(*src, *dst, *ksize, sigmaX, sigmaY);
           break;
         }
-        
         cv::GaussianBlur(*src, *dst, *ksize, sigmaX);
       } break;
       case hashString("getGaborKernel", 14): {
@@ -1130,17 +1117,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
       case hashString("getStructuringElement", 21): {
         std::string id;
-        
         auto shape = args.asNumber(1);
         auto ksize = args.asSizePtr(2);
 
-        if (args.isObject(3) && args.isPoint(3)) {
+        if (count > 3) {
           auto anchor = args.asPointPtr(3);
-            cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
-            id = FOCV_Storage::save(result);
+
+          cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
+          id = FOCV_Storage::save(result);
         } else {
-            cv::Mat result = cv::getStructuringElement(shape, *ksize);
-            id = FOCV_Storage::save(result);
+          cv::Mat result = cv::getStructuringElement(shape, *ksize);
+          id = FOCV_Storage::save(result);
         }
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);
@@ -1175,33 +1162,27 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto op = args.asNumber(3);
         auto kernel = args.asMatPtr(4);
         
-        if(args.isObject(5) && args.isPoint(5)) {
+        if (count > 5) {
           auto anchor = args.asPointPtr(5);
-          
-          if(args.isNumber(6)) {
+          if (count > 6) {
             auto iterations = args.asNumber(6);
-            
-            if(args.isNumber(7)) {
+            if (count > 7) {
               auto borderType = args.asNumber(7);
-              
-              if(args.isObject(8) && args.isScalar(8)) {
+              if (count > 8) {
                 auto borderValue = args.asScalarPtr(8);
+
                 cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType, *borderValue);
                 break;
               }
-              
               cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations, borderType);
               break;
             }
-            
             cv::morphologyEx(*src, *dst, op, *kernel, *anchor, iterations);
             break;
           }
-          
           cv::morphologyEx(*src, *dst, op, *kernel, *anchor);
           break;
         }
-        
         cv::morphologyEx(*src, *dst, op, *kernel);
       } break;
       case hashString("adaptiveThreshold", 17): {
@@ -1251,6 +1232,42 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::threshold(*src, *dst, thresh, maxval, type);
       } break;
+      case hashString("calcOpticalFlowPyrLK", 20): {
+        auto prevImg = args.asMatPtr(1);
+        auto nextImg = args.asMatPtr(2);
+        auto prevPts = args.asMatPtr(3);
+        auto nextPts = args.asMatPtr(4);
+        auto status = args.asMatPtr(5);
+        auto err = args.asMatPtr(6);
+
+        if (count > 7) {
+          auto winSize = args.asSizePtr(7);
+          if (count > 8) {
+            auto maxLevel = args.asNumber(8);
+            if (count > 9) {
+              auto termCriteria = args.asTermCriteriaPtr(9);
+              if (count > 10) {
+                auto flags = args.asNumber(10);
+                if (count > 11) {
+                  auto minEigThreshold = args.asNumber(11);
+
+                  cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria, flags, minEigThreshold);
+                  break;
+                }
+                cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria, flags);
+                break;
+              }
+              cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria);
+              break;
+            }
+            cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel);
+            break;
+          }
+          cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize);
+          break;
+        }
+        cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err);
+      } break;
       case hashString("matchTemplate", 13): {
         auto image = args.asMatPtr(1);
         auto templ = args.asMatPtr(2);
@@ -1260,11 +1277,30 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::matchTemplate(*image, *templ, *result, method, *mask);
       } break;
+      case hashString("phaseCorrelate", 14): {
+        std::string id;
+        auto src1 = args.asMatPtr(1);
+        auto src2 = args.asMatPtr(2);
+        double response = 0;
+
+        if (count > 3) {
+          auto window = args.asMatPtr(3);
+
+          cv::Point2f result = cv::phaseCorrelate(*src1, *src2, *window, &response);
+          id = FOCV_Storage::save(result);
+        } else {
+          cv::Point2f result = cv::phaseCorrelate(*src1, *src2, cv::noArray(), &response);
+          id = FOCV_Storage::save(result);
+        }
+
+        value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", id));
+        value.setProperty(runtime, "response", jsi::Value(response));
+      } break;
       case hashString("approxPolyDP", 12): {
         auto epsilon = args.asNumber(3);
         auto closed = args.asBool(4);
 
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
             auto curve = args.asMatPtr(1);
             if (args.isMat(2)) {
                 auto approxCurve = args.asMatPtr(2);
@@ -1296,26 +1332,26 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       case hashString("arcLength", 9): {
         auto closed = args.asBool(2);
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto curve = args.asMatPtr(1);
           auto result = cv::arcLength(*curve, closed);
           value.setProperty(runtime, "value", jsi::Value(result));
-        } else if(args.isMatVector(1)) {
-            auto curve = args.asMatVectorPtr(1);
-            auto result = cv::arcLength(*curve, closed);
-            value.setProperty(runtime, "value", jsi::Value(result));
+        } else if (args.isMatVector(1)) {
+          auto curve = args.asMatVectorPtr(1);
+          auto result = cv::arcLength(*curve, closed);
+          value.setProperty(runtime, "value", jsi::Value(result));
         } else {
-            auto curve = args.asPointVectorPtr(1);
-            auto result = cv::arcLength(*curve, closed);
-            value.setProperty(runtime, "value", jsi::Value(result));
+          auto curve = args.asPointVectorPtr(1);
+          auto result = cv::arcLength(*curve, closed);
+          value.setProperty(runtime, "value", jsi::Value(result));
         }
       } break;
       case hashString("boundingRect", 12): {
         cv::Rect rect;
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           rect = cv::boundingRect(*args.asMatPtr(1));
-        } else if(args.isMatVector(1)) {
+        } else if (args.isMatVector(1)) {
           rect = cv::boundingRect(*args.asMatVectorPtr(1));
         } else {
           rect = cv::boundingRect(*args.asPointVectorPtr(1));
@@ -1342,9 +1378,9 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         value.setProperty(runtime, "value", jsi::Value(result));
       } break;
       case hashString("contourArea", 11): {
-        auto oriented = args.asBool(2);
+        auto oriented = (count > 2) ? args.asBool(2) : false;
         
-        if(args.isMat(1)) {
+        if (args.isMat(1)) {
           auto src = args.asMatPtr(1);
           value.setProperty(runtime, "value", contourArea(*src, oriented));
         } else {
@@ -1370,7 +1406,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto mode = args.asNumber(3);
         auto method = args.asNumber(4);
         
-        if(args.isMatVector(2)) {
+        if (args.isMatVector(2)) {
           auto dst = args.asMatVectorPtr(2);
           cv::findContours(*src, *dst, mode, method);
         } else {
@@ -1414,7 +1450,18 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
         auto rtype = args.asNumber(3);
-        
+
+        if (count > 4) {
+          auto alpha = args.asNumber(4);
+          if (count > 5) {
+            auto beta = args.asNumber(5);
+
+            (*src).convertTo(*dst, rtype, alpha, beta);
+            break;
+          }
+          (*src).convertTo(*dst, rtype, alpha);
+          break;
+        }
         (*src).convertTo(*dst, rtype);
       } break;
       case hashString("warpPerspective", 15): {
@@ -1430,7 +1477,9 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
     }
   } catch (cv::Exception& e) {
-    std::cout << "Fast OpenCV Invoke Error: " << e.what() << "\n";
+    std::string message(e.what());
+    std::cout << "Fast OpenCV Invoke Error: " << message << "\n";
+    throw std::runtime_error("Fast OpenCV Error: " + message);
   }
     
   return value;

@@ -155,7 +155,7 @@ Mat ImageConverter::str2mat(const string& s)
     string decoded_string = base64_decode(s);
     vector<uchar> data(decoded_string.begin(), decoded_string.end());
 
-    cv::Mat img = imdecode(data, IMREAD_UNCHANGED);
+    cv::Mat img = cv::imdecode(data, IMREAD_UNCHANGED);
   
     return img;
 }
