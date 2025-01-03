@@ -985,7 +985,7 @@ Rotates matrix.
 
 
 ```js
-invoke(name: 'repeat', src: Mat, dst: Mat, code: RotateFlags): void;
+invoke(name: 'rotate', src: Mat, dst: Mat, code: RotateFlags): void;
 ```
 
 ### scaleAdd
