@@ -30,9 +30,9 @@ using namespace facebook;
 
 class FOCV_Object {
 public:
-    static jsi::Object create(jsi::Runtime& runtime, const jsi::Value* arguments);
-    static jsi::Object convertToJSI(jsi::Runtime& runtime, const jsi::Value* arguments);
-    static jsi::Object copyObjectFromVector(jsi::Runtime& runtime, const jsi::Value* arguments);
+    static jsi::Object create(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count);
+    static jsi::Object convertToJSI(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count);
+    static jsi::Object copyObjectFromVector(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count);
 };
 
 #endif /* FOCV_Object_hpp */
