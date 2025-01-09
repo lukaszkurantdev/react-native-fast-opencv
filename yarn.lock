@@ -3122,9 +3122,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:^1.3.10":
-  version: 1.5.5
-  resolution: "@shopify/react-native-skia@npm:1.5.5"
+"@shopify/react-native-skia@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "@shopify/react-native-skia@npm:1.8.2"
   dependencies:
     canvaskit-wasm: "npm:0.39.1"
     react-reconciler: "npm:0.27.0"
@@ -3139,7 +3139,7 @@ __metadata:
       optional: true
   bin:
     setup-skia-web: ./scripts/setup-canvaskit.js
-  checksum: 10/63a87986131e20c93824c017502458718d516f735bf54784e700f491adb8e7e59ef15055022cdcd69dafea429778f38c3e4293365660b8ed80e9c069a7191158
+  checksum: 10/7bb95d28aebcbf8537228069ace8788823c72783eabe0c8c48b7e11afe5c44c19b819aeaac823d4240c7aab542d7eaa2a02f24b045067400fbc038fa65ba2cd5
   languageName: node
   linkType: hard
 
@@ -11109,7 +11109,7 @@ __metadata:
     "@react-native/typescript-config": "npm:0.74.86"
     "@react-navigation/native": "npm:^6.1.18"
     "@react-navigation/native-stack": "npm:^6.11.0"
-    "@shopify/react-native-skia": "npm:^1.3.10"
+    "@shopify/react-native-skia": "npm:^1.8.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.4"
     react-native-builder-bob: "npm:^0.29.0"
@@ -11117,9 +11117,9 @@ __metadata:
     react-native-reanimated: "npm:^3.14.0"
     react-native-safe-area-context: "npm:^4.11.0"
     react-native-screens: "npm:^3.34.0"
-    react-native-vision-camera: "npm:^4.5.2"
-    react-native-worklets-core: "npm:^1.3.3"
-    vision-camera-resize-plugin: "npm:^3.1.0"
+    react-native-vision-camera: "npm:4.6.3"
+    react-native-worklets-core: "npm:1.5.0"
+    vision-camera-resize-plugin: "npm:3.2.0"
   languageName: unknown
   linkType: soft
 
@@ -11210,9 +11210,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-vision-camera@npm:^4.5.2":
-  version: 4.6.1
-  resolution: "react-native-vision-camera@npm:4.6.1"
+"react-native-vision-camera@npm:4.6.3":
+  version: 4.6.3
+  resolution: "react-native-vision-camera@npm:4.6.3"
   peerDependencies:
     "@shopify/react-native-skia": "*"
     react: "*"
@@ -11226,11 +11226,11 @@ __metadata:
       optional: true
     react-native-worklets-core:
       optional: true
-  checksum: 10/742f11a74ca9e3eb3a41c65ba8ac588925b539d6e232f6a2c9c60b2ebcf07997d9a1bca0ef3ac471bf2b6d7eb99a81985a352a73755f8f0ee4aba1898c3b10d1
+  checksum: 10/ff56e8126df423ba5d4c9f8d2b15a1b9b48e8669445464b2f301fa47946ce1759e6e4119c443cb8f02a44f8ab5fd6c52a8d534cfc385fc9d647e857ee46f82e6
   languageName: node
   linkType: hard
 
-"react-native-worklets-core@npm:^1.3.3":
+"react-native-worklets-core@npm:1.5.0":
   version: 1.5.0
   resolution: "react-native-worklets-core@npm:1.5.0"
   dependencies:
@@ -13529,15 +13529,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vision-camera-resize-plugin@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "vision-camera-resize-plugin@npm:3.1.0"
+"vision-camera-resize-plugin@npm:3.2.0":
+  version: 3.2.0
+  resolution: "vision-camera-resize-plugin@npm:3.2.0"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-vision-camera: ">=4.0.1"
     react-native-worklets-core: ">=1.2.0"
-  checksum: 10/68c64d0c133f76ff7332606b6ee9c78e0db99b0f095228293172beeee8206045c50c24e8e28e67f702138942d97d43690c2ce784561d1eb0d02a5a50fedba7b1
+  checksum: 10/39f06e35e0fb92e77815d97d7967aec84c4875c99128d7178f2784a9b0f2967e76fc7bb608768d18ee618a64ae899e0318d688c3c9f8556534876b295f008244
   languageName: node
   linkType: hard
 

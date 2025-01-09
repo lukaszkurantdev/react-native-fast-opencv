@@ -1232,49 +1232,13 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::threshold(*src, *dst, thresh, maxval, type);
       } break;
-      case hashString("calcOpticalFlowPyrLK", 20): {
-        auto prevImg = args.asMatPtr(1);
-        auto nextImg = args.asMatPtr(2);
-        auto prevPts = args.asMatPtr(3);
-        auto nextPts = args.asMatPtr(4);
-        auto status = args.asMatPtr(5);
-        auto err = args.asMatPtr(6);
-
-        if (count > 7) {
-          auto winSize = args.asSizePtr(7);
-          if (count > 8) {
-            auto maxLevel = args.asNumber(8);
-            if (count > 9) {
-              auto termCriteria = args.asTermCriteriaPtr(9);
-              if (count > 10) {
-                auto flags = args.asNumber(10);
-                if (count > 11) {
-                  auto minEigThreshold = args.asNumber(11);
-
-                  cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria, flags, minEigThreshold);
-                  break;
-                }
-                cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria, flags);
-                break;
-              }
-              cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel, *termCriteria);
-              break;
-            }
-            cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize, maxLevel);
-            break;
-          }
-          cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err, *winSize);
-          break;
-        }
-        cv::calcOpticalFlowPyrLK(*prevImg, *nextImg, *prevPts, *nextPts, *status, *err);
-      } break;
       case hashString("matchTemplate", 13): {
         auto image = args.asMatPtr(1);
         auto templ = args.asMatPtr(2);
         auto result = args.asMatPtr(3);
         auto method = args.asNumber(4);
         auto mask = args.asMatPtr(5);
-        
+
         cv::matchTemplate(*image, *templ, *result, method, *mask);
       } break;
       case hashString("phaseCorrelate", 14): {

@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <any>
+#include <set>
 #include "UUID.hpp"
 
 #ifdef __cplusplus
