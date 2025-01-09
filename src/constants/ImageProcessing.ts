@@ -197,3 +197,9 @@ export enum ShapeMatchModes {
   CONTOURS_MATCH_I2 = 2,
   CONTOURS_MATCH_I3 = 3,
 }
+
+export enum OpticalFlowFlags {
+  OPTFLOW_USE_INITIAL_FLOW = 4,
+  OPTFLOW_LK_GET_MIN_EIGENVALS = 8,
+  OPTFLOW_FARNEBACK_GAUSSIAN = 256,
+}

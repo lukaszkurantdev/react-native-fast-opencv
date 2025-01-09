@@ -90,3 +90,9 @@ export enum SortFlags {
   SORT_ASCENDING = 0,
   SORT_DESCENDING = 16,
 }
+
+export enum TermCriteriaType {
+  COUNT = 1,
+  MAX_ITER = COUNT,
+  EPS = 2,
+}

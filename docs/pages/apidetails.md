@@ -3,6 +3,7 @@
 ## Objects
 
 ### Create Object
+
 The function creates a new object of the selected type and stores it in memory. The returned object contains the object identifier and type.
 
 ```js
@@ -45,6 +46,7 @@ createObject(
 ---
 
 ### Copy Object from Vector
+
 Copies an object from a vector to a separate object.
 
 ```js
@@ -60,6 +62,7 @@ copyObjectFromVector(vector: RectVector, itemIndex: number): Rect;
 ---
 
 ### To JS Value
+
 Converts an object to a JS-readable object.
 
 ```js
@@ -120,13 +123,15 @@ toJSValue(scalar: Scalar): {
 ## Utils
 
 ### Clear Buffers
+
 Clears stored objects from memory.
 
 ```js
-clearBuffers(): void;
+clearBuffers(idsToKeep?: string[]): void;
 ```
 
 ### Frame Buffer to Mat
+
 Creates an object of type Mat based on an array of Uint8Array.
 
 ```js
@@ -134,6 +139,7 @@ frameBufferToMat(rows: number, cols: number, channels: number, input: Uint8Array
 ```
 
 ### Base64 to Mat
+
 Creates an object of type Mat based on image in Base64.
 
 ```js
@@ -141,6 +147,7 @@ base64ToMat(data: string): Mat;
 ```
 
 ### Mat to Buffer
+
 Convert Mat object to Uint8Array or Float32Array based on value of parameter and returns with number of cols, rows and channels.
 
 ```ts

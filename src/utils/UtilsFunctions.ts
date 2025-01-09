@@ -15,7 +15,7 @@ export type UtilsFunctions = {
   /**
    * Clears any buffers that were allocate to back Mats on the native side.
    */
-  clearBuffers(): void;
+  clearBuffers(idsToKeep?: string[]): void;
   /**
    * Converts a byte array to a Mat.
    * @param rows - the number of rows in the Mat

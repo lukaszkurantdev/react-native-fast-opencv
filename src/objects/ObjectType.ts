@@ -12,4 +12,5 @@ export enum ObjectType {
   Vec3b = 'vec3b',
   Scalar = 'scalar',
   RotatedRect = 'rotated_rect',
+  TermCriteria = 'term_criteria',
 }
