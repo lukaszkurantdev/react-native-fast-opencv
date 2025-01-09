@@ -981,7 +981,7 @@ PODS:
     - Yoga
   - react-native-safe-area-context (4.14.0):
     - React-Core
-  - react-native-skia (1.5.5):
+  - react-native-skia (1.8.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1364,7 +1364,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.0)
-  - vision-camera-resize-plugin (3.1.0):
+  - vision-camera-resize-plugin (3.2.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1386,16 +1386,16 @@ PODS:
     - ReactCommon/turbomodule/core
     - VisionCamera
     - Yoga
-  - VisionCamera (4.6.1):
-    - VisionCamera/Core (= 4.6.1)
-    - VisionCamera/FrameProcessors (= 4.6.1)
-    - VisionCamera/React (= 4.6.1)
-  - VisionCamera/Core (4.6.1)
-  - VisionCamera/FrameProcessors (4.6.1):
+  - VisionCamera (4.6.3):
+    - VisionCamera/Core (= 4.6.3)
+    - VisionCamera/FrameProcessors (= 4.6.3)
+    - VisionCamera/React (= 4.6.3)
+  - VisionCamera/Core (4.6.3)
+  - VisionCamera/FrameProcessors (4.6.3):
     - React
     - React-callinvoker
     - react-native-worklets-core
-  - VisionCamera/React (4.6.1):
+  - VisionCamera/React (4.6.3):
     - React-Core
     - VisionCamera/FrameProcessors
   - Yoga (0.0.0)
@@ -1636,7 +1636,7 @@ SPEC CHECKSUMS:
   react-native-fast-opencv: 35b0442a0b585bc919de50a28344e5454c024b13
   react-native-image-picker: c3afe5472ef870d98a4b28415fc0b928161ee5f7
   react-native-safe-area-context: 4532f1a0c5d34a46b9324ccaaedcb5582a302b7d
-  react-native-skia: e2b30a7cca22f5daef0ed243d18de58403e7a997
+  react-native-skia: 2bae63532997971033b297348f4156d6a012cbef
   react-native-worklets-core: e0a05ed7887519277942efc866fd2785a24c86db
   React-nativeconfig: 2be4363c2c4ac2b42419577774e83e4e4fd2af9f
   React-NativeModulesApple: 453ada38f826a508e48872c7a7877c431af48bba
@@ -1664,8 +1664,8 @@ SPEC CHECKSUMS:
   RNReanimated: af4e059a8fd0fb7a9cdf5ad35ead4699598a9447
   RNScreens: 6b641f232990a9d505a6d139fd18c3c759c9d290
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
-  vision-camera-resize-plugin: 4306d5df9bce0e603bbe6ab04337f21a606f4ad1
-  VisionCamera: ec141897a88c2e95e8b83cf97b8e4db801e02fd6
+  vision-camera-resize-plugin: 8847ccd1940a61e84e23a3148bc1f1a20cecfd5f
+  VisionCamera: 88df4dae7196c93ecd331f105f0e5d7d95702cb3
   Yoga: 6259f968a4fdf516d76a4432dead624d71aa0fb1
 
 PODFILE CHECKSUM: ded8a41f26047703e900afe99b8a72ca375b02ca

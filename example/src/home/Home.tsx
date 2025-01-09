@@ -29,6 +29,12 @@ const items: ItemDetails[] = [
     description: 'Detect objects in realtime',
     route: Route.CameraRealtimeDetection,
   },
+  {
+    title: 'Document Detection',
+    emoji: '📷',
+    description: 'Detect documents in realtime',
+    route: Route.DocumentDetection,
+  },
 ];
 
 export const Home = () => {

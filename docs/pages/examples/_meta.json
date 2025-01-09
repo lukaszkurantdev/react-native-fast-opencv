@@ -1,4 +1,14 @@
 {
   "realtimedetection": "Real-time detection",
-  "blur": "Blur image on separated thread"
+  "blur": "Blur image on separated thread",
+  "document": {
+    "title": "Document detection ↗",
+    "href": "https://medium.com/@lukasz.kurant/real-time-document-detection-using-the-camera-in-react-native-b0cc0af3bbd9",
+    "newWindow": true
+  },
+  "passthrough": {
+    "title": "Camera passthrough ↗",
+    "href": "https://github.com/lukaszkurantdev/react-native-fast-opencv/blob/main/example/src/examples/CameraPassthrough.tsx",
+    "newWindow": true
+  }
 }
