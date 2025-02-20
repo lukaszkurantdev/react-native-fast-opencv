@@ -565,6 +565,19 @@ Calculates the optimal DFT size for a given vector size.
 invoke(name: 'getOptimalDFTSize', vecsize: number): { value: number };
 ```
 
+### getRotationMatrix2D
+
+Calculates rotation matrix.
+- name Function name.
+- center center point
+- angle angle value
+- scale scale value
+- dst output matrix
+
+```js
+invoke(name: 'getRotationMatrix2D', center: Point2f, angle: number, scale: number, dst: Mat): void;
+```
+
 ### hconcat
 
 Applies horizontal concatenation to given matrices
@@ -2391,6 +2404,26 @@ Finds a rotated rectangle of the minimum area enclosing the input 2D point set.
 
 ```js
 invoke(name: 'minAreaRect', points: Mat): RotatedRect;
+```
+
+### warpAffine
+
+Applies an affine transformation to an image.
+
+- name Function name.
+- src input image.
+- dst output image that has the size dsize and the same type as src
+- M transformation matrix
+- dsize size of the output image
+
+```js
+invoke(
+  name: 'warpAffine',
+  src: Mat,
+  dst: Mat,
+  M: Mat,
+  dsize: Size
+): Mat;
 ```
 
 ### warpPerspective

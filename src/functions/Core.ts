@@ -15,6 +15,7 @@ import type {
   Mat,
   MatVector,
   Point,
+  Point2f,
   PointVector,
   Rect,
   Scalar,
@@ -446,6 +447,22 @@ export type Core = {
    * @returns the optimal DFT size for a given vector size.
    */
   invoke(name: 'getOptimalDFTSize', vecsize: number): { value: number };
+
+  /**
+   * Calculates rotation matrix.
+   * @param name Function name.
+   * @param center center point
+   * @param angle angle value
+   * @param scale scale value
+   * @param dst output matrix
+   */
+  invoke(
+    name: 'getRotationMatrix2D',
+    center: Point2f,
+    angle: number,
+    scale: number,
+    dst: Mat
+  ): void;
 
   /**
    * Applies horizontal concatenation to given matrices

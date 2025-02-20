@@ -18,6 +18,16 @@ export type ImageTransform = {
   ): Mat;
 
   /**
+   * Applies an affine transformation to an image.
+   * @param name Function name.
+   * @param src input image.
+   * @param dst output image that has the size dsize and the same type as src
+   * @param M transformation matrix
+   * @param dsize size of the output image
+   */
+  invoke(name: 'warpAffine', src: Mat, dst: Mat, M: Mat, dsize: Size): Mat;
+
+  /**
    * Applies a perspective transformation to an image.
    * @param name Function name.
    * @param src input image.

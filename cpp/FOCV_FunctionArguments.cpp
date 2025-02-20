@@ -65,6 +65,13 @@ std::shared_ptr<std::vector<cv::Point>> FOCV_FunctionArguments::asPointVectorPtr
     return FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
 }
 
+std::shared_ptr<cv::Point2f> FOCV_FunctionArguments::asPoint2fPtr(int index) {
+    if (!this->isPoint2f(index)) {
+        throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Point2f!");
+    }
+    return FOCV_Storage::get<cv::Point2f>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+}
+
 std::shared_ptr<std::vector<cv::Point2f>> FOCV_FunctionArguments::asPoint2fVectorPtr(int index) {
     if (!this->isPoint2fVector(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Point2fVector!");
@@ -155,6 +162,10 @@ bool FOCV_FunctionArguments::isPoint(int index) {
 
 bool FOCV_FunctionArguments::isPointVector(int index) {
     return this->isObject(index) && FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "point_vector";
+}
+
+bool FOCV_FunctionArguments::isPoint2f(int index) {
+    return this->isObject(index) && FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "point2f";
 }
 
 bool FOCV_FunctionArguments::isPoint2fVector(int index) {

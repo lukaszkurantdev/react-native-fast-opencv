@@ -50,6 +50,7 @@ public:
     std::shared_ptr<std::vector<cv::Mat>> asMatVectorPtr(int index);
     std::shared_ptr<cv::Point> asPointPtr(int index);
     std::shared_ptr<std::vector<cv::Point>> asPointVectorPtr(int index);
+    std::shared_ptr<cv::Point2f> asPoint2fPtr(int index);
     std::shared_ptr<std::vector<cv::Point2f>> asPoint2fVectorPtr(int index);
     std::shared_ptr<std::vector<std::vector<cv::Point>>> asPointVectorOfVectorsPtr(int index);
     std::shared_ptr<cv::Rect> asRectPtr(int index);
@@ -67,6 +68,7 @@ public:
     bool isMatVector(int index);
     bool isPoint(int index);
     bool isPointVector(int index);
+    bool isPoint2f(int index);
     bool isPoint2fVector(int index);
     bool isPointVectorOfVectors(int index);
     bool isRect(int index);

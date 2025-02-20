@@ -382,6 +382,14 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto result = cv::getOptimalDFTSize(vecsize);
         value.setProperty(runtime, "value", result);
       } break;
+      case hashString("getRotationMatrix2D", 19): {
+        auto center = args.asPoint2fPtr(1);
+        auto angle = args.asNumber(2);
+        auto scale = args.asNumber(3);
+        auto dst = args.asMatPtr(4);
+        
+        *dst = cv::getRotationMatrix2D(*center, angle, scale);
+      } break;
       case hashString("hconcat", 7): {
         auto srcs = args.asMatVectorPtr(1);
         auto dst = args.asMatPtr(2);
@@ -1427,6 +1435,14 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           break;
         }
         (*src).convertTo(*dst, rtype);
+      } break;
+      case hashString("warpAffine", 10): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto rotation = args.asMatPtr(3);
+        auto size = args.asSizePtr(4);
+        
+        cv::warpAffine(*src, *dst, *rotation, *size);
       } break;
       case hashString("warpPerspective", 15): {
         auto src = args.asMatPtr(1);
