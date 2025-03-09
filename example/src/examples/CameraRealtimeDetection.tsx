@@ -47,7 +47,7 @@ export function CameraRealtimeDetection() {
       dataType: 'uint8',
     });
 
-    const src = OpenCV.frameBufferToMat(height, width, 3, resized);
+    const src = OpenCV.bufferToMat('uint8', height, width, 3, resized);
     const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
 
     const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
