@@ -11,6 +11,8 @@ type BufferType = {
   float64: Float64Array;
 };
 
+type ImportBufferType = Omit<BufferType, 'uint32'>;
+
 export type UtilsFunctions = {
   /**
    * Clears any buffers that were allocate to back Mats on the native side.
@@ -18,6 +20,9 @@ export type UtilsFunctions = {
   clearBuffers(idsToKeep?: string[]): void;
   /**
    * Converts a byte array to a Mat.
+   *
+   * @deprecated Use the new `bufferToMat` function instead.
+   *
    * @param rows - the number of rows in the Mat
    * @param cols - the number of columns in the Mat
    * @param channels - the number of channels in the Mat
@@ -28,6 +33,20 @@ export type UtilsFunctions = {
     cols: number,
     channels: number,
     input: Uint8Array
+  ): Mat;
+  /**
+   * Converts a byte array to a Mat.
+   * @param rows - the number of rows in the Mat
+   * @param cols - the number of columns in the Mat
+   * @param channels - the number of channels in the Mat
+   * @param input - the byte array to convert
+   */
+  bufferToMat<T extends keyof ImportBufferType>(
+    type: T,
+    rows: number,
+    cols: number,
+    channels: 1 | 3 | 4,
+    input: ImportBufferType[T]
   ): Mat;
   /**
    * Converts a base64 string to a Mat.

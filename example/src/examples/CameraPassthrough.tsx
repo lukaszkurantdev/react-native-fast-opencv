@@ -130,7 +130,7 @@ export function CameraPassthrough() {
         rotation: '90deg',
       });
 
-      const frameMat = OpenCV.frameBufferToMat(HEIGHT, WIDTH, 4, resized);
+      const frameMat = OpenCV.bufferToMat('uint8', HEIGHT, WIDTH, 4, resized);
       const output = OpenCV.matToBuffer(frameMat, 'uint8');
       const data = Skia.Data.fromBytes(output.buffer);
 

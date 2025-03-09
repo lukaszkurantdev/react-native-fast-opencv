@@ -73,6 +73,70 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);
     });
+  } else  if (propName == "bufferToMat") {
+    return jsi::Function::createFromHostFunction(
+        runtime, jsi::PropNameID::forAscii(runtime, "bufferToMat"), 4,
+        [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+            size_t count) -> jsi::Object {
+        auto type = arguments[0].asString(runtime).utf8(runtime);
+        auto rows = arguments[1].asNumber();
+        auto cols = arguments[2].asNumber();
+        auto channels = arguments[3].asNumber();
+        auto input = arguments[4].asObject(runtime);
+
+        auto modeType = -1;
+        auto typeSize = 1;
+              
+        if(type == "uint8") {
+          typeSize = 1;
+          if (channels == 1) modeType = CV_8U;
+          if (channels == 3) modeType = CV_8UC3;
+          if (channels == 4) modeType = CV_8UC4;
+        } else if(type == "uint16") {
+          typeSize = 2;
+          if (channels == 1) modeType = CV_16U;
+          if (channels == 3) modeType = CV_16UC3;
+          if (channels == 4) modeType = CV_16UC4;
+        } else if(type == "int8") {
+          typeSize = 1;
+          if (channels == 1) modeType = CV_8S;
+          if (channels == 3) modeType = CV_8SC3;
+          if (channels == 4) modeType = CV_8SC4;
+        } else if(type == "int16") {
+          typeSize = 2;
+          if (channels == 1) modeType = CV_16S;
+          if (channels == 3) modeType = CV_16SC3;
+          if (channels == 4) modeType = CV_16SC4;
+        } else if(type == "int32") {
+          typeSize = 4;
+          if (channels == 1) modeType = CV_32S;
+          if (channels == 3) modeType = CV_32SC3;
+          if (channels == 4) modeType = CV_32SC4;
+        } else if(type == "float32") {
+          typeSize = 4;
+          if (channels == 1) modeType = CV_32F;
+          if (channels == 3) modeType = CV_32FC3;
+          if (channels == 4) modeType = CV_32FC4;
+        } else if(type == "float64") {
+          typeSize = 8;
+          if (channels == 1) modeType = CV_64F;
+          if (channels == 3) modeType = CV_64FC3;
+          if (channels == 4) modeType = CV_64FC4;
+        }
+              
+        if (channels == -1) {
+          throw std::runtime_error("Fast OpenCV Error: Invalid channel count passed to frameBufferToMat!");
+        }
+
+        auto inputBuffer = getTypedArray(runtime, std::move(input));
+        auto vec = inputBuffer.toVector(runtime);
+
+        cv::Mat mat(rows, cols, modeType);
+        memcpy(mat.data, vec.data(), (int)rows * (int)cols * (int)channels * typeSize);
+        auto id = FOCV_Storage::save(mat);
+
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+    });
   }
   else if (propName == "base64ToMat") {
       return jsi::Function::createFromHostFunction(

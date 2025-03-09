@@ -130,12 +130,32 @@ Clears stored objects from memory.
 clearBuffers(idsToKeep?: string[]): void;
 ```
 
-### Frame Buffer to Mat
+###  Buffer to Mat
 
-Creates an object of type Mat based on an array of Uint8Array.
+Creates an object of type Mat based on an array of Buffer Array.
 
 ```js
-frameBufferToMat(rows: number, cols: number, channels: number, input: Uint8Array): Mat;
+bufferToMat<T extends keyof ImportBufferType>(
+  type: T,
+  rows: number,
+  cols: number,
+  channels: 1 | 3 | 4,
+  input: ImportBufferType[T]
+): Mat;
+```
+
+where `ImportBufferType` is:
+
+```ts
+type ImportBufferType = {
+  uint8: Uint8Array;
+  uint16: Uint16Array;
+  int8: Int8Array;
+  int16: Int16Array;
+  int32: Int32Array;
+  float32: Float32Array;
+  float64: Float64Array;
+};
 ```
 
 ### Base64 to Mat

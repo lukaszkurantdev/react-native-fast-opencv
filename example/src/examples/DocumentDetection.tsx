@@ -57,7 +57,7 @@ export function DocumentDetection() {
       },
     });
 
-    const source = OpenCV.frameBufferToMat(height, width, 3, resized);
+    const source = OpenCV.bufferToMat('uint8', height, width, 3, resized);
 
     OpenCV.invoke(
       'cvtColor',
