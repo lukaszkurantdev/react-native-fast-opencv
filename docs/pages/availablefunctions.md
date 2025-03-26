@@ -882,6 +882,16 @@ invoke(
   normType: NormTypes
 ): void;
 ```
+### normalize
+
+Merges several arrays to make a single multi-channel array
+
+- channels input vector of matrices to be merged; all the matrices in mv must have the same size and the same depth.
+- dst output array of the same size and the same depth as mv[0]; The number of channels will be the total number of channels in the matrix array.
+
+```js
+invoke(name: 'merge', channels: MatVector, dst: Mat): void;
+```
 
 ### patchNaNs
 

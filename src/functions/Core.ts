@@ -713,6 +713,14 @@ export type Core = {
   ): void;
 
   /**
+   * Merges several arrays to make a single multi-channel array.
+   * @param name Function name.
+   * @param channels input vector of matrices to be merged; all the matrices in mv must have the same size and the same depth.
+   * @param dst output array of the same size and the same depth as mv[0]; The number of channels will be the total number of channels in the matrix array.
+   */
+  invoke(name: 'merge', channels: MatVector, dst: Mat): void;
+
+  /**
    * converts NaNs to the given number
    * @param name Function name.
    * @param a input/output matrix (CV_32F type).

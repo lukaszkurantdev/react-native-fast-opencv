@@ -590,6 +590,12 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::normalize(*src, *dst, alpha, normType);
       } break;
+      case hashString("merge", 5): {
+        auto src = args.asMatVectorPtr(1);
+        auto dst = args.asMatPtr(2);
+        
+        cv::merge(*src, *dst);
+      } break;
       case hashString("patchNaNs", 9): {
         auto alpha = args.asNumber(2);
         
