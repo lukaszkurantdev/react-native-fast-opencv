@@ -513,16 +513,22 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         double min = 0;
         double max = 0;
         
+        Point minLoc; Point maxLoc;
+        
         if (count > 2) {
           auto mask = args.asMatPtr(2);
           
-          cv::minMaxIdx(*src, &min, &max, NULL, NULL, *mask);
+          cv::minMaxLoc(*src, &min, &max, &minLoc, &maxLoc, *mask);
         } else {
-          cv::minMaxIdx(*src, &min, &max);
+          cv::minMaxLoc(*src, &min, &max, &minLoc, &maxLoc);
         }
         
         value.setProperty(runtime, "minVal", jsi::Value(min));
         value.setProperty(runtime, "maxVal", jsi::Value(max));
+        value.setProperty(runtime, "minX", minLoc.x);
+        value.setProperty(runtime, "minY", minLoc.y);
+        value.setProperty(runtime, "maxX", maxLoc.x);
+        value.setProperty(runtime, "maxY", maxLoc.y);
       } break;
       case hashString("mulSpectrums", 12): {
         auto a = args.asMatPtr(1);
@@ -590,6 +596,12 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::normalize(*src, *dst, alpha, normType);
       } break;
+      case hashString("merge", 5): {
+        auto src = args.asMatVectorPtr(1);
+        auto dst = args.asMatPtr(2);
+        
+        cv::merge(*src, *dst);
+      } break;
       case hashString("patchNaNs", 9): {
         auto alpha = args.asNumber(2);
         
@@ -653,6 +665,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto dst = args.asMatPtr(4);
         
         cv::repeat(*src, ny, nx, *dst);
+      } break;
+      case hashString("resize", 6): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto dsize = args.asSizePtr(3);
+        auto fx = args.asNumber(4);
+        auto fy = args.asNumber(5);
+        auto interpolation = args.asNumber(6);
+        
+        cv::resize(*src, *dst, *dsize, fx, fy, interpolation);
       } break;
       case hashString("rotate", 6): {
         auto src = args.asMatPtr(1);
@@ -1385,6 +1407,21 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto dst = args.asPointVectorOfVectorsPtr(2);
           cv::findContours(*src, *dst, mode, method);
         }
+      } break;
+      case hashString("findContoursWithHierarchy", 25): {
+        auto src = args.asMatPtr(1);
+        auto hierarchy = args.asMatPtr(3);
+        auto mode = args.asNumber(4);
+        auto method = args.asNumber(5);
+        
+        if (args.isMatVector(2)) {
+          auto dst = args.asMatVectorPtr(2);
+          cv::findContours(*src, *dst, *hierarchy, mode, method);
+        } else {
+          auto dst = args.asPointVectorOfVectorsPtr(2);
+          cv::findContours(*src, *dst, *hierarchy, mode, method);
+        }
+        
       } break;
       case hashString("fitLine", 7): {
         auto points = args.asMatPtr(1);

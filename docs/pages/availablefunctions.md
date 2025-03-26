@@ -778,7 +778,14 @@ invoke(
   name: 'minMaxLoc',
   src: Mat,
   mask?: Mat
-): { minVal: number; maxVal: number };
+): {
+  minVal: number;
+  maxVal: number;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
 ```
 
 ### mulSpectrums
@@ -881,6 +888,16 @@ invoke(
   alpha: number,
   normType: NormTypes
 ): void;
+```
+### normalize
+
+Merges several arrays to make a single multi-channel array
+
+- channels input vector of matrices to be merged; all the matrices in mv must have the same size and the same depth.
+- dst output array of the same size and the same depth as mv[0]; The number of channels will be the total number of channels in the matrix array.
+
+```js
+invoke(name: 'merge', channels: MatVector, dst: Mat): void;
 ```
 
 ### patchNaNs
@@ -989,6 +1006,29 @@ Fills the output array with repeated copies of the input array
 
 ```js
 invoke(name: 'repeat', src: Mat, ny: number, nx: number, dst: Mat): void;
+```
+
+### resize
+
+The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or size are not taken into account. Instead, the size and type are derived from the `src`,`dsize`,`fx`, and `fy`.
+
+- src input image.
+- dst output image; it has the size dsize (when it is non-zero) or the size computed from src.size(), fx, and fy; the type of dst is the same as of src.
+- dsize output image size
+- fx scale factor along the horizontal axis
+- fy scale factor along the vertical axis
+- interpolation interpolation method, see #InterpolationFlags
+
+```js
+invoke(
+  name: 'resize',
+  src: Mat,
+  dst: Mat,
+  dsize: Size,
+  fx: number,
+  fy: number,
+  interpolation: InterpolationFlags
+): void;
 ```
 
 ### rotate
@@ -2336,6 +2376,27 @@ invoke(
   name: 'findContours',
   image: Mat | MatVector,
   contours: MatVector | PointVectorOfVectors,
+  mode: RetrievalModes,
+  method: ContourApproximationModes
+): void;
+```
+
+### findContoursWithHierarchy
+
+Finds contours in a binary image
+
+- image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1s. Zero pixels remain 0s, so the image is treated as binary . You can use compare, inRange, threshold , adaptiveThreshold, Canny, and others to create a binary image out of a grayscale or color one. If mode equals to RETR_CCOMP or RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+- contours Detected contours. Each contour is stored as a vector of points
+- hierarchy output vector, containing information about the image topology. It has as many elements as the number of contours.
+- mode Contour retrieval mode, @see RetrievalModes
+- method Contour approximation method, @see ContourApproximationModes
+
+```js
+invoke(
+  name: 'findContoursWithHierarchy',
+  image: Mat,
+  contours: MatVector | PointVectorOfVectors,
+  hierarchy: Mat,
   mode: RetrievalModes,
   method: ContourApproximationModes
 ): void;

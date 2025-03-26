@@ -11,6 +11,7 @@ import type {
   SortFlags,
 } from '../constants/Core';
 import type { DataTypes } from '../constants/DataTypes';
+import type { InterpolationFlags } from '../constants/ImageTransform';
 import type {
   Mat,
   MatVector,
@@ -19,6 +20,7 @@ import type {
   PointVector,
   Rect,
   Scalar,
+  Size,
 } from '../objects/Objects';
 
 export type Core = {
@@ -621,7 +623,14 @@ export type Core = {
     name: 'minMaxLoc',
     src: Mat,
     mask?: Mat
-  ): { minVal: number; maxVal: number };
+  ): {
+    minVal: number;
+    maxVal: number;
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
+  };
 
   /**
    * Performs the per-element multiplication of two Fourier spectrums
@@ -711,6 +720,14 @@ export type Core = {
   ): void;
 
   /**
+   * Merges several arrays to make a single multi-channel array.
+   * @param name Function name.
+   * @param channels input vector of matrices to be merged; all the matrices in mv must have the same size and the same depth.
+   * @param dst output array of the same size and the same depth as mv[0]; The number of channels will be the total number of channels in the matrix array.
+   */
+  invoke(name: 'merge', channels: MatVector, dst: Mat): void;
+
+  /**
    * converts NaNs to the given number
    * @param name Function name.
    * @param a input/output matrix (CV_32F type).
@@ -796,6 +813,28 @@ export type Core = {
    * @param dst output array of the same type as src.
    */
   invoke(name: 'repeat', src: Mat, ny: number, nx: number, dst: Mat): void;
+
+  /**
+   * The function resize resizes the image src down to or up to the specified size. Note that the
+   * initial dst type or size are not taken into account. Instead, the size and type are derived from
+   * the `src`,`dsize`,`fx`, and `fy`.
+   * @param name Function name.
+   * @param src input image.
+   * @param dst output image; it has the size dsize (when it is non-zero) or the size computed from src.size(), fx, and fy; the type of dst is the same as of src.
+   * @param dsize output image size
+   * @param fx scale factor along the horizontal axis
+   * @param fy scale factor along the vertical axis
+   * @param interpolation interpolation method, see #InterpolationFlags
+   */
+  invoke(
+    name: 'resize',
+    src: Mat,
+    dst: Mat,
+    dsize: Size,
+    fx: number,
+    fy: number,
+    interpolation: InterpolationFlags
+  ): void;
 
   /**
    * Rotates matrix.
