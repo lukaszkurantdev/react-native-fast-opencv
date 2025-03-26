@@ -991,6 +991,29 @@ Fills the output array with repeated copies of the input array
 invoke(name: 'repeat', src: Mat, ny: number, nx: number, dst: Mat): void;
 ```
 
+### resize
+
+The function resize resizes the image src down to or up to the specified size. Note that the initial dst type or size are not taken into account. Instead, the size and type are derived from the `src`,`dsize`,`fx`, and `fy`.
+
+- src input image.
+- dst output image; it has the size dsize (when it is non-zero) or the size computed from src.size(), fx, and fy; the type of dst is the same as of src.
+- dsize output image size
+- fx scale factor along the horizontal axis
+- fy scale factor along the vertical axis
+- interpolation interpolation method, see #InterpolationFlags
+
+```js
+invoke(
+  name: 'resize',
+  src: Mat,
+  dst: Mat,
+  dsize: Size,
+  fx: number,
+  fy: number,
+  interpolation: InterpolationFlags
+): void;
+```
+
 ### rotate
 
 Rotates matrix.

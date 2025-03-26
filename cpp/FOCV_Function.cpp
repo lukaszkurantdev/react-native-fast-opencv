@@ -654,6 +654,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         cv::repeat(*src, ny, nx, *dst);
       } break;
+      case hashString("resize", 6): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto dsize = args.asSizePtr(3);
+        auto fx = args.asNumber(4);
+        auto fy = args.asNumber(5);
+        auto interpolation = args.asNumber(6);
+        
+        cv::resize(*src, *dst, *dsize, fx, fy, interpolation);
+      } break;
       case hashString("rotate", 6): {
         auto src = args.asMatPtr(1);
         auto dst = args.asMatPtr(2);
