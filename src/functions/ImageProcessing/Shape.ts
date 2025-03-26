@@ -124,6 +124,23 @@ export type Shape = {
   ): void;
 
   /**
+   * Finds contours in a binary image
+   * @param image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero pixels remain 0's, so the image is treated as binary . You can use compare, inRange, threshold , adaptiveThreshold, Canny, and others to create a binary image out of a grayscale or color one. If mode equals to RETR_CCOMP or RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+   * @param contours Detected contours. Each contour is stored as a vector of points
+   * @param hierarchy output vector, containing information about the image topology. It has as many elements as the number of contours.
+   * @param mode Contour retrieval mode, @see RetrievalModes
+   * @param method Contour approximation method, @see ContourApproximationModes
+   */
+  invoke(
+    name: 'findContoursWithHierarchy',
+    image: Mat,
+    contours: MatVector | PointVectorOfVectors,
+    hierarchy: Mat,
+    mode: RetrievalModes,
+    method: ContourApproximationModes
+  ): void;
+
+  /**
    * Fits a line to a 2D or 3D point set.
    * @param points Input vector of 2D or 3D points, stored in a Mat.
    * @param line Output line parameters. In case of 2D fitting, it should be a vector of 4 elements (like Vec4f) - (vx, vy, x0, y0), where (vx, vy) is a normalized vector collinear to the line and (x0, y0) is a point on the line. In case of 3D fitting, it should be a vector of 6 elements (like Vec6f) - (vx, vy, vz, x0, y0, z0), where (vx, vy, vz) is a normalized vector collinear to the line and (x0, y0, z0) is a point on the line

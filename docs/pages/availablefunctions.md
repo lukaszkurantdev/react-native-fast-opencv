@@ -2364,6 +2364,27 @@ invoke(
 ): void;
 ```
 
+### findContoursWithHierarchy
+
+Finds contours in a binary image
+
+- image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1s. Zero pixels remain 0s, so the image is treated as binary . You can use compare, inRange, threshold , adaptiveThreshold, Canny, and others to create a binary image out of a grayscale or color one. If mode equals to RETR_CCOMP or RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+- contours Detected contours. Each contour is stored as a vector of points
+- hierarchy output vector, containing information about the image topology. It has as many elements as the number of contours.
+- mode Contour retrieval mode, @see RetrievalModes
+- method Contour approximation method, @see ContourApproximationModes
+
+```js
+invoke(
+  name: 'findContoursWithHierarchy',
+  image: Mat,
+  contours: MatVector | PointVectorOfVectors,
+  hierarchy: Mat,
+  mode: RetrievalModes,
+  method: ContourApproximationModes
+): void;
+```
+
 ### fitLine
 
 Fits a line to a 2D or 3D point set.

@@ -1396,6 +1396,21 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           cv::findContours(*src, *dst, mode, method);
         }
       } break;
+      case hashString("findContoursWithHierarchy", 25): {
+        auto src = args.asMatPtr(1);
+        auto hierarchy = args.asMatPtr(3);
+        auto mode = args.asNumber(4);
+        auto method = args.asNumber(5);
+        
+        if (args.isMatVector(2)) {
+          auto dst = args.asMatVectorPtr(2);
+          cv::findContours(*src, *dst, *hierarchy, mode, method);
+        } else {
+          auto dst = args.asPointVectorOfVectorsPtr(2);
+          cv::findContours(*src, *dst, *hierarchy, mode, method);
+        }
+        
+      } break;
       case hashString("fitLine", 7): {
         auto points = args.asMatPtr(1);
         auto line = args.asMatPtr(2);
