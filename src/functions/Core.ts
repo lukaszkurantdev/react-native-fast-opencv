@@ -623,7 +623,14 @@ export type Core = {
     name: 'minMaxLoc',
     src: Mat,
     mask?: Mat
-  ): { minVal: number; maxVal: number };
+  ): {
+    minVal: number;
+    maxVal: number;
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
+  };
 
   /**
    * Performs the per-element multiplication of two Fourier spectrums

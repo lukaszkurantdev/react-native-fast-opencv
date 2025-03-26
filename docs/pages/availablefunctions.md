@@ -778,7 +778,14 @@ invoke(
   name: 'minMaxLoc',
   src: Mat,
   mask?: Mat
-): { minVal: number; maxVal: number };
+): {
+  minVal: number;
+  maxVal: number;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+};
 ```
 
 ### mulSpectrums
