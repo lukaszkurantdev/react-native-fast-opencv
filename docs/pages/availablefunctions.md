@@ -219,6 +219,16 @@ invoke(
 ): void;
 ```
 
+### clone
+
+The method creates a full copy of the array.
+
+- src input array.
+
+```js
+invoke(name: 'clone', src: Mat): Mat;
+```
+
 ### compare
 
 Performs the per-element comparison of two arrays or an array and scalar value

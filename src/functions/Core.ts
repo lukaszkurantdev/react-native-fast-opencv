@@ -205,6 +205,13 @@ export type Core = {
   ): void;
 
   /**
+   * The method creates a full copy of the array.
+   * @param name Function name.
+   * @param src input array.
+   */
+  invoke(name: 'clone', src: Mat): Mat;
+
+  /**
    * Performs the per-element comparison of two arrays or an array and scalar value
    * @param name Function name.
    * @param src1 first input array or a scalar; when it is an array, it must have a single channel

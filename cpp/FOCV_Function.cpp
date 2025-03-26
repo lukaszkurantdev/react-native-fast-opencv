@@ -193,6 +193,15 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           cv::checkRange(*a, quiet, &(*pos), minVal, maxVal);
         }
       } break;
+      case hashString("clone", 5): {
+        auto src = args.asMatPtr(1);
+
+        cv::Mat result = (*src).clone();
+        std::string id = FOCV_Storage::save(result);
+        
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+      } break;
+        
       case hashString("compare", 7): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
