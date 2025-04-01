@@ -1,6 +1,12 @@
 import type { BorderTypes, DecompTypes } from '../../constants/Core';
 import type { InterpolationFlags } from '../../constants/ImageTransform';
-import type { Mat, PointVector, Scalar, Size } from '../../objects/Objects';
+import type {
+  Mat,
+  Point2f,
+  PointVector,
+  Scalar,
+  Size,
+} from '../../objects/Objects';
 
 export type ImageTransform = {
   /**
@@ -47,5 +53,25 @@ export type ImageTransform = {
     flags: InterpolationFlags,
     borderMode: BorderTypes.BORDER_CONSTANT | BorderTypes.BORDER_REPLICATE,
     borderValue: Scalar
+  ): void;
+
+  /**
+   * Remaps an image to polar or semilog-polar coordinates space.
+   * @param name Function name.
+   * @param src source image.
+   * @param dst destination image. It will have same type as src.
+   * @param dsize the destination image size.
+   * @param center the transformation center.
+   * @param maxRadius the radius of the bounding circle to transform. It determines the inverse magnitude scale parameter too.
+   * @param flags a combination of interpolation methods, InterpolationFlags + WarpPolarMode.
+   */
+  invoke(
+    name: 'warpPolar',
+    src: Mat,
+    dst: Mat,
+    dsize: Size,
+    center: Point2f,
+    maxRadius: number,
+    flags: number
   ): void;
 };

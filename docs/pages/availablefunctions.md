@@ -2522,3 +2522,27 @@ invoke(
   borderValue: Scalar
 ): void;
 ```
+
+### warpPolar
+
+Remaps an image to polar or semilog-polar coordinates space.
+
+- name Function name.
+- src source image.
+- dst destination image. It will have same type as src.
+- dsize the destination image size.
+- center the transformation center.
+- maxRadius the radius of the bounding circle to transform. It determines the inverse magnitude scale parameter too.
+- flags a combination of interpolation methods, InterpolationFlags + WarpPolarMode.
+
+```js
+invoke(
+  name: 'warpPolar',
+  src: Mat,
+  dst: Mat,
+  dsize: Size,
+  center: Point2f,
+  maxRadius: number,
+  flags: number
+): void;
+```
