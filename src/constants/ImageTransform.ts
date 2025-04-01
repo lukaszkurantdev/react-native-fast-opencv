@@ -11,3 +11,8 @@ export enum InterpolationFlags {
   WARP_INVERSE_MAP = 16,
   WARP_RELATIVE_MAP = 32,
 }
+
+export enum WarpPolarMode {
+  WARP_POLAR_LINEAR = 0,
+  WARP_POLAR_LOG = 256,
+}
