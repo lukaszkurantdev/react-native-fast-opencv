@@ -366,3 +366,35 @@ jsi::Object FOCV_Object::copyObjectFromVector(jsi::Runtime& runtime, const jsi::
 
     return value;
 }
+
+void FOCV_Object::addObjectToVector(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
+    std::string createdId;
+
+    jsi::Object value(runtime);
+    std::string objectType = FOCV_JsiObject::type_from_wrap(runtime, arguments[0]);
+    std::string vectorId = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+    std::string objectId = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+  
+    switch(hashString(objectType.c_str(), objectType.size())) {
+        case hashString("mat_vector", 10): {
+            auto array = *FOCV_Storage::get<std::vector<cv::Mat>>(vectorId);
+            auto object = *FOCV_Storage::get<cv::Mat>(objectId);
+            array.push_back(object);
+        } break;
+        case hashString("rect_vector", 11): {
+            auto array = *FOCV_Storage::get<std::vector<cv::Rect>>(vectorId);
+            auto object = *FOCV_Storage::get<cv::Rect>(objectId);
+            array.push_back(object);
+        } break;
+        case hashString("point_vector", 12): {
+            auto array = *FOCV_Storage::get<std::vector<cv::Point>>(vectorId);
+            auto object = *FOCV_Storage::get<cv::Point>(objectId);
+            array.push_back(object);
+        } break;
+        case hashString("point_vector_vector", 19): {
+            auto array = *FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(vectorId);
+            auto object = *FOCV_Storage::get<std::vector<cv::Point>>(objectId);
+            array.push_back(object);
+        } break;
+    }
+}
