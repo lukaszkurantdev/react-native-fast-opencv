@@ -1501,6 +1501,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
 
         cv::warpPerspective(*src, *dst, *M, *size, flags, borderMode, *borderValue);
       } break;
+      case hashString("warpPolar", 9): {
+        auto src = args.asMatPtr(1);
+        auto dst = args.asMatPtr(2);
+        auto size = args.asSizePtr(3);
+        auto center = args.asPoint2fPtr(4);
+        auto maxRadius = args.asNumber(5);
+        auto flags = args.asNumber(6);
+
+        cv::warpPolar(*src, *dst, *size, *center, maxRadius, flags);
+      } break;
     }
   } catch (cv::Exception& e) {
     std::string message(e.what());
