@@ -93,17 +93,48 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::batchDistance(*src1, *src2, *dist, dtype, *nidx, normType, K, *mask, update, crosscheck);
       } break;
       case hashString("bitwise_and", 11): {
-        auto src1 = args.asMatPtr(1);
-        auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if (count > 4) {
-          auto mask = args.asMatPtr(4);
+        if (args.isMat(1)) {
+          auto src1 = args.asMatPtr(1);
           
-          cv::bitwise_and(*src1, *src2, *dst, *mask);
-          break;
+          if(args.isScalar(2)) {
+            auto src2 = args.asScalarPtr(2);
+            cv::bitwise_and(*src1, *src2, *dst);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_and(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+          } else {
+            auto src2 = args.asMatPtr(2);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_and(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+            cv::bitwise_and(*src1, *src2, *dst);
+          }
+        } else {
+          auto src1 = args.asScalarPtr(1);
+          auto src2 = args.asMatPtr(2);
+
+          
+          if (count > 4) {
+            auto mask = args.asMatPtr(4);
+            
+            cv::bitwise_and(*src1, *src2, *dst, *mask);
+            break;
+          }
+          
+          cv::bitwise_and(*src1, *src2, *dst);
         }
-        cv::bitwise_and(*src1, *src2, *dst);
       } break;
       case hashString("bitwise_not", 11): {
         auto src = args.asMatPtr(1);
@@ -118,30 +149,90 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::bitwise_not(*src, *dst);
       } break;
       case hashString("bitwise_or", 10): {
-        auto src1 = args.asMatPtr(1);
-        auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if (count > 4) {
-          auto mask = args.asMatPtr(4);
+        if (args.isMat(1)) {
+          auto src1 = args.asMatPtr(1);
           
-          cv::bitwise_or(*src1, *src2, *dst, *mask);
-          break;
+          if(args.isScalar(2)) {
+            auto src2 = args.asScalarPtr(2);
+            cv::bitwise_or(*src1, *src2, *dst);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_or(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+          } else {
+            auto src2 = args.asMatPtr(2);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_or(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+            cv::bitwise_or(*src1, *src2, *dst);
+          }
+        } else {
+          auto src1 = args.asScalarPtr(1);
+          auto src2 = args.asMatPtr(2);
+          
+          if (count > 4) {
+            auto mask = args.asMatPtr(4);
+            
+            cv::bitwise_or(*src1, *src2, *dst, *mask);
+            break;
+          }
+          
+          cv::bitwise_or(*src1, *src2, *dst);
         }
-        cv::bitwise_or(*src1, *src2, *dst);
       } break;
       case hashString("bitwise_xor", 11): {
-        auto src1 = args.asMatPtr(1);
-        auto src2 = args.asMatPtr(2);
         auto dst = args.asMatPtr(3);
         
-        if (count > 4) {
-          auto mask = args.asMatPtr(4);
+        if (args.isMat(1)) {
+          auto src1 = args.asMatPtr(1);
           
-          cv::bitwise_xor(*src1, *src2, *dst, *mask);
-          break;
+          if(args.isScalar(2)) {
+            auto src2 = args.asScalarPtr(2);
+            cv::bitwise_xor(*src1, *src2, *dst);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_xor(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+          } else {
+            auto src2 = args.asMatPtr(2);
+            
+            if (count > 4) {
+              auto mask = args.asMatPtr(4);
+              
+              cv::bitwise_xor(*src1, *src2, *dst, *mask);
+              break;
+            }
+            
+            cv::bitwise_xor(*src1, *src2, *dst);
+          }
+        } else {
+          auto src1 = args.asScalarPtr(1);
+          auto src2 = args.asMatPtr(2);
+          
+          if (count > 4) {
+            auto mask = args.asMatPtr(4);
+            
+            cv::bitwise_xor(*src1, *src2, *dst, *mask);
+            break;
+          }
+          
+          cv::bitwise_xor(*src1, *src2, *dst);
         }
-        cv::bitwise_xor(*src1, *src2, *dst);
       } break;
       case hashString("borderInterpolate", 17): {
         auto p = args.asNumber(1);
@@ -203,12 +294,26 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
         
       case hashString("compare", 7): {
-        auto src1 = args.asMatPtr(1);
-        auto src2 = args.asMatPtr(2);
-        auto dst = args.asMatPtr(3);
         auto cmpop = args.asNumber(4);
+        auto dst = args.asMatPtr(3);
         
-        cv::compare(*src1, *src2, *dst, cmpop);
+        if (args.isMat(1)) {
+          auto src1 = args.asMatPtr(1);
+          
+          if(args.isScalar(2)) {
+            auto src2 = args.asScalarPtr(2);
+            cv::compare(*src1, *src2, *dst, cmpop);
+          } else {
+            auto src2 = args.asMatPtr(2);
+            cv::compare(*src1, *src2, *dst, cmpop);
+          }
+        } else {
+          auto src1 = args.asScalarPtr(1);
+          auto src2 = args.asMatPtr(2);
+
+          cv::compare(*src1, *src2, *dst, cmpop);
+        }
+       
       } break;
       case hashString("completeSymm", 12): {
         auto lowerToUpper = args.asBool(2);

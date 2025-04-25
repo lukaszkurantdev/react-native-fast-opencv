@@ -88,7 +88,8 @@ computes bitwise conjunction of the two arrays (dst = src1 & src2) Calculates th
 - mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
 
 ```js
-invoke(name: 'bitwise_and', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+invoke(name: 'bitwise_and', src1: Mat, src2: Mat | Scalar, dst: Mat, mask?: Mat)
+invoke(name: 'bitwise_and', src1: Scalar, src2: Mat, dst: Mat, mask?: Mat): void;
 ```
 
 ### bitwise_not
@@ -113,7 +114,8 @@ Calculates the per-element bit-wise disjunction of two arrays or an array and a 
 - mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
 
 ```js
-invoke(name: 'bitwise_or', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+invoke(name: 'bitwise_or', src1: Mat, src2: Mat | Scalar, dst: Mat, mask?: Mat): void;
+invoke(name: 'bitwise_or', src1: Scalar, src2: Mat, dst: Mat, mask?: Mat): void;
 ```
 
 ### bitwise_xor
@@ -126,7 +128,8 @@ Calculates the per-element bit-wise "exclusive or" operation on two arrays or an
 - mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
 
 ```js
-invoke(name: 'bitwise_xor', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+invoke(name: 'bitwise_xor', src1: Mat, src2: Mat | Scalar, dst: Mat, mask?: Mat)
+invoke(name: 'bitwise_xor', src1: Scalar, src2: Mat, dst: Mat, mask?: Mat): void;
 ```
 
 ### borderInterpolate
@@ -242,6 +245,13 @@ Performs the per-element comparison of two arrays or an array and scalar value
 invoke(
   name: 'compare',
   src1: Mat,
+  src2: Mat | Scalar,
+  dst: Mat,
+  cmpop: CmpTypes
+): void;
+invoke(
+  name: 'compare',
+  src1: Scalar,
   src2: Mat,
   dst: Mat,
   cmpop: CmpTypes
