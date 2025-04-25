@@ -233,6 +233,17 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           return FOCV_Object::copyObjectFromVector(runtime, arguments, count);
       });
     }
+  else if (propName == "addObjectToVector") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "addObjectToVector"), 1,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
+
+          FOCV_Object::addObjectToVector(runtime, arguments, count);
+                
+          return jsi::Value(true);
+      });
+    }
   else if (propName == "invoke") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "invoke"), 1,

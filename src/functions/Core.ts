@@ -99,7 +99,20 @@ export type Core = {
    * @param dst output array that has the same size and type as the input arrays.
    * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
    */
-  invoke(name: 'bitwise_and', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+  invoke(
+    name: 'bitwise_and',
+    src1: Mat,
+    src2: Mat | Scalar,
+    dst: Mat,
+    mask?: Mat
+  ): void;
+  invoke(
+    name: 'bitwise_and',
+    src1: Scalar,
+    src2: Mat,
+    dst: Mat,
+    mask?: Mat
+  ): void;
   /**
    * Inverts every bit of an array.
    * @param name Function name.
@@ -116,7 +129,20 @@ export type Core = {
    * @param dst output array that has the same size and type as the input arrays.
    * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
    */
-  invoke(name: 'bitwise_or', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+  invoke(
+    name: 'bitwise_or',
+    src1: Mat,
+    src2: Mat | Scalar,
+    dst: Mat,
+    mask?: Mat
+  ): void;
+  invoke(
+    name: 'bitwise_or',
+    src1: Scalar,
+    src2: Mat,
+    dst: Mat,
+    mask?: Mat
+  ): void;
   /**
    * Calculates the per-element bit-wise "exclusive or" operation on two arrays or an array and a scalar.
    * @param name Function name.
@@ -125,7 +151,20 @@ export type Core = {
    * @param dst output array that has the same size and type as the input arrays.
    * @param mask optional operation mask, 8-bit single channel array, that specifies elements of the output array to be changed.
    */
-  invoke(name: 'bitwise_xor', src1: Mat, src2: Mat, dst: Mat, mask?: Mat): void;
+  invoke(
+    name: 'bitwise_xor',
+    src1: Mat,
+    src2: Mat | Scalar,
+    dst: Mat,
+    mask?: Mat
+  ): void;
+  invoke(
+    name: 'bitwise_xor',
+    src1: Scalar,
+    src2: Mat,
+    dst: Mat,
+    mask?: Mat
+  ): void;
 
   /**
    * Computes the source location of an extrapolated pixel.
@@ -222,6 +261,13 @@ export type Core = {
   invoke(
     name: 'compare',
     src1: Mat,
+    src2: Mat | Scalar,
+    dst: Mat,
+    cmpop: CmpTypes
+  ): void;
+  invoke(
+    name: 'compare',
+    src1: Scalar,
     src2: Mat,
     dst: Mat,
     cmpop: CmpTypes

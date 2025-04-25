@@ -67,4 +67,6 @@ export type UtilsFunctions = {
     channels: number;
     buffer: BufferType[T];
   };
+
+  inpaint(src: Mat, mask: Mat, dst: Mat, radius: number, flag: unknown): void;
 };

@@ -61,6 +61,19 @@ copyObjectFromVector(vector: RectVector, itemIndex: number): Rect;
 
 ---
 
+### Add Object to Vector
+
+Adds an object to a vector.
+
+```js
+addObjectToVector(vector: MatVector, object: Mat): void;
+addObjectToVector(vector: PointVector, object: Point): void;
+addObjectToVector(vector: RectVector, object: Rect): void;
+addObjectToVector(vector: PointVectorOfVectors, object: PointVector): void;
+```
+
+---
+
 ### To JS Value
 
 Converts an object to a JS-readable object.

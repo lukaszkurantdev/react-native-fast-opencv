@@ -144,4 +144,9 @@ export type Objects = {
     itemIndex: number
   ): PointVector;
   copyObjectFromVector(vector: RectVector, itemIndex: number): Rect;
+
+  addObjectToVector(vector: MatVector, object: Mat): void;
+  addObjectToVector(vector: PointVector, object: Point): void;
+  addObjectToVector(vector: RectVector, object: Rect): void;
+  addObjectToVector(vector: PointVectorOfVectors, object: PointVector): void;
 };
