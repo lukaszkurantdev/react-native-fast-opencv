@@ -1493,7 +1493,7 @@ Fills a convex polygon.
 invoke(
   name: 'fillConvexPoly',
   img: Mat,
-  pts: MatVector,
+  pts: Mat | PointVector,
   color: Scalar,
   lineType: LineTypes
 ): void;
