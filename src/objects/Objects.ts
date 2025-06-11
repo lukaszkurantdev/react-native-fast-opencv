@@ -76,6 +76,7 @@ export type Objects = {
     cols: number;
     rows: number;
     base64: string;
+    type: DataTypes;
   };
   toJSValue(matVector: MatVector): {
     array: { size: number; cols: number; rows: number }[];
