@@ -3,6 +3,7 @@ import type {
   Mat,
   MatVector,
   Point,
+  PointVector,
   Scalar,
   Size,
 } from '../../objects/Objects';
@@ -135,7 +136,7 @@ export type Drawing = {
   invoke(
     name: 'fillConvexPoly',
     img: Mat,
-    pts: MatVector,
+    pts: Mat | PointVector,
     color: Scalar,
     lineType: LineTypes
   ): void;

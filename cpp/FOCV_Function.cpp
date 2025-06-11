@@ -1020,11 +1020,16 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
       case hashString("fillConvexPoly", 14): {
         auto img = args.asMatPtr(1);
-        auto pts = args.asMatVectorPtr(2);
         auto color = args.asScalarPtr(3);
         auto line_type = args.asNumber(4);
         
-        cv::fillConvexPoly(*img, *pts, *color, line_type);
+        if(args.isMat(2)) {
+          auto pts = args.asMatPtr(2);
+          cv::fillConvexPoly(*img, *pts, *color, line_type);
+        } else {
+          auto pts = args.asPointVectorPtr(2);
+          cv::fillConvexPoly(*img, *pts, *color, line_type);
+        }
       } break;
       case hashString("fillPoly", 8): {
         auto img = args.asMatPtr(1);
