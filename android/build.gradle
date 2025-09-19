@@ -92,7 +92,8 @@ android {
     externalNativeBuild {
       cmake {
         arguments "-DANDROID_STL=c++_shared",
-          "-DNODE_MODULES_DIR=${nodeModules}"
+          "-DNODE_MODULES_DIR=${nodeModules}",
+          "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
         abiFilters(*reactNativeArchitectures())
       }
