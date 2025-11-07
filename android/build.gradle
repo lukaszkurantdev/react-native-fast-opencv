@@ -92,7 +92,8 @@ android {
     externalNativeBuild {
       cmake {
         arguments "-DANDROID_STL=c++_shared",
-          "-DNODE_MODULES_DIR=${nodeModules}"
+          "-DNODE_MODULES_DIR=${nodeModules}",
+          "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
         cppFlags "-O2 -frtti -fexceptions -Wall -fstack-protector-all"
         abiFilters(*reactNativeArchitectures())
       }
@@ -167,7 +168,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-android:0.74.4"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'org.opencv:opencv:4.9.0'
+  implementation 'org.opencv:opencv:4.12.0'
 }
 
 if (isNewArchitectureEnabled()) {
