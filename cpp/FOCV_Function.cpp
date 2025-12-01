@@ -11,7 +11,8 @@
 #include <FOCV_JsiObject.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/features2d.hpp>
-#include <opencv2/calib3d.hpp>
+// Note: calib3d not available in FastOpenCV-iOS pod
+// Using getPerspectiveTransform from imgproc instead of findHomography
 #include "FOCV_FunctionArguments.hpp"
 
 // General idea and this function for hashing is from
@@ -1713,23 +1714,26 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         return FOCV_JsiObject::wrap(runtime, "dmatch_vector_vector", id);
       } break;
 
-      case hashString("findHomography", 14): {
+      case hashString("findHomographyFromMatches", 26): {
+        // Compute homography from matched points using getPerspectiveTransform
+        // This takes exactly 4 point pairs (unlike cv::findHomography which uses RANSAC)
+        // The caller should pre-filter to the 4 best matching points
         auto srcPoints = args.asPoint2fVectorPtr(1);
         auto dstPoints = args.asPoint2fVectorPtr(2);
 
-        int method = count > 3 ? static_cast<int>(args.asNumber(3)) : 0;
-        double ransacReprojThreshold = count > 4 ? args.asNumber(4) : 3.0;
-        int maxIters = count > 6 ? static_cast<int>(args.asNumber(6)) : 2000;
-        double confidence = count > 7 ? args.asNumber(7) : 0.995;
-
-        cv::Mat mask;
-        cv::Mat H = cv::findHomography(*srcPoints, *dstPoints, method, ransacReprojThreshold, mask, maxIters, confidence);
-
-        // If mask output is requested, save it
-        if (count > 5 && args.isMat(5)) {
-          auto maskOut = args.asMatPtr(5);
-          mask.copyTo(*maskOut);
+        if (srcPoints->size() < 4 || dstPoints->size() < 4) {
+          throw std::runtime_error("Fast OpenCV Error: findHomographyFromMatches requires at least 4 point pairs");
         }
+
+        // Take first 4 points for perspective transform
+        cv::Point2f srcArr[4] = {
+          (*srcPoints)[0], (*srcPoints)[1], (*srcPoints)[2], (*srcPoints)[3]
+        };
+        cv::Point2f dstArr[4] = {
+          (*dstPoints)[0], (*dstPoints)[1], (*dstPoints)[2], (*dstPoints)[3]
+        };
+
+        cv::Mat H = cv::getPerspectiveTransform(srcArr, dstArr);
 
         std::string id = FOCV_Storage::save(H);
         return FOCV_JsiObject::wrap(runtime, "mat", id);

@@ -148,24 +148,16 @@ export type FeatureMatching = {
   ): DMatchVectorVector;
 
   /**
-   * Finds a perspective transformation between two planes using RANSAC
+   * Computes a perspective transformation from 4 matched point pairs
+   * Uses getPerspectiveTransform internally (calib3d::findHomography not available)
+   * The caller should pre-filter to the 4 best matching points
    * @param name Function name
-   * @param srcPoints Coordinates of the points in the original plane (Point2fVector)
-   * @param dstPoints Coordinates of the points in the target plane (Point2fVector)
-   * @param method Method used to compute homography: 0=regular, 4=LMEDS, 8=RANSAC, 16=RHO
-   * @param ransacReprojThreshold Maximum allowed reprojection error (used for RANSAC only)
-   * @param mask Output mask set by robust method (RANSAC or LMEDS)
-   * @param maxIters Maximum number of RANSAC iterations
-   * @param confidence Confidence level (0-1)
+   * @param srcPoints Source points (Point2fVector with at least 4 points)
+   * @param dstPoints Destination points (Point2fVector with at least 4 points)
    */
   invoke(
-    name: 'findHomography',
+    name: 'findHomographyFromMatches',
     srcPoints: Mat,
-    dstPoints: Mat,
-    method?: number,
-    ransacReprojThreshold?: number,
-    mask?: Mat,
-    maxIters?: number,
-    confidence?: number
+    dstPoints: Mat
   ): Mat;
 };
