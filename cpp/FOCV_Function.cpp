@@ -10,6 +10,8 @@
 #include "FOCV_Ids.hpp"
 #include <FOCV_JsiObject.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d.hpp>
+#include <opencv2/calib3d.hpp>
 #include "FOCV_FunctionArguments.hpp"
 
 // General idea and this function for hashing is from
@@ -1621,6 +1623,119 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
 
         cv::warpPolar(*src, *dst, *size, *center, maxRadius, flags);
       } break;
+
+      // ================== FEATURE MATCHING FUNCTIONS ==================
+
+      case hashString("ORB_create", 10): {
+        // Default values matching OpenCV defaults
+        int nfeatures = count > 1 ? static_cast<int>(args.asNumber(1)) : 500;
+        float scaleFactor = count > 2 ? static_cast<float>(args.asNumber(2)) : 1.2f;
+        int nlevels = count > 3 ? static_cast<int>(args.asNumber(3)) : 8;
+        int edgeThreshold = count > 4 ? static_cast<int>(args.asNumber(4)) : 31;
+        int firstLevel = count > 5 ? static_cast<int>(args.asNumber(5)) : 0;
+        int WTA_K = count > 6 ? static_cast<int>(args.asNumber(6)) : 2;
+        cv::ORB::ScoreType scoreType = count > 7 ?
+          static_cast<cv::ORB::ScoreType>(static_cast<int>(args.asNumber(7))) : cv::ORB::HARRIS_SCORE;
+        int patchSize = count > 8 ? static_cast<int>(args.asNumber(8)) : 31;
+        int fastThreshold = count > 9 ? static_cast<int>(args.asNumber(9)) : 20;
+
+        cv::Ptr<cv::ORB> orb = cv::ORB::create(
+          nfeatures, scaleFactor, nlevels, edgeThreshold,
+          firstLevel, WTA_K, scoreType, patchSize, fastThreshold
+        );
+
+        std::string id = FOCV_Storage::save(orb);
+        return FOCV_JsiObject::wrap(runtime, "orb", id);
+      } break;
+
+      case hashString("detectAndCompute", 16): {
+        // Get ORB detector from first argument
+        std::string orbId = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+        auto orb = FOCV_Storage::get<cv::Ptr<cv::ORB>>(orbId);
+
+        auto image = args.asMatPtr(2);
+
+        std::vector<cv::KeyPoint> keypoints;
+        cv::Mat descriptors;
+
+        if (count > 3 && args.isMat(3)) {
+          auto mask = args.asMatPtr(3);
+          (*orb)->detectAndCompute(*image, *mask, keypoints, descriptors);
+        } else {
+          (*orb)->detectAndCompute(*image, cv::noArray(), keypoints, descriptors);
+        }
+
+        std::string kpId = FOCV_Storage::save(keypoints);
+        std::string descId = FOCV_Storage::save(descriptors);
+
+        value.setProperty(runtime, "keypoints", FOCV_JsiObject::wrap(runtime, "keypoint_vector", kpId));
+        value.setProperty(runtime, "descriptors", FOCV_JsiObject::wrap(runtime, "mat", descId));
+      } break;
+
+      case hashString("BFMatcher_create", 16): {
+        int normType = count > 1 ? static_cast<int>(args.asNumber(1)) : cv::NORM_HAMMING;
+        bool crossCheck = count > 2 ? args.asBool(2) : false;
+
+        cv::Ptr<cv::BFMatcher> matcher = cv::BFMatcher::create(normType, crossCheck);
+
+        std::string id = FOCV_Storage::save(matcher);
+        return FOCV_JsiObject::wrap(runtime, "bfmatcher", id);
+      } break;
+
+      case hashString("matchBF", 7): {
+        // Get BFMatcher from first argument
+        std::string matcherId = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+        auto matcher = FOCV_Storage::get<cv::Ptr<cv::BFMatcher>>(matcherId);
+
+        auto queryDescriptors = args.asMatPtr(2);
+        auto trainDescriptors = args.asMatPtr(3);
+
+        std::vector<cv::DMatch> matches;
+        (*matcher)->match(*queryDescriptors, *trainDescriptors, matches);
+
+        std::string id = FOCV_Storage::save(matches);
+        return FOCV_JsiObject::wrap(runtime, "dmatch_vector", id);
+      } break;
+
+      case hashString("knnMatchBF", 10): {
+        // Get BFMatcher from first argument
+        std::string matcherId = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+        auto matcher = FOCV_Storage::get<cv::Ptr<cv::BFMatcher>>(matcherId);
+
+        auto queryDescriptors = args.asMatPtr(2);
+        auto trainDescriptors = args.asMatPtr(3);
+        int k = static_cast<int>(args.asNumber(4));
+
+        std::vector<std::vector<cv::DMatch>> matches;
+        (*matcher)->knnMatch(*queryDescriptors, *trainDescriptors, matches, k);
+
+        std::string id = FOCV_Storage::save(matches);
+        return FOCV_JsiObject::wrap(runtime, "dmatch_vector_vector", id);
+      } break;
+
+      case hashString("findHomography", 14): {
+        auto srcPoints = args.asPoint2fVectorPtr(1);
+        auto dstPoints = args.asPoint2fVectorPtr(2);
+
+        int method = count > 3 ? static_cast<int>(args.asNumber(3)) : 0;
+        double ransacReprojThreshold = count > 4 ? args.asNumber(4) : 3.0;
+        int maxIters = count > 6 ? static_cast<int>(args.asNumber(6)) : 2000;
+        double confidence = count > 7 ? args.asNumber(7) : 0.995;
+
+        cv::Mat mask;
+        cv::Mat H = cv::findHomography(*srcPoints, *dstPoints, method, ransacReprojThreshold, mask, maxIters, confidence);
+
+        // If mask output is requested, save it
+        if (count > 5 && args.isMat(5)) {
+          auto maskOut = args.asMatPtr(5);
+          mask.copyTo(*maskOut);
+        }
+
+        std::string id = FOCV_Storage::save(H);
+        return FOCV_JsiObject::wrap(runtime, "mat", id);
+      } break;
+
+      // ================== END FEATURE MATCHING FUNCTIONS ==================
     }
   } catch (cv::Exception& e) {
     std::string message(e.what());
