@@ -8,22 +8,8 @@ export enum ORBScoreType {
 }
 
 /**
- * Norm types for BFMatcher
- */
-export enum NormTypes {
-  NORM_INF = 1,
-  NORM_L1 = 2,
-  NORM_L2 = 4,
-  NORM_L2SQR = 5,
-  NORM_HAMMING = 6,
-  NORM_HAMMING2 = 7,
-  NORM_TYPE_MASK = 7,
-  NORM_RELATIVE = 8,
-  NORM_MINMAX = 32,
-}
-
-/**
  * Method for computing homography
+ * Used in findHomography method parameter
  */
 export enum HomographyMethod {
   DEFAULT = 0,
@@ -31,3 +17,5 @@ export enum HomographyMethod {
   RANSAC = 8,
   RHO = 16,
 }
+
+// Note: NormTypes (NORM_HAMMING, etc.) are already exported from Core.ts
