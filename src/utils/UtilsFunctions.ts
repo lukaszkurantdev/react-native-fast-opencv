@@ -15,9 +15,13 @@ type ImportBufferType = Omit<BufferType, 'uint32'>;
 
 export type UtilsFunctions = {
   /**
-   * Clears any buffers that were allocate to back Mats on the native side.
+   * Clears any buffers that were allocated to Mats on the native side.
    */
   clearBuffers(idsToKeep?: string[]): void;
+  /**
+   * Releases specified buffers that were allocated to Mats on the native side.
+   */
+  releaseBuffers(idsToRelease?: string[]): void;
   /**
    * Converts a byte array to a Mat.
    *

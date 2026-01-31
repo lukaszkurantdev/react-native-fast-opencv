@@ -272,6 +272,36 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           FOCV_Storage::clear(ids_to_keep);
           return true;
       });
+  } else if (propName == "releaseBuffers") {
+      return jsi::Function::createFromHostFunction(
+          runtime,
+          jsi::PropNameID::forAscii(runtime, "releaseBuffers"),
+          1,
+          [=](
+              jsi::Runtime& runtime,
+              const jsi::Value& thisValue,
+              const jsi::Value* arguments,
+              size_t count
+          ) -> jsi::Value {
+              std::set<std::string> ids_to_release;
+
+              if (count > 0 && arguments[0].isObject()) {
+                  auto array = arguments[0].asObject(runtime).asArray(runtime);
+                  auto length = array.length(runtime);
+
+                  for (size_t i = 0; i < length; i++) {
+                      auto id = array
+                          .getValueAtIndex(runtime, i)
+                          .asString(runtime)
+                          .utf8(runtime);
+                      ids_to_release.insert(id);
+                  }
+              }
+
+              FOCV_Storage::release(ids_to_release);
+              return jsi::Value(true);
+          }
+      );
   } else if (propName == "saveMatToFile") {
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "saveMatToFile"), 4,
@@ -342,6 +372,7 @@ std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtim
     result.push_back(jsi::PropNameID::forAscii(runtime, "copyObjectFromVector"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "invoke"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "clearBuffers"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "releaseBuffers"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "saveMatToFile"));
 
     return result;

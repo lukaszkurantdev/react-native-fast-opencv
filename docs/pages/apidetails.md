@@ -144,6 +144,14 @@ Clears stored objects from memory.
 clearBuffers(idsToKeep?: string[]): void;
 ```
 
+### Release Buffers
+
+Clears specified stored objects from memory.
+
+```js
+releaseBuffers(idsToRelease?: string[]): void;
+```
+
 ###  Buffer to Mat
 
 Creates an object of type Mat based on an array of Buffer Array.
