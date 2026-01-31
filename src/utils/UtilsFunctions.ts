@@ -67,6 +67,19 @@ export type UtilsFunctions = {
     channels: number;
     buffer: BufferType[T];
   };
+  /**
+   * Saves a Mat to a file on disk as JPEG or PNG.
+   * @param mat - the Mat to save
+   * @param path - full path including filename
+   * @param format - 'jpeg' or 'png'
+   * @param compression - number 0-1 (for JPEG: 0=low quality, 1=high quality; for PNG: 0=no compression, 1=max compression)
+   */
+  saveMatToFile(
+    mat: Mat,
+    path: string,
+    format: 'jpeg' | 'png',
+    compression: number
+  ): void;
 
   inpaint(src: Mat, mask: Mat, dst: Mat, radius: number, flag: unknown): void;
 };

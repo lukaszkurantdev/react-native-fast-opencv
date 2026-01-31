@@ -206,6 +206,19 @@ type BufferType = {
 };
 ```
 
+### Save Mat to file
+
+Saves a Mat to a file on disk as JPEG or PNG. Compression is calculated as a number 0-1 (for JPEG: 0=low quality, 1=high quality; for PNG: 0=no compression, 1=max compression).
+
+```js
+saveMatToFile(
+  mat: Mat,
+  path: string,
+  format: 'jpeg' | 'png',
+  compression: number
+): void;
+```
+
 ## Functions
 
 ### Invoke function

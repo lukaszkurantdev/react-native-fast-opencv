@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 
 #include "react-native-fast-opencv.h"
 #include "jsi/Promise.h"
@@ -271,6 +272,60 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           FOCV_Storage::clear(ids_to_keep);
           return true;
       });
+  } else if (propName == "saveMatToFile") {
+      return jsi::Function::createFromHostFunction(
+          runtime, jsi::PropNameID::forAscii(runtime, "saveMatToFile"), 4,
+          [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+              size_t count) -> jsi::Value {
+
+          if (count < 4) {
+              throw std::runtime_error("saveMatToFile requires 4 arguments: mat, path, format, compression");
+          }
+
+          auto id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+          auto matPtr = FOCV_Storage::get<cv::Mat>(id);
+          if (!matPtr) throw std::runtime_error("Mat not found in storage");
+          auto& mat = *matPtr;
+
+          std::string path = arguments[1].asString(runtime).utf8(runtime);
+
+          const std::string filePrefix = "file://";
+          if (path.compare(0, filePrefix.length(), filePrefix) == 0) {
+              path = path.substr(filePrefix.length());
+          }
+
+          auto format = arguments[2].asString(runtime).utf8(runtime);
+          std::vector<int> params;
+
+          double compression = arguments[3].asNumber();
+          if (compression < 0.0 || compression > 1.0) {
+              throw std::runtime_error("Compression must be between 0 and 1");
+          }
+
+          if (format == "jpeg") {
+              int quality = static_cast<int>(compression * 100);
+              params.push_back(cv::IMWRITE_JPEG_QUALITY);
+              params.push_back(quality);
+          } else if (format == "png") {
+              int level = static_cast<int>((1.0 - compression) * 9);
+              params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+              params.push_back(level);
+          } else {
+              throw std::runtime_error("Unsupported format: only 'jpeg' or 'png' allowed");
+          }
+
+          std::filesystem::path fsPath(path);
+          auto parentDir = fsPath.parent_path();
+          if (!parentDir.empty() && !std::filesystem::exists(parentDir)) {
+              std::filesystem::create_directories(parentDir);
+          }
+
+          if (!cv::imwrite(path, mat, params)) {
+              throw std::runtime_error("Failed to save Mat to file: " + path);
+          }
+
+          return jsi::Value(true);
+      });
   }
 
   return jsi::HostObject::get(runtime, propNameId);
@@ -287,6 +342,7 @@ std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtim
     result.push_back(jsi::PropNameID::forAscii(runtime, "copyObjectFromVector"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "invoke"));
     result.push_back(jsi::PropNameID::forAscii(runtime, "clearBuffers"));
+    result.push_back(jsi::PropNameID::forAscii(runtime, "saveMatToFile"));
 
     return result;
 }
