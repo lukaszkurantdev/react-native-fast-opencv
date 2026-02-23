@@ -33,6 +33,7 @@ public:
     static std::string save(std::string key, T &item);
 
     static void clear(const std::set<std::string> &ids_to_keep);
+    static void release(const std::set<std::string> &ids_to_release);
 };
 
 template <typename T>

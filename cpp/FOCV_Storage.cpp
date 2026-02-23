@@ -20,3 +20,12 @@ void FOCV_Storage::clear(const std::set<std::string> &ids_to_keep) {
     }
   }
 }
+
+void FOCV_Storage::release(const std::set<std::string>& ids_to_release) {
+  for (const auto& id : ids_to_release) {
+    auto it = items.find(id);
+    if (it != items.end()) {
+      items.erase(it);
+    }
+  }
+}

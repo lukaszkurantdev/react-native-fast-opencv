@@ -144,6 +144,14 @@ Clears stored objects from memory.
 clearBuffers(idsToKeep?: string[]): void;
 ```
 
+### Release Buffers
+
+Clears specified stored objects from memory.
+
+```js
+releaseBuffers(idsToRelease?: string[]): void;
+```
+
 ###  Buffer to Mat
 
 Creates an object of type Mat based on an array of Buffer Array.
@@ -204,6 +212,19 @@ type BufferType = {
   float32: Float32Array;
   float64: Float64Array;
 };
+```
+
+### Save Mat to file
+
+Saves a Mat to a file on disk as JPEG or PNG. Compression is calculated as a number 0-1 (for JPEG: 0=low quality, 1=high quality; for PNG: 0=no compression, 1=max compression).
+
+```js
+saveMatToFile(
+  mat: Mat,
+  path: string,
+  format: 'jpeg' | 'png',
+  compression: number
+): void;
 ```
 
 ## Functions

@@ -15,9 +15,13 @@ type ImportBufferType = Omit<BufferType, 'uint32'>;
 
 export type UtilsFunctions = {
   /**
-   * Clears any buffers that were allocate to back Mats on the native side.
+   * Clears any buffers that were allocated to Mats on the native side.
    */
   clearBuffers(idsToKeep?: string[]): void;
+  /**
+   * Releases specified buffers that were allocated to Mats on the native side.
+   */
+  releaseBuffers(idsToRelease?: string[]): void;
   /**
    * Converts a byte array to a Mat.
    *
@@ -67,6 +71,19 @@ export type UtilsFunctions = {
     channels: number;
     buffer: BufferType[T];
   };
+  /**
+   * Saves a Mat to a file on disk as JPEG or PNG.
+   * @param mat - the Mat to save
+   * @param path - full path including filename
+   * @param format - 'jpeg' or 'png'
+   * @param compression - number 0-1 (for JPEG: 0=low quality, 1=high quality; for PNG: 0=no compression, 1=max compression)
+   */
+  saveMatToFile(
+    mat: Mat,
+    path: string,
+    format: 'jpeg' | 'png',
+    compression: number
+  ): void;
 
   inpaint(src: Mat, mask: Mat, dst: Mat, radius: number, flag: unknown): void;
 };
