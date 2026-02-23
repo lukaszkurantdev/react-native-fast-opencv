@@ -39,5 +39,5 @@ Special thanks to:
 
 
 ### License
-MIT © 2024-2025 Lukasz Kurant
+MIT © 2024-2026 Lukasz Kurant
 
