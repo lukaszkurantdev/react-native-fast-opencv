@@ -10,6 +10,7 @@
 #include "FOCV_JsiObject.hpp"
 #include "jsi/TypedArray.h"
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d.hpp>
 #include "ConvertImage.hpp"
 #include "jsi/TypedArray.h"
 
@@ -167,8 +168,20 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             if (!object.isValid()) {
                 throw std::runtime_error("Fast OpenCV Error: Invalid TermCriteria object parameters!");
             }
-            
+
             id = FOCV_Storage::save(object);
+        } break;
+        case hashString("keypoint_vector", 15): {
+            std::vector<cv::KeyPoint> vec;
+            id = FOCV_Storage::save(vec);
+        } break;
+        case hashString("dmatch_vector", 13): {
+            std::vector<cv::DMatch> vec;
+            id = FOCV_Storage::save(vec);
+        } break;
+        case hashString("dmatch_vector_vector", 20): {
+            std::vector<std::vector<cv::DMatch>> vec;
+            id = FOCV_Storage::save(vec);
         } break;
     }
 
@@ -324,6 +337,67 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "type", jsi::Value(termCriteria.type));
             value.setProperty(runtime, "maxCount", jsi::Value(termCriteria.maxCount));
             value.setProperty(runtime, "epsilon", jsi::Value(termCriteria.epsilon));
+        } break;
+        case hashString("keypoint_vector", 15): {
+            auto keypoints = *FOCV_Storage::get<std::vector<cv::KeyPoint>>(id);
+
+            auto array = jsi::Array(runtime, keypoints.size());
+
+            for (size_t i = 0; i < keypoints.size(); i++) {
+                jsi::Object item(runtime);
+
+                item.setProperty(runtime, "x", jsi::Value(keypoints.at(i).pt.x));
+                item.setProperty(runtime, "y", jsi::Value(keypoints.at(i).pt.y));
+                item.setProperty(runtime, "size", jsi::Value(keypoints.at(i).size));
+                item.setProperty(runtime, "angle", jsi::Value(keypoints.at(i).angle));
+                item.setProperty(runtime, "response", jsi::Value(keypoints.at(i).response));
+                item.setProperty(runtime, "octave", jsi::Value(keypoints.at(i).octave));
+                item.setProperty(runtime, "classId", jsi::Value(keypoints.at(i).class_id));
+                array.setValueAtIndex(runtime, i, item);
+            }
+
+            value.setProperty(runtime, "array", array);
+        } break;
+        case hashString("dmatch_vector", 13): {
+            auto matches = *FOCV_Storage::get<std::vector<cv::DMatch>>(id);
+
+            auto array = jsi::Array(runtime, matches.size());
+
+            for (size_t i = 0; i < matches.size(); i++) {
+                jsi::Object item(runtime);
+
+                item.setProperty(runtime, "queryIdx", jsi::Value(matches.at(i).queryIdx));
+                item.setProperty(runtime, "trainIdx", jsi::Value(matches.at(i).trainIdx));
+                item.setProperty(runtime, "imgIdx", jsi::Value(matches.at(i).imgIdx));
+                item.setProperty(runtime, "distance", jsi::Value(matches.at(i).distance));
+                array.setValueAtIndex(runtime, i, item);
+            }
+
+            value.setProperty(runtime, "array", array);
+        } break;
+        case hashString("dmatch_vector_vector", 20): {
+            auto matchVectors = *FOCV_Storage::get<std::vector<std::vector<cv::DMatch>>>(id);
+
+            auto outerArray = jsi::Array(runtime, matchVectors.size());
+
+            for (size_t i = 0; i < matchVectors.size(); i++) {
+                const auto& matches = matchVectors.at(i);
+                auto innerArray = jsi::Array(runtime, matches.size());
+
+                for (size_t j = 0; j < matches.size(); j++) {
+                    jsi::Object item(runtime);
+
+                    item.setProperty(runtime, "queryIdx", jsi::Value(matches.at(j).queryIdx));
+                    item.setProperty(runtime, "trainIdx", jsi::Value(matches.at(j).trainIdx));
+                    item.setProperty(runtime, "imgIdx", jsi::Value(matches.at(j).imgIdx));
+                    item.setProperty(runtime, "distance", jsi::Value(matches.at(j).distance));
+                    innerArray.setValueAtIndex(runtime, j, item);
+                }
+
+                outerArray.setValueAtIndex(runtime, i, innerArray);
+            }
+
+            value.setProperty(runtime, "array", outerArray);
         } break;
     }
 

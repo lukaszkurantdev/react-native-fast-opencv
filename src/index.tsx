@@ -2,6 +2,7 @@ import { NativeModules, Platform } from 'react-native';
 import type { ColorMap } from './functions/ImageProcessing/ColorMap';
 import type { Drawing } from './functions/ImageProcessing/Drawing';
 import type { Feature } from './functions/ImageProcessing/Feature';
+import type { FeatureMatching } from './functions/ImageProcessing/FeatureMatching';
 import type { ImageFiltering } from './functions/ImageProcessing/ImageFiltering';
 import type { Misc } from './functions/ImageProcessing/Misc';
 import type { ObjectDetection } from './functions/ImageProcessing/ObjectDetection';
@@ -53,6 +54,7 @@ export const OpenCV = global.__loadOpenCV();
 export type OpenCVModel = ColorMap &
   Drawing &
   Feature &
+  FeatureMatching &
   ImageFiltering &
   ImageTransform &
   Misc &
@@ -70,3 +72,5 @@ export * from './constants/DataTypes';
 export * from './constants/ImageProcessing';
 export * from './constants/ImageTransform';
 export * from './constants/Core';
+export * from './constants/FeatureMatching';
+export type * from './functions/ImageProcessing/FeatureMatching';
