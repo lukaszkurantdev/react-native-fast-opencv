@@ -10,8 +10,7 @@ export type ColorConversion = {
    * @param code color space conversion code.
    * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the channels is derived automatically from src and code.
    */
-  invoke(
-    name: 'cvtColor',
+  cvtColor(
     src: Mat,
     dst: Mat,
     code: ColorConversionCodes,
@@ -26,8 +25,7 @@ export type ColorConversion = {
    * @param dst output image.
    * @param code Specifies the type of conversion
    */
-  invoke(
-    name: 'cvtColorTwoPlane',
+  cvtColorTwoPlane(
     src1: Mat,
     src2: Mat,
     dst: Mat,
@@ -50,8 +48,7 @@ export type ColorConversion = {
    * @param code Color space conversion code (see the description below).
    * @param dstCn number of channels in the destination image
    */
-  invoke(
-    name: 'demosaicing',
+  demosaicing(
     src: Mat,
     dst: Mat,
     code:

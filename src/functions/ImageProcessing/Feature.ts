@@ -11,13 +11,7 @@ export type Feature = {
    * @param threshold2 second threshold for the hysteresis procedure
    * @param apertureSize aperture size for the Sobel operator
    */
-  invoke(
-    name: 'Canny',
-    image: Mat,
-    edges: Mat,
-    threshold1: number,
-    threshold2: number
-  ): void;
+  Canny(image: Mat, edges: Mat, threshold1: number, threshold2: number): void;
 
   /**
    * Harris corner detector
@@ -28,8 +22,7 @@ export type Feature = {
    * @param ksize Aperture parameter for the Sobel operator
    * @param k Harris detector free parameter. See the formula above
    */
-  invoke(
-    name: 'cornerHarris',
+  cornerHarris(
     src: Mat,
     dst: Mat,
     blockSize: number,
@@ -44,12 +37,7 @@ export type Feature = {
    * @param dst Image to store the minimal eigenvalues. It has the type CV_32FC1 and the same size as src
    * @param blockSize Neighborhood size
    */
-  invoke(
-    name: 'cornerMinEigenVal',
-    src: Mat,
-    dst: Mat,
-    blockSize: number
-  ): void;
+  cornerMinEigenVal(src: Mat, dst: Mat, blockSize: number): void;
 
   /**
    * Determines strong corners on an image
@@ -60,8 +48,7 @@ export type Feature = {
    * @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The parameter value is multiplied by the best corner quality measure, which is the minimal eigenvalue (see cornerMinEigenVal ) or the Harris function response (see cornerHarris ). The corners with the quality measure less than the product are rejected. For example, if the best corner has the quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality measure less than 15 are rejected.
    * @param minDistance Minimum possible Euclidean distance between the returned corners
    */
-  invoke(
-    name: 'goodFeaturesToTrack',
+  goodFeaturesToTrack(
     image: Mat,
     corners: Mat,
     maxCorners: number,
@@ -82,8 +69,7 @@ export type Feature = {
    * @param param1 it is the higher threshold of the two passed to the Canny edge detector (the lower canny threshold is twice smaller)
    * @param param2 it is the accumulator threshold for the circle centers at the detection stage as discussed above.
    */
-  invoke(
-    name: 'HoughCircles',
+  HoughCircles(
     image: Mat,
     circles: Mat,
     method: HoughModes,
@@ -102,8 +88,7 @@ export type Feature = {
    * @param theta Angle resolution of the accumulator in radians
    * @param threshold Accumulator threshold parameter. Only those lines are returned that get enough votes ( >𝚝𝚑𝚛𝚎𝚜𝚑𝚘𝚕𝚍 ).
    */
-  invoke(
-    name: 'HoughLines',
+  HoughLines(
     image: Mat,
     lines: Mat,
     rho: number,
@@ -120,8 +105,7 @@ export type Feature = {
    * @param theta Angle resolution of the accumulator in radians
    * @param threshold Accumulator threshold parameter. Only those lines are returned that get enough votes ( >𝚝𝚑𝚛𝚎𝚜𝚑𝚘𝚕𝚍 ).
    */
-  invoke(
-    name: 'HoughLinesP',
+  HoughLinesP(
     image: Mat,
     lines: Mat,
     rho: number,

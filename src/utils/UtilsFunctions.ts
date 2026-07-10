@@ -16,12 +16,14 @@ type ImportBufferType = Omit<BufferType, 'uint32'>;
 export type UtilsFunctions = {
   /**
    * Clears any buffers that were allocated to Mats on the native side.
+   * @deprecated Buffers are now automatically garbage collected by the JS engine. This function does nothing.
    */
-  clearBuffers(idsToKeep?: string[]): void;
+  clearBuffers(): void;
   /**
    * Releases specified buffers that were allocated to Mats on the native side.
+   * @deprecated Buffers are now automatically garbage collected by the JS engine. This function does nothing.
    */
-  releaseBuffers(idsToRelease?: string[]): void;
+  releaseBuffers(): void;
   /**
    * Converts a byte array to a Mat.
    *

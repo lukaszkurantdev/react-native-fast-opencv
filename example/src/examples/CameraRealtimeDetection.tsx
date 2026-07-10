@@ -52,16 +52,15 @@ export function CameraRealtimeDetection() {
 
     const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
     const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
-    OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
-    OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
+    OpenCV.cvtColor(src, dst, ColorConversionCodes.COLOR_BGR2HSV);
+    OpenCV.inRange(dst, lowerBound, upperBound, dst);
 
     const channels = OpenCV.createObject(ObjectType.MatVector);
-    OpenCV.invoke('split', dst, channels);
+    OpenCV.split(dst, channels);
     const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
 
     const contours = OpenCV.createObject(ObjectType.MatVector);
-    OpenCV.invoke(
-      'findContours',
+    OpenCV.findContours(
       grayChannel,
       contours,
       RetrievalModes.RETR_TREE,
@@ -73,10 +72,10 @@ export function CameraRealtimeDetection() {
 
     for (let i = 0; i < contoursMats.array.length; i++) {
       const contour = OpenCV.copyObjectFromVector(contours, i);
-      const { value: area } = OpenCV.invoke('contourArea', contour, false);
+      const { value: area } = OpenCV.contourArea(contour, false);
 
       if (area > 3000) {
-        const rect = OpenCV.invoke('boundingRect', contour);
+        const rect = OpenCV.boundingRect(contour);
         rectangles.push(rect);
       }
     }

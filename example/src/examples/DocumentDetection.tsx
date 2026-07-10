@@ -59,42 +59,33 @@ export function DocumentDetection() {
 
     const source = OpenCV.bufferToMat('uint8', height, width, 3, resized);
 
-    OpenCV.invoke(
-      'cvtColor',
-      source,
-      source,
-      ColorConversionCodes.COLOR_BGR2GRAY
-    );
+    OpenCV.cvtColor(source, source, ColorConversionCodes.COLOR_BGR2GRAY);
 
     const kernel = OpenCV.createObject(ObjectType.Size, 4, 4);
     const blurKernel = OpenCV.createObject(ObjectType.Size, 7, 7);
-    const structuringElement = OpenCV.invoke(
-      'getStructuringElement',
+    const structuringElement = OpenCV.getStructuringElement(
       MorphShapes.MORPH_ELLIPSE,
       kernel
     );
 
-    OpenCV.invoke(
-      'morphologyEx',
+    OpenCV.morphologyEx(
       source,
       source,
       MorphTypes.MORPH_OPEN,
       structuringElement
     );
-    OpenCV.invoke(
-      'morphologyEx',
+    OpenCV.morphologyEx(
       source,
       source,
       MorphTypes.MORPH_CLOSE,
       structuringElement
     );
-    OpenCV.invoke('GaussianBlur', source, source, blurKernel, 0);
-    OpenCV.invoke('Canny', source, source, 75, 100);
+    OpenCV.GaussianBlur(source, source, blurKernel, 0);
+    OpenCV.Canny(source, source, 75, 100);
 
     const contours = OpenCV.createObject(ObjectType.PointVectorOfVectors);
 
-    OpenCV.invoke(
-      'findContours',
+    OpenCV.findContours(
       source,
       contours,
       RetrievalModes.RETR_LIST,
@@ -108,13 +99,13 @@ export function DocumentDetection() {
 
     for (let index = 0; index < contoursMats.array.length; index++) {
       const contour = OpenCV.copyObjectFromVector(contours, index);
-      const { value: area } = OpenCV.invoke('contourArea', contour, false);
+      const { value: area } = OpenCV.contourArea(contour, false);
 
       if (area > 2000 && area > greatestArea) {
-        const peri = OpenCV.invoke('arcLength', contour, true);
+        const peri = OpenCV.arcLength(contour, true);
         const approx = OpenCV.createObject(ObjectType.PointVector);
 
-        OpenCV.invoke('approxPolyDP', contour, approx, 0.1 * peri.value, true);
+        OpenCV.approxPolyDP(contour, approx, 0.1 * peri.value, true);
 
         greatestPolygon = approx;
         greatestArea = area;

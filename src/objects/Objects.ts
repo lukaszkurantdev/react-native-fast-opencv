@@ -2,23 +2,23 @@ import type { TermCriteriaType } from '../constants/Core';
 import type { DataTypes } from '../constants/DataTypes';
 import type { ObjectType } from './ObjectType';
 
-export type Mat = { id: string; type: ObjectType.Mat };
-export type MatVector = { id: string; type: ObjectType.MatVector };
-export type Point = { id: string; type: ObjectType.Point };
-export type PointVector = { id: string; type: ObjectType.PointVector };
-export type Point2f = { id: string; type: ObjectType.Point2f };
-export type Point2fVector = { id: string; type: ObjectType.Point2fVector };
+export type Mat = { type: ObjectType.Mat; release(): void };
+export type MatVector = { type: ObjectType.MatVector; release(): void };
+export type Point = { type: ObjectType.Point; release(): void };
+export type PointVector = { type: ObjectType.PointVector; release(): void };
+export type Point2f = { type: ObjectType.Point2f; release(): void };
+export type Point2fVector = { type: ObjectType.Point2fVector; release(): void };
 export type PointVectorOfVectors = {
-  id: string;
   type: ObjectType.PointVectorOfVectors;
+  release(): void;
 };
-export type Rect = { id: string; type: ObjectType.Rect };
-export type RectVector = { id: string; type: ObjectType.RectVector };
-export type Size = { id: string; type: ObjectType.Size };
-export type Vec3b = { id: string; type: ObjectType.Vec3b };
-export type Scalar = { id: string; type: ObjectType.Scalar };
-export type RotatedRect = { id: string; type: ObjectType.RotatedRect };
-export type TermCriteria = { id: string; type: ObjectType.TermCriteria };
+export type Rect = { type: ObjectType.Rect; release(): void };
+export type RectVector = { type: ObjectType.RectVector; release(): void };
+export type Size = { type: ObjectType.Size; release(): void };
+export type Vec3b = { type: ObjectType.Vec3b; release(): void };
+export type Scalar = { type: ObjectType.Scalar; release(): void };
+export type RotatedRect = { type: ObjectType.RotatedRect; release(): void };
+export type TermCriteria = { type: ObjectType.TermCriteria; release(): void };
 
 export type Vector = MatVector | PointVector | RectVector;
 export type Array = Mat | Vec3b;

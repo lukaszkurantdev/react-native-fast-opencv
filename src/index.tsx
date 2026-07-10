@@ -48,7 +48,7 @@ declare global {
   var __loadOpenCV: () => OpenCVModel;
 }
 
-export const OpenCV = global.__loadOpenCV();
+export const OpenCV = global.__loadOpenCV() as OpenCVModel;
 
 export type OpenCVModel = ColorMap &
   Drawing &

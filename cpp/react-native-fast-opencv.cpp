@@ -4,8 +4,6 @@
 #include "react-native-fast-opencv.h"
 #include "jsi/Promise.h"
 #include "jsi/TypedArray.h"
-#include <FOCV_Ids.hpp>
-#include <FOCV_Storage.hpp>
 #include <FOCV_Function.hpp>
 #include "FOCV_Object.hpp"
 #include "ConvertImage.hpp"
@@ -70,7 +68,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
 
         cv::Mat mat(rows, cols, type);
         memcpy(mat.data, vec.data(), (int)rows * (int)cols * (int)channels);
-        auto id = FOCV_Storage::save(mat);
+        auto id = FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(mat));
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);
     });
@@ -134,7 +132,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
 
         cv::Mat mat(rows, cols, modeType);
         memcpy(mat.data, vec.data(), (int)rows * (int)cols * (int)channels * typeSize);
-        auto id = FOCV_Storage::save(mat);
+        auto id = FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(mat));
 
         return FOCV_JsiObject::wrap(runtime, "mat", id);
     });
@@ -148,7 +146,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           auto base64 = arguments[0].asString(runtime).utf8(runtime);
 
           auto mat = ImageConverter::str2mat(base64);
-          auto id = FOCV_Storage::save(mat);
+          auto id = FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(mat));
 
           return FOCV_JsiObject::wrap(runtime, "mat", id);
       });
@@ -159,8 +157,8 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Object {
 
-                auto id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
-                auto mat = *FOCV_Storage::get<cv::Mat>(id);
+                auto matPtr = FOCV_JsiObject::get_from_wrap<cv::Mat>(runtime, arguments[0]);
+                auto mat = *matPtr;
 
                 jsi::Object value(runtime);
 
@@ -246,6 +244,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
       });
     }
   else if (propName == "invoke") {
+      // Keep invoke for backwards compatibility if needed, though we are removing it from TS
       return jsi::Function::createFromHostFunction(
           runtime, jsi::PropNameID::forAscii(runtime, "invoke"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
@@ -258,18 +257,6 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
           runtime, jsi::PropNameID::forAscii(runtime, "clearBuffers"), 1,
           [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
               size_t count) -> jsi::Value {
-          std::set<std::string> ids_to_keep;
-
-          if (count > 0) {
-            auto array = arguments[0].asObject(runtime).asArray(runtime);
-            auto length = array.length(runtime);
-            for (size_t i = 0; i < length; i++) {
-              auto id = array.getValueAtIndex(runtime, i).asString(runtime).utf8(runtime);
-              ids_to_keep.insert(id);
-            }
-          }
-
-          FOCV_Storage::clear(ids_to_keep);
           return true;
       });
   } else if (propName == "releaseBuffers") {
@@ -283,22 +270,6 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
               const jsi::Value* arguments,
               size_t count
           ) -> jsi::Value {
-              std::set<std::string> ids_to_release;
-
-              if (count > 0 && arguments[0].isObject()) {
-                  auto array = arguments[0].asObject(runtime).asArray(runtime);
-                  auto length = array.length(runtime);
-
-                  for (size_t i = 0; i < length; i++) {
-                      auto id = array
-                          .getValueAtIndex(runtime, i)
-                          .asString(runtime)
-                          .utf8(runtime);
-                      ids_to_release.insert(id);
-                  }
-              }
-
-              FOCV_Storage::release(ids_to_release);
               return jsi::Value(true);
           }
       );
@@ -312,8 +283,7 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
               throw std::runtime_error("saveMatToFile requires 4 arguments: mat, path, format, compression");
           }
 
-          auto id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
-          auto matPtr = FOCV_Storage::get<cv::Mat>(id);
+          auto matPtr = FOCV_JsiObject::get_from_wrap<cv::Mat>(runtime, arguments[0]);
           if (!matPtr) throw std::runtime_error("Mat not found in storage");
           auto& mat = *matPtr;
 
@@ -358,7 +328,21 @@ jsi::Value OpenCVPlugin::get(jsi::Runtime& runtime, const jsi::PropNameID& propN
       });
   }
 
-  return jsi::HostObject::get(runtime, propNameId);
+  // Dynamic proxy for OpenCV functions
+  return jsi::Function::createFromHostFunction(
+      runtime, jsi::PropNameID::forAscii(runtime, propName), 0,
+      [=](jsi::Runtime& runtime, const jsi::Value& thisValue, const jsi::Value* arguments,
+          size_t count) -> jsi::Object {
+
+          std::vector<jsi::Value> newArgs;
+          newArgs.reserve(count + 1);
+          newArgs.push_back(jsi::String::createFromUtf8(runtime, propName));
+          for (size_t i = 0; i < count; i++) {
+              newArgs.push_back(jsi::Value(runtime, arguments[i]));
+          }
+
+          return FOCV_Function::invoke(runtime, newArgs.data(), newArgs.size());
+  });
 }
 
 std::vector<jsi::PropNameID> OpenCVPlugin::getPropertyNames(jsi::Runtime& runtime) {

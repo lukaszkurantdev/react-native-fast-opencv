@@ -6,7 +6,6 @@
 //
 
 #include "FOCV_Object.hpp"
-#include "FOCV_Storage.hpp"
 #include "FOCV_JsiObject.hpp"
 #include "jsi/TypedArray.h"
 #include <opencv2/opencv.hpp>
@@ -30,7 +29,7 @@ constexpr uint64_t hashString(const char* str, size_t length) {
 }
 
 jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
-    std::string id;
+    
     std::string objectType = arguments[0].asString(runtime).utf8(runtime);
 
     switch(hashString(objectType.c_str(), objectType.size())) {
@@ -55,15 +54,15 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 cv::Mat object(vec, true);
                 object = object.reshape(channels, size);
                 object.convertTo(object, depth);
-                id = FOCV_Storage::save(object);
+                return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
             } else {
                 cv::Mat object(size, type);
-                id = FOCV_Storage::save(object);
+                return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
             }
         } break;
         case hashString("mat_vector", 10): {
             std::vector<cv::Mat> vec;
-            id = FOCV_Storage::save(vec);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(vec));
         } break;
         case hashString("rect", 4): {
             auto x = static_cast<int>(arguments[1].asNumber());
@@ -71,27 +70,27 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             auto width  = static_cast<int>(arguments[3].asNumber());
             auto height = static_cast<int>(arguments[4].asNumber());
             cv::Rect object(x, y, width, height);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("rect_vector", 11): {
             std::vector<cv::Rect> vec;
-            id = FOCV_Storage::save(vec);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(vec));
         } break;
         case hashString("point", 5): {
             auto x = static_cast<int>(arguments[1].asNumber());
             auto y = static_cast<int>(arguments[2].asNumber());
             cv::Point object(x, y);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("point_vector", 12): {
             std::vector<cv::Point> vec;
-            id = FOCV_Storage::save(vec);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(vec));
         } break;
         case hashString("point2f", 7): {
             auto x = static_cast<float>(arguments[1].asNumber());
             auto y = static_cast<float>(arguments[2].asNumber());
             cv::Point2f object(x, y);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("point2f_vector", 14): {
             std::vector<cv::Point2f> vec;
@@ -102,29 +101,29 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 for(size_t i = 0; i < length; i++) {
                     auto value = array.getValueAtIndex(runtime, i);
                     auto value_id = FOCV_JsiObject::id_from_wrap(runtime, value);
-                    auto point2fPtr = FOCV_Storage::get<cv::Point2f>(value_id);
+                    auto point2fPtr = FOCV_JsiObject::get_from_wrap<cv::Point2f>(runtime, value);
 
                     vec.push_back(*point2fPtr);
                 }
             }
-            id = FOCV_Storage::save(vec);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(vec));
         } break;
         case hashString("point_vector_vector", 19): {
             std::vector<std::vector<cv::Point>> vec;
-            id = FOCV_Storage::save(vec);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(vec));
         } break;
         case hashString("size", 4): {
             auto width = static_cast<int>(arguments[1].asNumber());
             auto height = static_cast<int>(arguments[2].asNumber());
             cv::Size object(width, height);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("vec3b", 5): {
             auto a = static_cast<uchar>(arguments[1].asNumber());
             auto b = static_cast<uchar>(arguments[2].asNumber());
             auto c = static_cast<uchar>(arguments[3].asNumber());
             cv::Vec3b object(a, b, c);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("scalar", 6): {
             if (count > 4 && arguments[4].isNumber()) {
@@ -134,18 +133,18 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 auto d = arguments[4].asNumber();
 
                 cv::Scalar object(a, b, c, d);
-                id = FOCV_Storage::save(object);
+                return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
             } else if(count > 3 && arguments[3].isNumber()) {
                 auto a = arguments[1].asNumber();
                 auto b = arguments[2].asNumber();
                 auto c = arguments[3].asNumber();
 
                 cv::Scalar object(a, b, c);
-                id = FOCV_Storage::save(object);
+                return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
             } else {
                 auto a = arguments[1].asNumber();
                 cv::Scalar object(a);
-                id = FOCV_Storage::save(object);
+                return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
             }
         } break;
         case hashString("rotated_rect", 12): {
@@ -156,7 +155,7 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
             auto angle = static_cast<float>(arguments[5].asNumber());
 
             cv::RotatedRect object(cv::Point(x,y), cv::Size(width, height), angle);
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
         case hashString("term_criteria", 13): {
             auto termCriteriaType = static_cast<int>(arguments[1].asNumber());
@@ -168,22 +167,22 @@ jsi::Object FOCV_Object::create(jsi::Runtime& runtime, const jsi::Value* argumen
                 throw std::runtime_error("Fast OpenCV Error: Invalid TermCriteria object parameters!");
             }
             
-            id = FOCV_Storage::save(object);
+            return FOCV_JsiObject::wrap(runtime, objectType, std::make_shared<cv::Mat>(object));
         } break;
     }
 
 
-    return FOCV_JsiObject::wrap(runtime, objectType, id);
+    
 }
 
 jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
     jsi::Object value(runtime);
     std::string objectType = FOCV_JsiObject::type_from_wrap(runtime, arguments[0]);
-    std::string id = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+    
 
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat", 3): {
-            auto mat = *FOCV_Storage::get<cv::Mat>(id);
+            auto mat = *FOCV_JsiObject::get_from_wrap<cv::Mat>(runtime, arguments[0]);
             std::string format = "jpeg";
           
             if(arguments[1].isString()) {
@@ -199,7 +198,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "type", jsi::Value(mat.type()));
         } break;
         case hashString("mat_vector", 10): {
-            auto mats = *FOCV_Storage::get<std::vector<cv::Mat>>(id);
+            auto mats = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Mat>>(runtime, arguments[0]);
 
             auto array = jsi::Array(runtime, mats.size());
 
@@ -215,7 +214,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "array", array);
         } break;
         case hashString("rect", 4): {
-            auto rect = *FOCV_Storage::get<cv::Rect>(id);
+            auto rect = *FOCV_JsiObject::get_from_wrap<cv::Rect>(runtime, arguments[0]);
 
             value.setProperty(runtime, "x", jsi::Value(rect.x));
             value.setProperty(runtime, "y", jsi::Value(rect.y));
@@ -223,7 +222,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "height", jsi::Value(rect.height));
         } break;
         case hashString("rect_vector", 11): {
-            auto rects = *FOCV_Storage::get<std::vector<cv::Rect>>(id);
+            auto rects = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Rect>>(runtime, arguments[0]);
 
             auto array = jsi::Array(runtime, rects.size());
 
@@ -240,19 +239,19 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "array", array);
         } break;
         case hashString("point", 5): {
-            auto point = *FOCV_Storage::get<cv::Point>(id);
+            auto point = *FOCV_JsiObject::get_from_wrap<cv::Point>(runtime, arguments[0]);
 
             value.setProperty(runtime, "x", jsi::Value(point.x));
             value.setProperty(runtime, "y", jsi::Value(point.y));
         } break;
         case hashString("point2f", 7): {
-            auto point = *FOCV_Storage::get<cv::Point2f>(id);
+            auto point = *FOCV_JsiObject::get_from_wrap<cv::Point2f>(runtime, arguments[0]);
 
             value.setProperty(runtime, "x", jsi::Value(point.x));
             value.setProperty(runtime, "y", jsi::Value(point.y));
         } break;
         case hashString("point_vector", 12): {
-            auto points = *FOCV_Storage::get<std::vector<cv::Point>>(id);
+            auto points = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Point>>(runtime, arguments[0]);
 
             auto array = jsi::Array(runtime, points.size());
 
@@ -267,7 +266,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "array", array);
         } break;
         case hashString("point_vector_vector", 19): {
-            auto points_vector = *FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(id);
+            auto points_vector = *FOCV_JsiObject::get_from_wrap<std::vector<std::vector<cv::Point>>>(runtime, arguments[0]);
 
             auto vectors_array = jsi::Array(runtime, points_vector.size());
 
@@ -289,20 +288,20 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "array", vectors_array);
         } break;
         case hashString("size", 4): {
-            auto size = *FOCV_Storage::get<cv::Size>(id);
+            auto size = *FOCV_JsiObject::get_from_wrap<cv::Size>(runtime, arguments[0]);
 
             value.setProperty(runtime, "width", jsi::Value(size.width));
             value.setProperty(runtime, "height", jsi::Value(size.height));
         } break;
         case hashString("vec3b", 5): {
-            auto vec = *FOCV_Storage::get<cv::Vec3b>(id);
+            auto vec = *FOCV_JsiObject::get_from_wrap<cv::Vec3b>(runtime, arguments[0]);
 
             value.setProperty(runtime, "a", jsi::Value(vec.val[0]));
             value.setProperty(runtime, "b", jsi::Value(vec.val[1]));
             value.setProperty(runtime, "c", jsi::Value(vec.val[2]));
         } break;
         case hashString("scalar", 6): {
-            auto scalar = *FOCV_Storage::get<cv::Scalar>(id);
+            auto scalar = *FOCV_JsiObject::get_from_wrap<cv::Scalar>(runtime, arguments[0]);
 
             value.setProperty(runtime, "a", jsi::Value(scalar.val[0]));
             value.setProperty(runtime, "b", jsi::Value(scalar.val[1]));
@@ -310,7 +309,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "d", jsi::Value(scalar.val[3]));
         } break;
         case hashString("rotated_rect", 12): {
-            auto rect = *FOCV_Storage::get<cv::RotatedRect>(id);
+            auto rect = *FOCV_JsiObject::get_from_wrap<cv::RotatedRect>(runtime, arguments[0]);
 
             value.setProperty(runtime, "centerX", jsi::Value(rect.center.x));
             value.setProperty(runtime, "centerY", jsi::Value(rect.center.y));
@@ -319,7 +318,7 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
             value.setProperty(runtime, "angle", jsi::Value(rect.angle));
         } break;
         case hashString("term_criteria", 13): {
-            auto termCriteria = *FOCV_Storage::get<cv::TermCriteria>(id);
+            auto termCriteria = *FOCV_JsiObject::get_from_wrap<cv::TermCriteria>(runtime, arguments[0]);
 
             value.setProperty(runtime, "type", jsi::Value(termCriteria.type));
             value.setProperty(runtime, "maxCount", jsi::Value(termCriteria.maxCount));
@@ -331,37 +330,33 @@ jsi::Object FOCV_Object::convertToJSI(jsi::Runtime& runtime, const jsi::Value* a
 }
 
 jsi::Object FOCV_Object::copyObjectFromVector(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
-    std::string createdId;
+    
 
     jsi::Object value(runtime);
     std::string objectType = FOCV_JsiObject::type_from_wrap(runtime, arguments[0]);
-    std::string vectorId = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
+    
     auto index = static_cast<int>(arguments[1].asNumber());
 
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat_vector", 10): {
-            auto array = *FOCV_Storage::get<std::vector<cv::Mat>>(vectorId);
+            auto array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Mat>>(runtime, arguments[0]);
             auto mat = array.at(index);
-            createdId = FOCV_Storage::save(mat);
-            return FOCV_JsiObject::wrap(runtime, "mat", createdId);
+            return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(mat)>(mat));
         } break;
         case hashString("rect_vector", 11): {
-            auto array = *FOCV_Storage::get<std::vector<cv::Rect>>(vectorId);
+            auto array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Rect>>(runtime, arguments[0]);
             auto rect = array.at(index);
-            createdId = FOCV_Storage::save(rect);
-            return FOCV_JsiObject::wrap(runtime, "rect", createdId);
+            return FOCV_JsiObject::wrap(runtime, "rect", std::make_shared<decltype(rect)>(rect));
         } break;
         case hashString("point_vector", 12): {
-            auto array = *FOCV_Storage::get<std::vector<cv::Point>>(vectorId);
+            auto array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Point>>(runtime, arguments[0]);
             auto point = array.at(index);
-            createdId = FOCV_Storage::save(point);
-            return FOCV_JsiObject::wrap(runtime, "point", createdId);
+            return FOCV_JsiObject::wrap(runtime, "point", std::make_shared<decltype(point)>(point));
         } break;
         case hashString("point_vector_vector", 19): {
-            auto array = *FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(vectorId);
+            auto array = *FOCV_JsiObject::get_from_wrap<std::vector<std::vector<cv::Point>>>(runtime, arguments[0]);
             auto point = array.at(index);
-            createdId = FOCV_Storage::save(point);
-            return FOCV_JsiObject::wrap(runtime, "point_vector", createdId);
+            return FOCV_JsiObject::wrap(runtime, "point_vector", std::make_shared<decltype(point)>(point));
         } break;
     }
 
@@ -369,33 +364,34 @@ jsi::Object FOCV_Object::copyObjectFromVector(jsi::Runtime& runtime, const jsi::
 }
 
 void FOCV_Object::addObjectToVector(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
-    std::string createdId;
+    
 
     jsi::Object value(runtime);
     std::string objectType = FOCV_JsiObject::type_from_wrap(runtime, arguments[0]);
-    std::string vectorId = FOCV_JsiObject::id_from_wrap(runtime, arguments[0]);
-    std::string objectId = FOCV_JsiObject::id_from_wrap(runtime, arguments[1]);
+    
+    
   
     switch(hashString(objectType.c_str(), objectType.size())) {
         case hashString("mat_vector", 10): {
-            auto& array = *FOCV_Storage::get<std::vector<cv::Mat>>(vectorId);
-            auto& object = *FOCV_Storage::get<cv::Mat>(objectId);
+            auto& array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Mat>>(runtime, arguments[0]);
+            auto& object = *FOCV_JsiObject::get_from_wrap<cv::Mat>(runtime, arguments[1]);
             array.push_back(std::move(object));
         } break;
         case hashString("rect_vector", 11): {
-            auto& array = *FOCV_Storage::get<std::vector<cv::Rect>>(vectorId);
-            auto& object = *FOCV_Storage::get<cv::Rect>(objectId);
+            auto& array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Rect>>(runtime, arguments[0]);
+            auto& object = *FOCV_JsiObject::get_from_wrap<cv::Rect>(runtime, arguments[1]);
             array.push_back(object);
         } break;
         case hashString("point_vector", 12): {
-            auto& array = *FOCV_Storage::get<std::vector<cv::Point>>(vectorId);
-            auto& object = *FOCV_Storage::get<cv::Point>(objectId);
+            auto& array = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Point>>(runtime, arguments[0]);
+            auto& object = *FOCV_JsiObject::get_from_wrap<cv::Point>(runtime, arguments[1]);
             array.push_back(object);
         } break;
         case hashString("point_vector_vector", 19): {
-            auto& array = *FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(vectorId);
-            auto& object = *FOCV_Storage::get<std::vector<cv::Point>>(objectId);
+            auto& array = *FOCV_JsiObject::get_from_wrap<std::vector<std::vector<cv::Point>>>(runtime, arguments[0]);
+            auto& object = *FOCV_JsiObject::get_from_wrap<std::vector<cv::Point>>(runtime, arguments[1]);
             array.push_back(object);
         } break;
     }
 }
+

@@ -6,7 +6,6 @@
 //
 #include <iostream>
 #include "FOCV_Function.hpp"
-#include "FOCV_Storage.hpp"
 #include "FOCV_Ids.hpp"
 #include <FOCV_JsiObject.hpp>
 #include <opencv2/opencv.hpp>
@@ -288,9 +287,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
 
         cv::Mat result = (*src).clone();
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
         
       case hashString("compare", 7): {
@@ -587,20 +584,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::max(*src1, *src2, *dst);
       } break;
       case hashString("mean", 4): {
-        std::string id;
         auto src = args.asMatPtr(1);
         
         if (count > 2) {
           auto mask = args.asMatPtr(2);
           
           auto scalar = cv::mean(*src, *mask);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         } else {
           auto scalar = cv::mean(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         }
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
       } break;
       case hashString("meanStdDev", 10): {
         auto src = args.asMatPtr(1);
@@ -874,27 +868,21 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::subtract(*src1, *src2, *dst);
       } break;
       case hashString("sum", 3): {
-        std::string id;
-        
         if (args.isMat(1)) {
           auto src = args.asMatPtr(1);
           auto scalar = cv::sum(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         } else {
           auto src = args.asMatVectorPtr(1);
           auto scalar = cv::sum(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         }
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
       } break;
       case hashString("trace", 5): {
         auto src =  args.asMatPtr(1);
         
         auto scalar = cv::trace(*src);
-        std::string id = FOCV_Storage::save(scalar);
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
+        return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<decltype(scalar)>(scalar));
       } break;
       case hashString("transform", 9): {
         auto src = args.asMatPtr(1);
@@ -1240,9 +1228,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ktype = args.asNumber(7);
         
         cv::Mat result = cv::getGaborKernel(*ksize, sigma, theta, lambd, gamma, psi, ktype);
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getGaussianKernel", 17): {
         auto ksize = args.asNumber(1);
@@ -1250,9 +1236,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ktype = args.asNumber(3);
         
         cv::Mat result = cv::getGaussianKernel(ksize, sigma, ktype);
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getPerspectiveTransform", 23): {
         auto src = args.asPoint2fVectorPtr(1);
@@ -1260,9 +1244,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto solveMethod = args.asNumber(3);
 
         cv::Mat result = cv::getPerspectiveTransform(*src, *dest, solveMethod);
-        std::string id = FOCV_Storage::save(result);
-
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getStructuringElement", 21): {
         std::string id;
@@ -1273,13 +1255,11 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto anchor = args.asPointPtr(3);
 
           cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
-          id = FOCV_Storage::save(result);
+          return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(result));
         } else {
           cv::Mat result = cv::getStructuringElement(shape, *ksize);
-          id = FOCV_Storage::save(result);
+          return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(result));
         }
-
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
       case hashString("Laplacian", 9): {
         auto src = args.asMatPtr(1);
@@ -1301,9 +1281,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
       case hashString("morphologyDefaultBorderValue", 28): {
         auto scalar = cv::morphologyDefaultBorderValue();
-        std::string id = FOCV_Storage::save(scalar);
-
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
+        return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<decltype(scalar)>(scalar));
       } break;
       case hashString("morphologyEx", 12): {
         auto src = args.asMatPtr(1);
@@ -1391,7 +1369,6 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::matchTemplate(*image, *templ, *result, method, *mask);
       } break;
       case hashString("phaseCorrelate", 14): {
-        std::string id;
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
         double response = 0;
@@ -1400,13 +1377,11 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto window = args.asMatPtr(3);
 
           cv::Point2f result = cv::phaseCorrelate(*src1, *src2, *window, &response);
-          id = FOCV_Storage::save(result);
+          value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", std::make_shared<cv::Point2f>(result)));
         } else {
           cv::Point2f result = cv::phaseCorrelate(*src1, *src2, cv::noArray(), &response);
-          id = FOCV_Storage::save(result);
+          value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", std::make_shared<cv::Point2f>(result)));
         }
-
-        value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", id));
         value.setProperty(runtime, "response", jsi::Value(response));
       } break;
       case hashString("approxPolyDP", 12): {
@@ -1470,9 +1445,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           rect = cv::boundingRect(*args.asPointVectorPtr(1));
         }
         
-        std::string id = FOCV_Storage::save(rect);
-        
-        return FOCV_JsiObject::wrap(runtime, "rect", id);
+        return FOCV_JsiObject::wrap(runtime, "rect", std::make_shared<decltype(rect)>(rect));
       } break;
       case hashString("connectedComponents", 19): {
         auto image = args.asMatPtr(1);
@@ -1571,8 +1544,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         auto rect = cv::minAreaRect(*src);
         
-        auto id = FOCV_Storage::save(rect);
-        return FOCV_JsiObject::wrap(runtime, "rotated_rect", id);
+        return FOCV_JsiObject::wrap(runtime, "rotated_rect", std::make_shared<cv::RotatedRect>(rect));
       } break;
       case hashString("convertTo", 9): {
         auto src = args.asMatPtr(1);

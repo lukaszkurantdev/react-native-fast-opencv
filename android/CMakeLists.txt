@@ -19,12 +19,8 @@ add_library(react-native-fast-opencv
         ../cpp/ConvertImage.cpp
         ../cpp/FOCV_Function.cpp
         ../cpp/FOCV_FunctionArguments.cpp
-        ../cpp/FOCV_Ids.cpp
         ../cpp/FOCV_JsiObject.cpp
         ../cpp/FOCV_Object.cpp
-        ../cpp/FOCV_Storage.cpp
-        ../cpp/FOCV_Storage.hpp
-        ../cpp/UUID.cpp
         ../cpp/jsi/TypedArray.cpp
         ../cpp/jsi/Promise.cpp
 

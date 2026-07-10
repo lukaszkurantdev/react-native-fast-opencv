@@ -33,14 +33,7 @@ export function ImageExample() {
       const kernel = OpenCV.createObject(ObjectType.Size, 20, 20);
       const point = OpenCV.createObject(ObjectType.Point, 0, 0);
 
-      OpenCV.invoke(
-        'blur',
-        src,
-        dst,
-        kernel,
-        point,
-        BorderTypes.BORDER_DEFAULT
-      );
+      OpenCV.blur(src, dst, kernel, point, BorderTypes.BORDER_DEFAULT);
       const dstResult = OpenCV.toJSValue(dst);
 
       setImage(dstResult.base64);
