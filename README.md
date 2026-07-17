@@ -1,12 +1,9 @@
-![React Native Fast OpenCV](./docs/images/title-banner.svg)
+![React Native Fast OpenCV](./docs/images/react-native-fast-opencv/images/title-banner.svg)
 
 A powerful port of **OpenCV** for React Native.
 
-> The library is in the early stages of development and not all functions or objects available in OpenCV are supported. Add an issue if you have any problems or questions.
-
 - 🔥 Powered by JSI
 - 🏎️ Uses OpenCV C++ API
-- 🏛️ New architecture ready
 - 🪽 Easy usage, without manual configuration
 - 📸 Easy [VisionCamera](https://github.com/mrousavy/react-native-vision-camera) integration
 - 🧵 Easy [WorkletsCore](https://github.com/margelo/react-native-worklets-core) integration
@@ -18,15 +15,19 @@ OpenCV is a popular library for image processing, but quite tricky when it comes
 
 Currently, there is a port of the OpenCV library but due to the change in standards when developing React Native applications, I decided to create a new library using an API in C++ that will allow for simpler integration, better performance and readability when used in code.
 
-### Documentation
+### Installation
 
-Docs are available [here](https://lukaszkurantdev.github.io/react-native-fast-opencv).
+The method of installation is described [here](./installation.md).
 
 ### State of development
 
+> Version V1 (July 2026) supports only the new architecture (tested only on React Native versions 0.85 and later).
+
+Upgrading from 0.4.X? The API changed significantly in V1 — see the [migration guide](./migration.md).
+
 Due to the size of the OpenCV library, this port currently only supports selected objects and functions. However, development is simple enough to only require the addition of specific code in C++ using the functionality.
 
-List of available functions are available [here](https://lukaszkurantdev.github.io/react-native-fast-opencv/availablefunctions).
+List of available functions are available [here](./availablefunctions.md).
 
 ---
 

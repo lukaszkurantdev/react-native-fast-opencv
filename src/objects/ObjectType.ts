@@ -13,4 +13,9 @@ export enum ObjectType {
   Scalar = 'scalar',
   RotatedRect = 'rotated_rect',
   TermCriteria = 'term_criteria',
+  ORB = 'orb',
+  BFMatcher = 'bfmatcher',
+  KeyPointVector = 'keypoint_vector',
+  DMatchVector = 'dmatch_vector',
+  DMatchVectorVector = 'dmatch_vector_vector',
 }

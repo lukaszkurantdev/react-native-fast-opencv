@@ -2,11 +2,14 @@
   "name": "docs",
   "packageManager": "yarn@3.6.4",
   "dependencies": {
-    "next": "^14.2.6",
-    "nextra": "^2.13.4",
-    "nextra-theme-docs": "^2.13.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "next": "^16.2.10",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "resolutions": {
+    "zod": "4.1.12"
   },
   "scripts": {
     "dev": "next",

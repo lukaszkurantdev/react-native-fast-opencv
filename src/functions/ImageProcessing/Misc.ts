@@ -19,15 +19,13 @@ export type Misc = {
    * @param blockSize Size of a pixel neighborhood that is used to calculate a threshold value for the pixel: 3, 5, 7, and so on.
    * @param C Constant subtracted from the mean or weighted mean (@see the details below). Normally, it is positive but may be zero or negative as well)
    */
-  invoke(
-    name: 'adaptiveThreshold',
+  adaptiveThreshold(
     src: Mat,
     dst: Mat,
     maxValue: number,
     adaptiveMethod: AdaptiveThresholdTypes,
     thresholdType:
-      | ThresholdTypes.THRESH_BINARY
-      | ThresholdTypes.THRESH_BINARY_INV,
+      ThresholdTypes.THRESH_BINARY | ThresholdTypes.THRESH_BINARY_INV,
     blockSize: number,
     C: number
   ): void;
@@ -40,8 +38,7 @@ export type Misc = {
    * @param distanceType Type of distance, @see DistanceTypes
    * @param maskSize Size of the distance transform mask, @see DistanceTransformMasks. In case of the DIST_L1 or DIST_C distance type, the parameter is forced to 3 because a 3×3 mask gives the same result as 5×5 or any larger aperture.
    */
-  invoke(
-    name: 'distanceTransform',
+  distanceTransform(
     src: Mat,
     dst: Mat,
     distanceType: DistanceTypes,
@@ -61,8 +58,7 @@ export type Misc = {
    * @param upDiff Maximal upper brightness/color difference between the currently observed pixel and one of its neighbors belonging to the component, or a seed pixel being added to the component.
    * @param flags Operation flags. The first 8 bits contain a connectivity value. The default value of 4 means that only the four nearest neighbor pixels (those that share an edge) are considered. A connectivity value of 8 means that the eight nearest neighbor pixels (those that share a corner) will be considered. The next 8 bits (8-16) contain a value between 1 and 255 with which to fill the mask (the default value is 1). For example, 4 | ( 255 \<\< 8 ) will consider 4 nearest neighbours and fill the mask with a value of 255. The following additional options occupy higher bits and therefore may be further combined with the connectivity and mask fill values using bit-wise or (|), see #FloodFillFlags.
    **/
-  invoke(
-    name: 'floodFill',
+  floodFill(
     image: Mat,
     mask: Mat,
     seedPoint: Point,
@@ -79,7 +75,7 @@ export type Misc = {
    * @param src input image as W×H, 8-bit or floating-point (32f or 64f).
    * @param sum integral image as (W+1)×(H+1) , 32-bit integer or floating-point (32f or 64f).
    */
-  invoke(name: 'integral', src: Mat, sum: Mat): void;
+  integral(src: Mat, sum: Mat): void;
 
   /**
    * Applies a fixed-level threshold to each array element
@@ -90,8 +86,7 @@ export type Misc = {
    * @param maxval maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types
    * @param type thresholding type (@see ThresholdTypes).
    */
-  invoke(
-    name: 'threshold',
+  threshold(
     src: Mat,
     dst: Mat,
     thresh: number,

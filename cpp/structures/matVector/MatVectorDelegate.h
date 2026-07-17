@@ -1,0 +1,21 @@
+#include "TypeDelegate.hpp"
+#include <jsi/jsi.h>
+#include <any>
+#include <opencv2/opencv.hpp>
+#include "hashString.hpp"
+#include "ConvertImage.hpp"
+#include "FOCV_JsiObject.hpp"
+
+#ifndef MatVectorDelegate_h
+#define MatVectorDelegate_h
+
+using namespace facebook;
+
+class MatVectorDelegate : public TypeDelegate {
+public:
+  jsi::Value get(jsi::Runtime& rt, const std::string& propName, const std::any& object) override;
+  std::vector<jsi::PropNameID> getPropertyNames(jsi::Runtime& runtime) override;
+  size_t getExternalMemorySize(const std::any& object) override;
+};
+
+#endif // !MatVectorDelegate_h

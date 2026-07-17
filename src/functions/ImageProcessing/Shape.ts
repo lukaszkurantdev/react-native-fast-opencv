@@ -21,8 +21,7 @@ export type Shape = {
    * @param epsilonParameter specifying the approximation accuracy. This is the maximum distance between the original curve and its approximation
    * @param closed If true, the approximated curve is closed (its first and last vertices are connected). Otherwise, it is not closed
    */
-  invoke(
-    name: 'approxPolyDP',
+  approxPolyDP(
     curve: Mat | MatVector | PointVector,
     approxCurve: Mat | PointVector,
     epsilon: number,
@@ -35,8 +34,7 @@ export type Shape = {
    * @param closed Flag indicating whether the curve is closed or not.
    * @returns a curve length or a closed contour perimeter.
    */
-  invoke(
-    name: 'arcLength',
+  arcLength(
     curve: Mat | MatVector | PointVector,
     closed: boolean
   ): { value: number };
@@ -46,7 +44,7 @@ export type Shape = {
    * @param array Input gray-scale image or 2D point set, stored in std::vector or Mat.
    * @returns the minimal up-right bounding rectangle for the specified point set or non-zero pixels of gray-scale image
    */
-  invoke(name: 'boundingRect', array: Mat | MatVector | PointVector): Rect;
+  boundingRect(array: Mat | MatVector | PointVector): Rect;
 
   /**
    * computes the connected components labeled image of boolean image
@@ -54,11 +52,7 @@ export type Shape = {
    * @param labels destination labeled image
    * @returns N, the total number of labels [0, N-1] where 0 represents the background label
    */
-  invoke(
-    name: 'connectedComponents',
-    image: Mat,
-    labels: Mat
-  ): { value: number };
+  connectedComponents(image: Mat, labels: Mat): { value: number };
 
   /**
    * computes the connected components labeled image of boolean image and also produces a statistics output for each label
@@ -68,8 +62,7 @@ export type Shape = {
    * @param centroids centroid output for each label, including the background label. Centroids are accessed via centroids(label, 0) for x and centroids(label, 1) for y. The data type CV_64F
    * @returns N, the total number of labels [0, N-1] where 0 represents the background label
    */
-  invoke(
-    name: 'connectedComponentsWithStats',
+  connectedComponentsWithStats(
     image: Mat,
     labels: Mat,
     stats: Mat,
@@ -82,9 +75,8 @@ export type Shape = {
    * @param oriented Oriented area flag. If it is true, the function returns a signed area value, depending on the contour orientation (clockwise or counter-clockwise). Using this feature you can determine orientation of a contour by taking the sign of an area. By default, the parameter is false, which means that the absolute value is returned
    * @returns area and the number of non-zero pixels,
    */
-  invoke(
-    name: 'contourArea',
-    contour: Mat | MatVector | PointVector,
+  contourArea(
+    contour: Mat | PointVector,
     oriented?: boolean
   ): { value: number };
 
@@ -93,7 +85,7 @@ export type Shape = {
    * @param points Input 2D point set, stored in std::vector or Mat.
    * @param hull Output convex hull. It is either an integer vector of indices or vector of points. In the first case, the hull elements are 0-based indices of the convex hull points in the original array (since the set of convex hull points is a subset of the original point set). In the second case, hull elements are the convex hull points themselves
    */
-  invoke(name: 'convexHull', points: Mat, hull: Mat): void;
+  convexHull(points: Mat, hull: Mat): void;
 
   /**
    * Finds the convexity defects of a contour.
@@ -101,12 +93,7 @@ export type Shape = {
    * @param convexHull Convex hull obtained using convexHull that should contain indices of the contour points that make the hull
    * @param convexityDefects  output vector of convexity defects. In C++ and the new Python/Java interface each convexity defect is represented as 4-element integer vector (a.k.a. Vec4i): (start_index, end_index, farthest_pt_index, fixpt_depth), where indices are 0-based indices in the original contour of the convexity defect beginning, end and the farthest point, and fixpt_depth is fixed-point approximation (with 8 fractional bits) of the distance between the farthest contour point and the hull. That is, to get the floating-point value of the depth will be fixpt_depth/256.0.
    */
-  invoke(
-    name: 'convexityDefects',
-    contour: Mat,
-    convexHull: Mat,
-    convexityDefects: Mat
-  ): void;
+  convexityDefects(contour: Mat, convexHull: Mat, convexityDefects: Mat): void;
 
   /**
    * Finds contours in a binary image
@@ -115,8 +102,7 @@ export type Shape = {
    * @param mode Contour retrieval mode, @see RetrievalModes
    * @param method Contour approximation method, @see ContourApproximationModes
    */
-  invoke(
-    name: 'findContours',
+  findContours(
     image: Mat,
     contours: MatVector | PointVectorOfVectors,
     mode: RetrievalModes,
@@ -131,8 +117,7 @@ export type Shape = {
    * @param mode Contour retrieval mode, @see RetrievalModes
    * @param method Contour approximation method, @see ContourApproximationModes
    */
-  invoke(
-    name: 'findContoursWithHierarchy',
+  findContoursWithHierarchy(
     image: Mat,
     contours: MatVector | PointVectorOfVectors,
     hierarchy: Mat,
@@ -149,8 +134,7 @@ export type Shape = {
    * @param reps Sufficient accuracy for the radius (distance between the coordinate origin and the line).
    * @param aeps Sufficient accuracy for the angle. 0.01 would be a good default value for reps and aeps.
    */
-  invoke(
-    name: 'fitLine',
+  fitLine(
     points: Mat,
     line: Mat,
     disType: DistanceTypes,
@@ -164,7 +148,7 @@ export type Shape = {
    * @param contour
    * @returns whether the input contour is convex or not
    */
-  invoke(name: 'isContourConvex', contour: Mat): { value: boolean };
+  isContourConvex(contour: Mat): { value: boolean };
 
   /**
    * Compares two shapes
@@ -174,8 +158,7 @@ export type Shape = {
    * @param parameter Method-specific parameter (not supported now).
    * @returns
    */
-  invoke(
-    name: 'matchShapes',
+  matchShapes(
     contour1: Mat,
     contour2: Mat,
     method: ShapeMatchModes,
@@ -187,5 +170,5 @@ export type Shape = {
    * @param points Input vector of 2D points, stored in a Mat
    * @returns the minimum-area bounding rectangle (possibly rotated) for a specified point set
    */
-  invoke(name: 'minAreaRect', points: Mat): RotatedRect;
+  minAreaRect(points: Mat): RotatedRect;
 };

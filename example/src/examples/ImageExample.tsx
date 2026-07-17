@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Button, Image, SafeAreaView } from 'react-native';
+import { Button, Image, View, StyleSheet } from 'react-native';
 import {
-  DataTypes,
-  ObjectType,
   OpenCV,
+  DataTypes,
+  Mat,
+  Size,
+  Point,
   BorderTypes,
 } from 'react-native-fast-opencv';
 import { launchImageLibrary, type Asset } from 'react-native-image-picker';
@@ -14,11 +16,11 @@ export function ImageExample() {
   const [result, setResult] = useState<string>('');
 
   const getImageFromGallery = async () => {
-    const result = await launchImageLibrary({
+    const rawResult = await launchImageLibrary({
       mediaType: 'photo',
       includeBase64: true,
     });
-    setPhoto(result.assets?.at(0) || null);
+    setPhoto(rawResult.assets?.at(0) || null);
   };
 
   const setImage = useRunOnJS((data: string) => {
@@ -28,29 +30,22 @@ export function ImageExample() {
   const worklet = useWorklet('default', () => {
     'worklet';
     if (photo?.base64) {
-      const src = OpenCV.base64ToMat(photo.base64);
-      const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
-      const kernel = OpenCV.createObject(ObjectType.Size, 20, 20);
-      const point = OpenCV.createObject(ObjectType.Point, 0, 0);
+      const src = Mat.createFromBase64(photo.base64);
 
-      OpenCV.invoke(
-        'blur',
-        src,
-        dst,
-        kernel,
-        point,
-        BorderTypes.BORDER_DEFAULT
-      );
-      const dstResult = OpenCV.toJSValue(dst);
+      const dst = Mat.create(0, 0, DataTypes.CV_8U);
 
-      setImage(dstResult.base64);
+      const kernel = Size.create(20, 20);
+      const point = Point.create(0, 0);
 
-      OpenCV.clearBuffers(); // IMPORTANT
+      OpenCV.blur(src, dst, kernel, point, BorderTypes.BORDER_DEFAULT);
+      const dstResult = dst.toBase64();
+
+      setImage(dstResult);
     }
   });
 
   return (
-    <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
+    <View style={styles.container}>
       <Button title="Select photo" onPress={getImageFromGallery} />
       <Button title="Process" onPress={() => worklet()} />
 
@@ -61,6 +56,13 @@ export function ImageExample() {
           width={390}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+});

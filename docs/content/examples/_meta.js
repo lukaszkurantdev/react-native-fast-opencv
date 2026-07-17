@@ -1,0 +1,4 @@
+export default {
+  realtimedetection: 'Real-time detection',
+  blur: 'Blur image on separated thread',
+};
