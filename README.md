@@ -1,4 +1,4 @@
-![React Native Fast OpenCV](./docs/images/react-native-fast-opencv/images/title-banner.svg)
+![React Native Fast OpenCV](./docs/public/react-native-fast-opencv/images/title-banner.svg)
 
 A powerful port of **OpenCV** for React Native.
 
