@@ -11,8 +11,7 @@ export type ObjectDetection = {
    * @param method Parameter specifying the comparison method, @see TemplateMatchModes
    * @param mask Mask of searched template. It must have the same datatype and size with templ. It is not set by default. Currently, only the TM_SQDIFF and TM_CCORR_NORMED methods are supported
    */
-  invoke(
-    name: 'matchTemplate',
+  matchTemplate(
     image: Mat,
     templ: Mat,
     result: Mat,
@@ -32,8 +31,7 @@ export type ObjectDetection = {
    * @param src2 Source floating point array (CV_32FC1 or CV_64FC1)
    * @param window Floating point array with windowing coefficients to reduce edge effects (optional).
    */
-  invoke(
-    name: 'phaseCorrelate',
+  phaseCorrelate(
     src1: Mat,
     src2: Mat,
     window?: Mat

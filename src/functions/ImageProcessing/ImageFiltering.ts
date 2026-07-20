@@ -13,8 +13,7 @@ export type ImageFiltering = {
    * @param sigmaSpace Filter sigma in the coordinate space. A larger value of the parameter means that farther pixels will influence each other as long as their colors are close enough (see sigmaColor ). When d>0, it specifies the neighborhood size regardless of sigmaSpace. Otherwise, d is proportional to sigmaSpace.
    * @param borderType border mode used to extrapolate pixels outside of the image, see BorderTypes
    */
-  invoke(
-    name: 'bilateralFilter',
+  bilateralFilter(
     src: Mat,
     dst: Mat,
     d: number,
@@ -31,8 +30,7 @@ export type ImageFiltering = {
    * @param anchor anchor point; default value Point(-1,-1) means that the anchor is at the kernel center.
    * @param borderType border mode used to extrapolate pixels outside of the image, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'blur',
+  blur(
     src: Mat,
     dst: Mat,
     ksize: Size,
@@ -50,8 +48,7 @@ export type ImageFiltering = {
    * @param normalize flag, specifying whether the kernel is normalized by its area or not.
    * @param borderType border mode used to extrapolate pixels outside of the image, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'boxFilter',
+  boxFilter(
     src: Mat,
     dst: Mat,
     ddepth: DataTypes,
@@ -68,8 +65,7 @@ export type ImageFiltering = {
    * @param maxlevel 0-based index of the last (the smallest) pyramid layer. It must be non-negative.
    * @param borderType Pixel extrapolation method, see BorderTypes (BORDER_CONSTANT isn't supported)
    */
-  invoke(
-    name: 'buildPyramid',
+  buildPyramid(
     src: Mat,
     dst: Mat,
     maxlevel: number,
@@ -86,8 +82,7 @@ export type ImageFiltering = {
    * @param borderType pixel extrapolation method, see BorderTypes. BORDER_WRAP is not suported.
    * @param borderValue border value in case of a constant border
    */
-  invoke(
-    name: 'dilate',
+  dilate(
     src: Mat,
     dst: Mat,
     kernel: Mat,
@@ -107,8 +102,7 @@ export type ImageFiltering = {
    * @param borderType pixel extrapolation method, see BorderTypes. BORDER_WRAP is not suported.
    * @param borderValue border value in case of a constant border
    */
-  invoke(
-    name: 'erode',
+  erode(
     src: Mat,
     dst: Mat,
     kernel: Mat,
@@ -128,8 +122,7 @@ export type ImageFiltering = {
    * @param delat optional value added to the filtered pixels before storing them in dst.
    * @param borderType pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'filter2D',
+  filter2D(
     src: Mat,
     dst: Mat,
     ddepth: number,
@@ -148,22 +141,9 @@ export type ImageFiltering = {
    * @param sigmaY Gaussian kernel standard deviation in Y direction; if sigmaY is zero, it is set to be equal to sigmaX, if both sigmas are zeros, they are computed from ksize.width and ksize.height, respectively (see getGaussianKernel for details); to fully control the result regardless of possible future modifications of all this semantics, it is recommended to specify all of ksize, sigmaX, and sigmaY.
    * @param borderType pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'GaussianBlur',
-    src: Mat,
-    dst: Mat,
-    ksize: Size,
-    sigmaX: number
-  ): void;
-  invoke(
-    name: 'GaussianBlur',
-    src: Mat,
-    dst: Mat,
-    ksize: Size,
-    sigmaX: number
-  ): void;
-  invoke(
-    name: 'GaussianBlur',
+  GaussianBlur(src: Mat, dst: Mat, ksize: Size, sigmaX: number): void;
+  GaussianBlur(src: Mat, dst: Mat, ksize: Size, sigmaX: number): void;
+  GaussianBlur(
     src: Mat,
     dst: Mat,
     ksize: Size,
@@ -182,8 +162,7 @@ export type ImageFiltering = {
    * @param psi Phase offset.
    * @param ktype Type of filter coefficients. It can be CV_32F or CV_64F .
    */
-  invoke(
-    name: 'getGaborKernel',
+  getGaborKernel(
     ksize: Size,
     sigma: number,
     theta: number,
@@ -199,8 +178,7 @@ export type ImageFiltering = {
    * @param sigma Gaussian standard deviation. If it is non-positive, it is computed from ksize as sigma = 0.3*((ksize-1)*0.5 - 1) + 0.8.
    * @param ktype Type of filter coefficients. It can be CV_32F or CV_64F .
    */
-  invoke(
-    name: 'getGaussianKernel',
+  getGaussianKernel(
     ksize: number,
     sigma: number,
     ktype: DataTypes.CV_32F | DataTypes.CV_64F
@@ -212,13 +190,8 @@ export type ImageFiltering = {
    * @param ksize Size of the structuring element.
    * @param anchor Anchor position within the element. The default value means that the anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor position. In other cases the anchor just regulates how much the result of the morphological operation is shifted.
    */
-  invoke(name: 'getStructuringElement', shape: MorphShapes, ksize: Size): Mat;
-  invoke(
-    name: 'getStructuringElement',
-    shape: MorphShapes,
-    ksize: Size,
-    anchor: Point
-  ): Mat;
+  getStructuringElement(shape: MorphShapes, ksize: Size): Mat;
+  getStructuringElement(shape: MorphShapes, ksize: Size, anchor: Point): Mat;
 
   /**
    * Calculates the Laplacian of an image.
@@ -231,8 +204,7 @@ export type ImageFiltering = {
    * @param delta Optional delta value that is added to the results prior to storing them in dst
    * @param borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'Laplacian',
+  Laplacian(
     src: Mat,
     dst: Mat,
     ddepth: DataTypes,
@@ -250,12 +222,12 @@ export type ImageFiltering = {
    * @param dst destination array of the same size and type as src.
    * @param ksize aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ...
    */
-  invoke(name: 'medianBlur', src: Mat, dst: Mat, ksize: number): void;
+  medianBlur(src: Mat, dst: Mat, ksize: number): void;
 
   /**
    * returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
    */
-  invoke(name: 'morphologyDefaultBorderValue'): Scalar;
+  morphologyDefaultBorderValue(): Scalar;
 
   /**
    * Performs advanced morphological transformations.
@@ -271,23 +243,15 @@ export type ImageFiltering = {
    * @param borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    * @param borderValue Border value in case of a constant border. The default value has a special meaning.
    */
-  invoke(
-    name: 'morphologyEx',
-    src: Mat,
-    dst: Mat,
-    op: MorphTypes,
-    kernel: Mat
-  ): void;
-  invoke(
-    name: 'morphologyEx',
+  morphologyEx(src: Mat, dst: Mat, op: MorphTypes, kernel: Mat): void;
+  morphologyEx(
     src: Mat,
     dst: Mat,
     op: MorphTypes,
     kernel: Mat,
     anchor: Point
   ): void;
-  invoke(
-    name: 'morphologyEx',
+  morphologyEx(
     src: Mat,
     dst: Mat,
     op: MorphTypes,
@@ -295,8 +259,7 @@ export type ImageFiltering = {
     anchor: Point,
     iterations: number
   ): void;
-  invoke(
-    name: 'morphologyEx',
+  morphologyEx(
     src: Mat,
     dst: Mat,
     op: MorphTypes,
@@ -305,8 +268,7 @@ export type ImageFiltering = {
     iterations: number,
     borderType: BorderTypes
   ): void;
-  invoke(
-    name: 'morphologyEx',
+  morphologyEx(
     src: Mat,
     dst: Mat,
     op: MorphTypes,
@@ -330,8 +292,7 @@ export type ImageFiltering = {
    * @param delta delta value that is added to the results prior to storing them in dst.
    * @param borderType Pixel extrapolation method, see BorderTypes. BORDER_WRAP is not supported.
    */
-  invoke(
-    name: 'Sobel',
+  Sobel(
     src: Mat,
     dst: Mat,
     ddepth: number,

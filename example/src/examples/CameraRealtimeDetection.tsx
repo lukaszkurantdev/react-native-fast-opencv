@@ -3,102 +3,45 @@ import { useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import {
   OpenCV,
-  ObjectType,
-  type Rect,
   DataTypes,
+  Mat,
   ColorConversionCodes,
   RetrievalModes,
   ContourApproximationModes,
+  Scalar,
+  MatVector,
+  Rect,
 } from 'react-native-fast-opencv';
 import {
-  Camera,
   useCameraDevice,
   useCameraPermission,
-  useSkiaFrameProcessor,
 } from 'react-native-vision-camera';
-import { useResizePlugin } from 'vision-camera-resize-plugin';
+import { SkiaCamera } from 'react-native-vision-camera-skia';
+import { useResizer, type GPUFrame } from 'react-native-vision-camera-resizer';
 
 const paint = Skia.Paint();
 paint.setStyle(PaintStyle.Fill);
 paint.setColor(Skia.Color('red'));
 
+const RESIZER_WIDTH = 320;
+const RESIZER_HEIGHT = 180;
+
 export function CameraRealtimeDetection() {
   const device = useCameraDevice('back');
   const { hasPermission, requestPermission } = useCameraPermission();
 
-  const { resize } = useResizePlugin();
+  const { resizer } = useResizer({
+    width: 320,
+    height: 180,
+    channelOrder: 'bgr',
+    dataType: 'uint8',
+    pixelLayout: 'interleaved',
+    scaleMode: 'contain',
+  });
 
   useEffect(() => {
     requestPermission();
   }, [requestPermission]);
-
-  const frameProcessor = useSkiaFrameProcessor((frame) => {
-    'worklet';
-
-    const height = frame.height / 4;
-    const width = frame.width / 4;
-
-    const resized = resize(frame, {
-      scale: {
-        width: width,
-        height: height,
-      },
-      pixelFormat: 'bgr',
-      dataType: 'uint8',
-    });
-
-    const src = OpenCV.bufferToMat('uint8', height, width, 3, resized);
-    const dst = OpenCV.createObject(ObjectType.Mat, 0, 0, DataTypes.CV_8U);
-
-    const lowerBound = OpenCV.createObject(ObjectType.Scalar, 30, 60, 60);
-    const upperBound = OpenCV.createObject(ObjectType.Scalar, 50, 255, 255);
-    OpenCV.invoke('cvtColor', src, dst, ColorConversionCodes.COLOR_BGR2HSV);
-    OpenCV.invoke('inRange', dst, lowerBound, upperBound, dst);
-
-    const channels = OpenCV.createObject(ObjectType.MatVector);
-    OpenCV.invoke('split', dst, channels);
-    const grayChannel = OpenCV.copyObjectFromVector(channels, 0);
-
-    const contours = OpenCV.createObject(ObjectType.MatVector);
-    OpenCV.invoke(
-      'findContours',
-      grayChannel,
-      contours,
-      RetrievalModes.RETR_TREE,
-      ContourApproximationModes.CHAIN_APPROX_SIMPLE
-    );
-
-    const contoursMats = OpenCV.toJSValue(contours);
-    const rectangles: Rect[] = [];
-
-    for (let i = 0; i < contoursMats.array.length; i++) {
-      const contour = OpenCV.copyObjectFromVector(contours, i);
-      const { value: area } = OpenCV.invoke('contourArea', contour, false);
-
-      if (area > 3000) {
-        const rect = OpenCV.invoke('boundingRect', contour);
-        rectangles.push(rect);
-      }
-    }
-
-    frame.render();
-
-    for (const rect of rectangles) {
-      const rectangle = OpenCV.toJSValue(rect);
-
-      frame.drawRect(
-        {
-          height: rectangle.height * 4,
-          width: rectangle.width * 4,
-          x: rectangle.x * 4,
-          y: rectangle.y * 4,
-        },
-        paint
-      );
-    }
-
-    OpenCV.clearBuffers(); // REMEMBER TO CLEAN
-  }, []);
 
   if (!hasPermission) {
     return <Text>No permission</Text>;
@@ -109,11 +52,79 @@ export function CameraRealtimeDetection() {
   }
 
   return (
-    <Camera
-      style={StyleSheet.absoluteFill}
+    <SkiaCamera
+      style={styles.container}
       device={device}
       isActive={true}
-      frameProcessor={frameProcessor}
+      orientationSource="interface"
+      onFrame={(frame, render) => {
+        'worklet';
+        const height = frame.height / 4;
+        const width = frame.width / 4;
+
+        const scaleToCanvasX = frame.width / RESIZER_HEIGHT;
+        const scaleToCanvasY = frame.height / RESIZER_WIDTH;
+
+        const resized = resizer!.resize(frame) as GPUFrame;
+        const pixels = new Uint8Array(resized.getPixelBuffer());
+        const src = Mat.createFromBuffer('uint8', height, width, 3, pixels);
+        const dst = Mat.create(0, 0, DataTypes.CV_8U);
+
+        const lowerBound = Scalar.create(30, 60, 60);
+        const upperBound = Scalar.create(50, 255, 255);
+        OpenCV.cvtColor(src, dst, ColorConversionCodes.COLOR_BGR2HSV);
+        OpenCV.inRange(dst, lowerBound, upperBound, dst);
+
+        const channels = MatVector.create();
+        OpenCV.split(dst, channels);
+        const grayChannel = channels.get(0);
+
+        const contours = MatVector.create();
+        OpenCV.findContours(
+          grayChannel,
+          contours,
+          RetrievalModes.RETR_TREE,
+          ContourApproximationModes.CHAIN_APPROX_SIMPLE
+        );
+
+        const contoursCount = contours.length;
+        const rectangles: Rect[] = [];
+
+        for (let i = 0; i < contoursCount; i++) {
+          const contour = contours.get(i);
+          const { value: area } = OpenCV.contourArea(contour, false);
+
+          if (area > 3000) {
+            const rect = OpenCV.boundingRect(contour);
+            rectangles.push(rect);
+          }
+        }
+
+        render(({ canvas, frameTexture }) => {
+          canvas.drawImage(frameTexture, 0, 0);
+
+          for (const rect of rectangles) {
+            canvas.drawRect(
+              {
+                x: (RESIZER_HEIGHT - rect.y - rect.height) * scaleToCanvasX,
+                y: rect.x * scaleToCanvasY,
+                width: rect.height * scaleToCanvasX,
+                height: rect.width * scaleToCanvasY,
+              },
+              paint
+            );
+          }
+        });
+
+        resized.dispose();
+        frame.dispose();
+      }}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

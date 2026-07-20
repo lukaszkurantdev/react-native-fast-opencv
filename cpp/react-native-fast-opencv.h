@@ -24,12 +24,42 @@ using namespace cv;
 #include <React-callinvoker/ReactCommon/CallInvoker.h>
 #endif
 
+#include "MatFactory.h"
+#include "MatVectorFactory.h"
+#include "RectFactory.h"
+#include "RectVectorFactory.h"
+#include "PointFactory.h"
+#include "PointVectorFactory.h"
+#include "Point2fFactory.h"
+#include "Point2fVectorFactory.h"
+#include "PointVectorVectorFactory.h"
+#include "SizeFactory.h"
+#include "Vec3bFactory.h"
+#include "ScalarFactory.h"
+#include "RotatedRectFactory.h"
+#include "TermCriteriaFactory.h"
+
 using namespace facebook;
 
 class OpenCVPlugin : public jsi::HostObject {
 private:
     std::shared_ptr<react::CallInvoker> _callInvoker;
-    
+  
+    std::shared_ptr<MatFactory> matFactory;
+    std::shared_ptr<MatVectorFactory> matVectorFactory;
+    std::shared_ptr<RectFactory> rectFactory;
+    std::shared_ptr<RectVectorFactory> rectVectorFactory;
+    std::shared_ptr<PointFactory> pointFactory;
+    std::shared_ptr<PointVectorFactory> pointVectorFactory;
+    std::shared_ptr<Point2fFactory> point2fFactory;
+    std::shared_ptr<Point2fVectorFactory> point2fVectorFactory;
+    std::shared_ptr<PointVectorVectorFactory> pointVectorVectorFactory;
+    std::shared_ptr<SizeFactory> sizeFactory;
+    std::shared_ptr<Vec3bFactory> vec3bFactory;
+    std::shared_ptr<ScalarFactory> scalarFactory;
+    std::shared_ptr<RotatedRectFactory> rotatedRectFactory;
+    std::shared_ptr<TermCriteriaFactory> termCriteriaFactory;
+  
 public:
     explicit OpenCVPlugin(std::shared_ptr<react::CallInvoker> callInvoker);
     static void installOpenCV(jsi::Runtime& runtime, std::shared_ptr<react::CallInvoker> callInvoker);

@@ -18,8 +18,7 @@ export type Drawing = {
    * @param thickness Line thickness
    * @param line_type Type of the line. See LineTypes
    */
-  invoke(
-    name: 'arrowedLine',
+  arrowedLine(
     img: Mat,
     pt1: Point,
     pt2: Point,
@@ -36,8 +35,7 @@ export type Drawing = {
    * @param color Circle color.
    * @param thickness Thickness of the circle outline, if positive. Negative values, like FILLED, mean that a filled circle is to be drawn
    */
-  invoke(
-    name: 'circle',
+  circle(
     img: Mat,
     center: Point,
     radius: number,
@@ -53,12 +51,7 @@ export type Drawing = {
    * @param pt1 First line point.
    * @param pt2 Second line point.
    */
-  invoke(
-    name: 'clipLine',
-    imgSize: Size,
-    pt1: Point,
-    pt2: Point
-  ): { value: boolean };
+  clipLine(imgSize: Size, pt1: Point, pt2: Point): { value: boolean };
 
   /**
    * Draws contours outlines or filled contours.
@@ -70,8 +63,7 @@ export type Drawing = {
    * @param thickness Thickness of lines the contours are drawn with. If it is negative (for example, thickness=FILLED ), the contour interiors are drawn
    * @param lineType Line connectivity. See LineTypes
    */
-  invoke(
-    name: 'drawContours',
+  drawContours(
     image: Mat,
     contours: MatVector,
     contourIdx: number,
@@ -90,8 +82,7 @@ export type Drawing = {
    * @param thickness Type of the line, See LineTypes
    * @param line_type The length of the marker axis [default = 20 pixels]
    */
-  invoke(
-    name: 'drawMarker',
+  drawMarker(
     img: Mat,
     position: Point,
     color: Scalar,
@@ -113,8 +104,7 @@ export type Drawing = {
    * @param thickness Thickness of the ellipse arc outline, if positive. Otherwise, this indicates that a filled ellipse sector is to be drawn
    * @param lineType Type of the ellipse boundary. See LineTypes
    */
-  invoke(
-    name: 'ellipse',
+  ellipse(
     img: Mat,
     center: Point,
     axes: Size,
@@ -133,8 +123,7 @@ export type Drawing = {
    * @param color Polygon color
    * @param lineType Type of the polygon boundaries. See LineTypes
    */
-  invoke(
-    name: 'fillConvexPoly',
+  fillConvexPoly(
     img: Mat,
     pts: Mat | PointVector,
     color: Scalar,
@@ -148,13 +137,7 @@ export type Drawing = {
    * @param color Polygon colo
    * @param lineType Type of the polygon boundaries. See LineTypes
    */
-  invoke(
-    name: 'fillPoly',
-    img: Mat,
-    pts: MatVector,
-    color: Scalar,
-    lineType: LineTypes
-  ): void;
+  fillPoly(img: Mat, pts: MatVector, color: Scalar, lineType: LineTypes): void;
 
   /**
    * Draws a line segment connecting two points.
@@ -165,8 +148,7 @@ export type Drawing = {
    * @param thickness Line thickness
    * @param lineType Type of the line. See LineTypes.
    */
-  invoke(
-    name: 'line',
+  line(
     img: Mat,
     pt1: Point,
     pt2: Point,
@@ -184,8 +166,7 @@ export type Drawing = {
    * @param thickness Thickness of the polyline edges
    * @param lineType Type of the line segments. See LineTypes
    */
-  invoke(
-    name: 'polylines',
+  polylines(
     img: Mat,
     pts: MatVector,
     isClosed: boolean,
@@ -203,8 +184,7 @@ export type Drawing = {
    * @param thickness Thickness of lines that make up the rectangle. Negative values, like FILLED, mean that the function has to draw a filled rectangle
    * @param lineType Type of the line. See LineTypes
    */
-  invoke(
-    name: 'rectangle',
+  rectangle(
     img: Mat,
     pt1: Point,
     pt2: Point,

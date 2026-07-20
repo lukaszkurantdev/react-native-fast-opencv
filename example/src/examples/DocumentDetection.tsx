@@ -1,158 +1,55 @@
-import type { SkPoint } from '@shopify/react-native-skia';
-import { PaintStyle, PointMode, Skia, vec } from '@shopify/react-native-skia';
+import { PaintStyle, Skia, StrokeJoin } from '@shopify/react-native-skia';
 import { useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
-import type { PointVector } from 'react-native-fast-opencv';
 import {
+  OpenCV,
   ColorConversionCodes,
-  ContourApproximationModes,
   MorphShapes,
   MorphTypes,
-  ObjectType,
-  OpenCV,
   RetrievalModes,
+  ContourApproximationModes,
+  PointVectorOfVectors,
+  PointVector,
+  Mat,
+  type Point,
 } from 'react-native-fast-opencv';
 import {
-  Camera,
   useCameraDevice,
   useCameraPermission,
-  useSkiaFrameProcessor,
 } from 'react-native-vision-camera';
-import { useResizePlugin } from 'vision-camera-resize-plugin';
+import { SkiaCamera } from 'react-native-vision-camera-skia';
+import { useResizer, type GPUFrame } from 'react-native-vision-camera-resizer';
 
 const paint = Skia.Paint();
-const border = Skia.Paint();
-
 paint.setStyle(PaintStyle.Fill);
-paint.setColor(Skia.Color(0x66_e7_a6_49));
-border.setStyle(PaintStyle.Fill);
-border.setColor(Skia.Color(0xff_e7_a6_49));
-border.setStrokeWidth(4);
+paint.setColor(Skia.Color('red'));
+paint.setAlphaf(0.4);
 
-type Point = { x: number; y: number };
+const border = Skia.Paint();
+border.setStyle(PaintStyle.Stroke);
+border.setColor(Skia.Color('red'));
+border.setStrokeWidth(5);
+border.setStrokeJoin(StrokeJoin.Round);
+
+const RESIZER_WIDTH = 320;
+const RESIZER_HEIGHT = 180;
 
 export function DocumentDetection() {
   const device = useCameraDevice('back');
   const { hasPermission, requestPermission } = useCameraPermission();
 
-  const { resize } = useResizePlugin();
+  const { resizer } = useResizer({
+    width: RESIZER_WIDTH,
+    height: RESIZER_HEIGHT,
+    channelOrder: 'bgr',
+    dataType: 'uint8',
+    pixelLayout: 'interleaved',
+    scaleMode: 'cover',
+  });
 
   useEffect(() => {
     requestPermission();
   }, [requestPermission]);
-
-  const frameProcessor = useSkiaFrameProcessor((frame) => {
-    'worklet';
-
-    const ratio = 500 / frame.width;
-    const height = frame.height * ratio;
-    const width = frame.width * ratio;
-
-    const resized = resize(frame, {
-      dataType: 'uint8',
-      pixelFormat: 'bgr',
-      scale: {
-        height: height,
-        width: width,
-      },
-    });
-
-    const source = OpenCV.bufferToMat('uint8', height, width, 3, resized);
-
-    OpenCV.invoke(
-      'cvtColor',
-      source,
-      source,
-      ColorConversionCodes.COLOR_BGR2GRAY
-    );
-
-    const kernel = OpenCV.createObject(ObjectType.Size, 4, 4);
-    const blurKernel = OpenCV.createObject(ObjectType.Size, 7, 7);
-    const structuringElement = OpenCV.invoke(
-      'getStructuringElement',
-      MorphShapes.MORPH_ELLIPSE,
-      kernel
-    );
-
-    OpenCV.invoke(
-      'morphologyEx',
-      source,
-      source,
-      MorphTypes.MORPH_OPEN,
-      structuringElement
-    );
-    OpenCV.invoke(
-      'morphologyEx',
-      source,
-      source,
-      MorphTypes.MORPH_CLOSE,
-      structuringElement
-    );
-    OpenCV.invoke('GaussianBlur', source, source, blurKernel, 0);
-    OpenCV.invoke('Canny', source, source, 75, 100);
-
-    const contours = OpenCV.createObject(ObjectType.PointVectorOfVectors);
-
-    OpenCV.invoke(
-      'findContours',
-      source,
-      contours,
-      RetrievalModes.RETR_LIST,
-      ContourApproximationModes.CHAIN_APPROX_SIMPLE
-    );
-
-    const contoursMats = OpenCV.toJSValue(contours);
-
-    let greatestPolygon: PointVector | undefined;
-    let greatestArea = 0;
-
-    for (let index = 0; index < contoursMats.array.length; index++) {
-      const contour = OpenCV.copyObjectFromVector(contours, index);
-      const { value: area } = OpenCV.invoke('contourArea', contour, false);
-
-      if (area > 2000 && area > greatestArea) {
-        const peri = OpenCV.invoke('arcLength', contour, true);
-        const approx = OpenCV.createObject(ObjectType.PointVector);
-
-        OpenCV.invoke('approxPolyDP', contour, approx, 0.1 * peri.value, true);
-
-        greatestPolygon = approx;
-        greatestArea = area;
-      }
-    }
-
-    frame.render();
-
-    if (greatestPolygon) {
-      const points: Point[] = OpenCV.toJSValue(greatestPolygon).array;
-
-      if (points.length === 4) {
-        const path = Skia.Path.Make();
-        const pointsToShow: SkPoint[] = [];
-
-        const lastPointX = (points[3]?.x || 0) / ratio;
-        const lastPointY = (points[3]?.y || 0) / ratio;
-
-        path.moveTo(lastPointX, lastPointY);
-        pointsToShow.push(vec(lastPointX, lastPointY));
-
-        for (let index = 0; index < 4; index++) {
-          const pointX = (points[index]?.x || 0) / ratio;
-          const pointY = (points[index]?.y || 0) / ratio;
-
-          path.lineTo(pointX, pointY);
-          pointsToShow.push(vec(pointX, pointY));
-        }
-
-        path.close();
-
-        frame.drawPath(path, paint);
-        frame.drawPoints(PointMode.Polygon, pointsToShow, border);
-      }
-    }
-
-    OpenCV.clearBuffers();
-  }, []);
 
   if (!hasPermission) {
     return <Text>No permission</Text>;
@@ -163,11 +60,112 @@ export function DocumentDetection() {
   }
 
   return (
-    <Camera
+    <SkiaCamera
       style={StyleSheet.absoluteFill}
       device={device}
       isActive={true}
-      frameProcessor={frameProcessor}
+      orientationSource="interface"
+      onFrame={(frame, render) => {
+        'worklet';
+
+        if (resizer == null) return;
+
+        const resized = resizer.resize(frame) as GPUFrame;
+        const width = resized.width;
+        const height = resized.height;
+
+        const pixels = new Uint8Array(resized.getPixelBuffer());
+        const source = Mat.createFromBuffer('uint8', height, width, 3, pixels);
+
+        OpenCV.cvtColor(source, source, ColorConversionCodes.COLOR_BGR2GRAY);
+
+        const kernel = OpenCV.Size.create(4, 4);
+        const structuringElement = OpenCV.getStructuringElement(
+          MorphShapes.MORPH_ELLIPSE,
+          kernel
+        );
+
+        OpenCV.morphologyEx(
+          source,
+          source,
+          MorphTypes.MORPH_OPEN,
+          structuringElement
+        );
+        OpenCV.morphologyEx(
+          source,
+          source,
+          MorphTypes.MORPH_CLOSE,
+          structuringElement
+        );
+        OpenCV.Canny(source, source, 75, 100);
+
+        const contours = PointVectorOfVectors.create();
+
+        OpenCV.findContours(
+          source,
+          contours,
+          RetrievalModes.RETR_LIST,
+          ContourApproximationModes.CHAIN_APPROX_SIMPLE
+        );
+
+        let greatestPolygon: PointVector | undefined;
+        let greatestArea = 0;
+
+        for (let index = 0; index < contours.length; index++) {
+          const contour = contours.get(index);
+          const { value: area } = OpenCV.contourArea(contour, false);
+
+          if (area > 2000 && area > greatestArea) {
+            const peri = OpenCV.arcLength(contour, true);
+            const approx = PointVector.create();
+
+            OpenCV.approxPolyDP(contour, approx, 0.1 * peri.value, true);
+
+            greatestPolygon = approx;
+            greatestArea = area;
+          }
+        }
+
+        render(({ canvas, frameTexture }) => {
+          canvas.drawImage(frameTexture, 0, 0);
+
+          if (greatestPolygon) {
+            const points: Point[] = greatestPolygon.getAll();
+
+            if (points.length === 4) {
+              const path = Skia.Path.Make();
+
+              const scaleToCanvasX = frame.width / RESIZER_HEIGHT;
+              const scaleToCanvasY = frame.height / RESIZER_WIDTH;
+
+              const mapPointX = (p: Point) =>
+                (RESIZER_HEIGHT - p.y) * scaleToCanvasX;
+              const mapPointY = (p: Point) => p.x * scaleToCanvasY;
+
+              const p0x = mapPointX(points[0]!);
+              const p0y = mapPointY(points[0]!);
+              const p1x = mapPointX(points[1]!);
+              const p1y = mapPointY(points[1]!);
+              const p2x = mapPointX(points[2]!);
+              const p2y = mapPointY(points[2]!);
+              const p3x = mapPointX(points[3]!);
+              const p3y = mapPointY(points[3]!);
+
+              path.moveTo(p3x, p3y);
+              path.lineTo(p0x, p0y);
+              path.lineTo(p1x, p1y);
+              path.lineTo(p2x, p2y);
+              path.close();
+
+              canvas.drawPath(path, paint);
+              canvas.drawPath(path, border);
+            }
+          }
+        });
+
+        resized.dispose();
+        frame.dispose();
+      }}
     />
   );
 }

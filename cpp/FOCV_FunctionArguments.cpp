@@ -7,7 +7,6 @@
 
 #include "FOCV_FunctionArguments.hpp"
 #include <opencv2/opencv.hpp>
-#include "FOCV_Storage.hpp"
 #include "FOCV_JsiObject.hpp"
 
 FOCV_FunctionArguments::FOCV_FunctionArguments(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
@@ -41,91 +40,91 @@ std::shared_ptr<cv::Mat> FOCV_FunctionArguments::asMatPtr(int index) {
     if (!this->isMat(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Mat!");
     }
-    return FOCV_Storage::get<cv::Mat>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Mat>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<std::vector<cv::Mat>> FOCV_FunctionArguments::asMatVectorPtr(int index) {
     if (!this->isMatVector(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a MatVector!");
     }
-    return FOCV_Storage::get<std::vector<cv::Mat>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<std::vector<cv::Mat>>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::Point> FOCV_FunctionArguments::asPointPtr(int index) {
     if (!this->isPoint(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Point!");
     }
-    return FOCV_Storage::get<cv::Point>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Point>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<std::vector<cv::Point>> FOCV_FunctionArguments::asPointVectorPtr(int index) {
     if (!this->isPointVector(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a PointVector!");
     }
-    return FOCV_Storage::get<std::vector<cv::Point>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<std::vector<cv::Point>>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::Point2f> FOCV_FunctionArguments::asPoint2fPtr(int index) {
     if (!this->isPoint2f(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Point2f!");
     }
-    return FOCV_Storage::get<cv::Point2f>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Point2f>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<std::vector<cv::Point2f>> FOCV_FunctionArguments::asPoint2fVectorPtr(int index) {
     if (!this->isPoint2fVector(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Point2fVector!");
     }
-    return FOCV_Storage::get<std::vector<cv::Point2f>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<std::vector<cv::Point2f>>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<std::vector<std::vector<cv::Point>>> FOCV_FunctionArguments::asPointVectorOfVectorsPtr(int index) {
     if (!this->isPointVectorOfVectors(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a PointVectorOfVectors!");
     }
-    return FOCV_Storage::get<std::vector<std::vector<cv::Point>>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<std::vector<std::vector<cv::Point>>>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::Rect> FOCV_FunctionArguments::asRectPtr(int index) {
     if (!this->isRect(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Rect!");
     }
-    return FOCV_Storage::get<cv::Rect>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Rect>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<std::vector<cv::Rect>> FOCV_FunctionArguments::asRectVectorPtr(int index) {
     if (!this->isRectVector(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a RectVector!");
     }
-    return FOCV_Storage::get<std::vector<cv::Rect>>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<std::vector<cv::Rect>>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::Size> FOCV_FunctionArguments::asSizePtr(int index) {
     if (!this->isSize(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Size!");
     }
-    return FOCV_Storage::get<cv::Size>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Size>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::Scalar> FOCV_FunctionArguments::asScalarPtr(int index) {
     if (!this->isScalar(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a Scalar!");
     }
-    return FOCV_Storage::get<cv::Scalar>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::Scalar>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::RotatedRect> FOCV_FunctionArguments::asRotatedRectPtr(int index) {
     if (!this->isRotatedRect(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a RotatedRect!");
     }
-    return FOCV_Storage::get<cv::RotatedRect>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::RotatedRect>(*this->runtime, arguments[index]);
 }
 
 std::shared_ptr<cv::TermCriteria> FOCV_FunctionArguments::asTermCriteriaPtr(int index) {
     if (!this->isTermCriteria(index)) {
         throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a TermCriteria!");
     }
-    return FOCV_Storage::get<cv::TermCriteria>(FOCV_JsiObject::id_from_wrap(*this->runtime, arguments[index]));
+    return FOCV_JsiObject::get_from_wrap<cv::TermCriteria>(*this->runtime, arguments[index]);
 }
 
 bool FOCV_FunctionArguments::isNumber(int index) {

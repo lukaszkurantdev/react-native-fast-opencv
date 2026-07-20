@@ -1,33 +1,11 @@
-//
-//  FOCV_Function.cpp
-//  react-native-fast-opencv
-//
-//  Created by Łukasz Kurant on 06/08/2024.
-//
 #include <iostream>
 #include "FOCV_Function.hpp"
-#include "FOCV_Storage.hpp"
-#include "FOCV_Ids.hpp"
 #include <FOCV_JsiObject.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/features2d.hpp>
 #include "FOCV_FunctionArguments.hpp"
+#include "hashString.hpp"
 
-// General idea and this function for hashing is from
-// https://mrousavy.com/blog/Hashing-String-Ifs
-constexpr uint64_t hashString(const char* str, size_t length) {
-  uint64_t hash = 14695981039346656037ull;
-  const uint64_t fnv_prime = 1099511628211ull;
- 
-  for (size_t i = 0; i < length; ++i) {
-    hash ^= static_cast<uint64_t>(str[i]);
-    hash *= fnv_prime;
-  }
- 
-  return hash;
-}
-
-// General idea of invocation switch is from react-native-opencv3 library,
-// but it was adapted and optimized.
 jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* arguments, size_t count) {
   jsi::Object value(runtime);
   
@@ -288,9 +266,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto src = args.asMatPtr(1);
 
         cv::Mat result = (*src).clone();
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
         
       case hashString("compare", 7): {
@@ -587,20 +563,17 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::max(*src1, *src2, *dst);
       } break;
       case hashString("mean", 4): {
-        std::string id;
         auto src = args.asMatPtr(1);
         
         if (count > 2) {
           auto mask = args.asMatPtr(2);
           
           auto scalar = cv::mean(*src, *mask);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         } else {
           auto scalar = cv::mean(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         }
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
       } break;
       case hashString("meanStdDev", 10): {
         auto src = args.asMatPtr(1);
@@ -874,27 +847,21 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::subtract(*src1, *src2, *dst);
       } break;
       case hashString("sum", 3): {
-        std::string id;
-        
         if (args.isMat(1)) {
           auto src = args.asMatPtr(1);
           auto scalar = cv::sum(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         } else {
           auto src = args.asMatVectorPtr(1);
           auto scalar = cv::sum(*src);
-          id = FOCV_Storage::save(scalar);
+          return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<cv::Scalar>(scalar));
         }
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
       } break;
       case hashString("trace", 5): {
         auto src =  args.asMatPtr(1);
         
         auto scalar = cv::trace(*src);
-        std::string id = FOCV_Storage::save(scalar);
-        
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
+        return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<decltype(scalar)>(scalar));
       } break;
       case hashString("transform", 9): {
         auto src = args.asMatPtr(1);
@@ -1240,9 +1207,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ktype = args.asNumber(7);
         
         cv::Mat result = cv::getGaborKernel(*ksize, sigma, theta, lambd, gamma, psi, ktype);
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getGaussianKernel", 17): {
         auto ksize = args.asNumber(1);
@@ -1250,9 +1215,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto ktype = args.asNumber(3);
         
         cv::Mat result = cv::getGaussianKernel(ksize, sigma, ktype);
-        std::string id = FOCV_Storage::save(result);
-        
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getPerspectiveTransform", 23): {
         auto src = args.asPoint2fVectorPtr(1);
@@ -1260,9 +1223,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         auto solveMethod = args.asNumber(3);
 
         cv::Mat result = cv::getPerspectiveTransform(*src, *dest, solveMethod);
-        std::string id = FOCV_Storage::save(result);
-
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<decltype(result)>(result));
       } break;
       case hashString("getStructuringElement", 21): {
         std::string id;
@@ -1273,13 +1234,11 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto anchor = args.asPointPtr(3);
 
           cv::Mat result = cv::getStructuringElement(shape, *ksize, *anchor);
-          id = FOCV_Storage::save(result);
+          return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(result));
         } else {
           cv::Mat result = cv::getStructuringElement(shape, *ksize);
-          id = FOCV_Storage::save(result);
+          return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(result));
         }
-
-        return FOCV_JsiObject::wrap(runtime, "mat", id);
       } break;
       case hashString("Laplacian", 9): {
         auto src = args.asMatPtr(1);
@@ -1301,9 +1260,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
       } break;
       case hashString("morphologyDefaultBorderValue", 28): {
         auto scalar = cv::morphologyDefaultBorderValue();
-        std::string id = FOCV_Storage::save(scalar);
-
-        return FOCV_JsiObject::wrap(runtime, "scalar", id);
+        return FOCV_JsiObject::wrap(runtime, "scalar", std::make_shared<decltype(scalar)>(scalar));
       } break;
       case hashString("morphologyEx", 12): {
         auto src = args.asMatPtr(1);
@@ -1391,7 +1348,6 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         cv::matchTemplate(*image, *templ, *result, method, *mask);
       } break;
       case hashString("phaseCorrelate", 14): {
-        std::string id;
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
         double response = 0;
@@ -1400,13 +1356,11 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           auto window = args.asMatPtr(3);
 
           cv::Point2f result = cv::phaseCorrelate(*src1, *src2, *window, &response);
-          id = FOCV_Storage::save(result);
+          value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", std::make_shared<cv::Point2f>(result)));
         } else {
           cv::Point2f result = cv::phaseCorrelate(*src1, *src2, cv::noArray(), &response);
-          id = FOCV_Storage::save(result);
+          value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", std::make_shared<cv::Point2f>(result)));
         }
-
-        value.setProperty(runtime, "phaseShift", FOCV_JsiObject::wrap(runtime, "point2f", id));
         value.setProperty(runtime, "response", jsi::Value(response));
       } break;
       case hashString("approxPolyDP", 12): {
@@ -1470,9 +1424,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
           rect = cv::boundingRect(*args.asPointVectorPtr(1));
         }
         
-        std::string id = FOCV_Storage::save(rect);
-        
-        return FOCV_JsiObject::wrap(runtime, "rect", id);
+        return FOCV_JsiObject::wrap(runtime, "rect", std::make_shared<decltype(rect)>(rect));
       } break;
       case hashString("connectedComponents", 19): {
         auto image = args.asMatPtr(1);
@@ -1571,8 +1523,7 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         
         auto rect = cv::minAreaRect(*src);
         
-        auto id = FOCV_Storage::save(rect);
-        return FOCV_JsiObject::wrap(runtime, "rotated_rect", id);
+        return FOCV_JsiObject::wrap(runtime, "rotated_rect", std::make_shared<cv::RotatedRect>(rect));
       } break;
       case hashString("convertTo", 9): {
         auto src = args.asMatPtr(1);
@@ -1621,6 +1572,119 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
 
         cv::warpPolar(*src, *dst, *size, *center, maxRadius, flags);
       } break;
+
+      // ================== FEATURE MATCHING FUNCTIONS ==================
+
+      case hashString("ORB_create", 10): {
+        // Default values matching OpenCV defaults
+        int nfeatures = count > 1 ? static_cast<int>(args.asNumber(1)) : 500;
+        float scaleFactor = count > 2 ? static_cast<float>(args.asNumber(2)) : 1.2f;
+        int nlevels = count > 3 ? static_cast<int>(args.asNumber(3)) : 8;
+        int edgeThreshold = count > 4 ? static_cast<int>(args.asNumber(4)) : 31;
+        int firstLevel = count > 5 ? static_cast<int>(args.asNumber(5)) : 0;
+        int WTA_K = count > 6 ? static_cast<int>(args.asNumber(6)) : 2;
+        cv::ORB::ScoreType scoreType = count > 7 ?
+          static_cast<cv::ORB::ScoreType>(static_cast<int>(args.asNumber(7))) : cv::ORB::HARRIS_SCORE;
+        int patchSize = count > 8 ? static_cast<int>(args.asNumber(8)) : 31;
+        int fastThreshold = count > 9 ? static_cast<int>(args.asNumber(9)) : 20;
+
+        cv::Ptr<cv::ORB> orb = cv::ORB::create(
+          nfeatures, scaleFactor, nlevels, edgeThreshold,
+          firstLevel, WTA_K, scoreType, patchSize, fastThreshold
+        );
+
+        return FOCV_JsiObject::wrap(runtime, "orb", std::make_shared<cv::Ptr<cv::ORB>>(orb));
+      } break;
+
+      case hashString("detectAndCompute", 16): {
+        if (!args.isObject(1) || FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) != "orb") {
+          throw std::runtime_error("Fast OpenCV Error: Argument (1) is not an ORB detector!");
+        }
+        auto orb = FOCV_JsiObject::get_from_wrap<cv::Ptr<cv::ORB>>(runtime, arguments[1]);
+        auto image = args.asMatPtr(2);
+
+        std::vector<cv::KeyPoint> keypoints;
+        cv::Mat descriptors;
+
+        if (count > 3 && args.isMat(3)) {
+          auto mask = args.asMatPtr(3);
+          (*orb)->detectAndCompute(*image, *mask, keypoints, descriptors);
+        } else {
+          (*orb)->detectAndCompute(*image, cv::noArray(), keypoints, descriptors);
+        }
+
+        value.setProperty(runtime, "keypoints",
+          FOCV_JsiObject::wrap(runtime, "keypoint_vector",
+            std::make_shared<std::vector<cv::KeyPoint>>(std::move(keypoints))));
+        value.setProperty(runtime, "descriptors",
+          FOCV_JsiObject::wrap(runtime, "mat",
+            std::make_shared<cv::Mat>(std::move(descriptors))));
+      } break;
+
+      case hashString("BFMatcher_create", 16): {
+        int normType = count > 1 ? static_cast<int>(args.asNumber(1)) : cv::NORM_HAMMING;
+        bool crossCheck = count > 2 ? args.asBool(2) : false;
+
+        cv::Ptr<cv::BFMatcher> matcher = cv::BFMatcher::create(normType, crossCheck);
+
+        return FOCV_JsiObject::wrap(runtime, "bfmatcher", std::make_shared<cv::Ptr<cv::BFMatcher>>(matcher));
+      } break;
+
+      case hashString("matchBF", 7): {
+        if (!args.isObject(1) || FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) != "bfmatcher") {
+          throw std::runtime_error("Fast OpenCV Error: Argument (1) is not a BFMatcher!");
+        }
+        auto matcher = FOCV_JsiObject::get_from_wrap<cv::Ptr<cv::BFMatcher>>(runtime, arguments[1]);
+        auto queryDescriptors = args.asMatPtr(2);
+        auto trainDescriptors = args.asMatPtr(3);
+
+        std::vector<cv::DMatch> matches;
+        (*matcher)->match(*queryDescriptors, *trainDescriptors, matches);
+
+        return FOCV_JsiObject::wrap(runtime, "dmatch_vector",
+          std::make_shared<std::vector<cv::DMatch>>(std::move(matches)));
+      } break;
+
+      case hashString("knnMatchBF", 10): {
+        if (!args.isObject(1) || FOCV_JsiObject::type_from_wrap(runtime, arguments[1]) != "bfmatcher") {
+          throw std::runtime_error("Fast OpenCV Error: Argument (1) is not a BFMatcher!");
+        }
+        auto matcher = FOCV_JsiObject::get_from_wrap<cv::Ptr<cv::BFMatcher>>(runtime, arguments[1]);
+        auto queryDescriptors = args.asMatPtr(2);
+        auto trainDescriptors = args.asMatPtr(3);
+        int k = static_cast<int>(args.asNumber(4));
+
+        std::vector<std::vector<cv::DMatch>> matches;
+        (*matcher)->knnMatch(*queryDescriptors, *trainDescriptors, matches, k);
+
+        return FOCV_JsiObject::wrap(runtime, "dmatch_vector_vector",
+          std::make_shared<std::vector<std::vector<cv::DMatch>>>(std::move(matches)));
+      } break;
+
+      case hashString("findHomographyFromMatches", 25): {
+        // Compute a perspective transform from 4 matched point pairs using
+        // getPerspectiveTransform (cv::findHomography needs calib3d, which is
+        // not in the iOS pod). The caller should pre-filter to the 4 best pairs.
+        auto srcPoints = args.asPoint2fVectorPtr(1);
+        auto dstPoints = args.asPoint2fVectorPtr(2);
+
+        if (srcPoints->size() < 4 || dstPoints->size() < 4) {
+          throw std::runtime_error("Fast OpenCV Error: findHomographyFromMatches requires at least 4 point pairs");
+        }
+
+        cv::Point2f srcArr[4] = {
+          (*srcPoints)[0], (*srcPoints)[1], (*srcPoints)[2], (*srcPoints)[3]
+        };
+        cv::Point2f dstArr[4] = {
+          (*dstPoints)[0], (*dstPoints)[1], (*dstPoints)[2], (*dstPoints)[3]
+        };
+
+        cv::Mat H = cv::getPerspectiveTransform(srcArr, dstArr);
+
+        return FOCV_JsiObject::wrap(runtime, "mat", std::make_shared<cv::Mat>(H));
+      } break;
+
+      // ================== END FEATURE MATCHING FUNCTIONS ==================
     }
   } catch (cv::Exception& e) {
     std::string message(e.what());

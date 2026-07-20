@@ -16,8 +16,7 @@ export type ImageTransform = {
    * @param dst Coordinates of the corresponding quadrangle vertices in the destination image.
    * @param solveMethod method passed to cv::solve (DecompTypes)
    */
-  invoke(
-    name: 'getPerspectiveTransform',
+  getPerspectiveTransform(
     src: PointVector,
     dst: PointVector,
     solveMethod: DecompTypes
@@ -31,7 +30,7 @@ export type ImageTransform = {
    * @param M transformation matrix
    * @param dsize size of the output image
    */
-  invoke(name: 'warpAffine', src: Mat, dst: Mat, M: Mat, dsize: Size): Mat;
+  warpAffine(src: Mat, dst: Mat, M: Mat, dsize: Size): void;
 
   /**
    * Applies a perspective transformation to an image.
@@ -44,8 +43,7 @@ export type ImageTransform = {
    * @param borderMode pixel extrapolation method (BORDER_CONSTANT or BORDER_REPLICATE).
    * @param borderValue value used in case of a constant border; by default, it equals 0.
    */
-  invoke(
-    name: 'warpPerspective',
+  warpPerspective(
     src: Mat,
     dst: Mat,
     M: Mat,
@@ -65,8 +63,7 @@ export type ImageTransform = {
    * @param maxRadius the radius of the bounding circle to transform. It determines the inverse magnitude scale parameter too.
    * @param flags a combination of interpolation methods, InterpolationFlags + WarpPolarMode.
    */
-  invoke(
-    name: 'warpPolar',
+  warpPolar(
     src: Mat,
     dst: Mat,
     dsize: Size,
