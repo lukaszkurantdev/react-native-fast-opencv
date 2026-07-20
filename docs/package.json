@@ -16,5 +16,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next build && next export"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }
