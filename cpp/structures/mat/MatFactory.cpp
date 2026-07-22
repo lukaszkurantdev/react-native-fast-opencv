@@ -83,6 +83,14 @@ jsi::Value MatFactory::get(jsi::Runtime& runtime, const jsi::PropNameID& propNam
            auto inputBuffer = mrousavy::getTypedArray(rt, std::move(input));
            auto vec = inputBuffer.toVector(rt);
 
+           // vec is byteLength-sized; a short input would send memcpy past the
+           // end of the heap allocation (SIGSEGV). Throw a catchable JS error.
+           size_t requiredBytes = (size_t)rows * (size_t)cols * (size_t)channels;
+           if (vec.size() < requiredBytes) {
+             throw std::runtime_error("Fast OpenCV Error: frameBufferToMat input buffer is " + std::to_string(vec.size()) +
+                                      " bytes, but " + std::to_string(requiredBytes) + " are required!");
+           }
+
            cv::Mat mat(rows, cols, type);
            memcpy(mat.data, vec.data(), (int)rows * (int)cols * (int)channels);
            return FOCV_JsiObject::wrap(rt, "mat", std::make_shared<cv::Mat>(mat));
@@ -147,6 +155,14 @@ jsi::Value MatFactory::get(jsi::Runtime& runtime, const jsi::PropNameID& propNam
 
            auto inputBuffer = mrousavy::getTypedArray(rt, std::move(input));
            auto vec = inputBuffer.toVector(rt);
+
+           // vec is byteLength-sized; a short input would send memcpy past the
+           // end of the heap allocation (SIGSEGV). Throw a catchable JS error.
+           size_t requiredBytes = (size_t)rows * (size_t)cols * (size_t)channels * (size_t)typeSize;
+           if (vec.size() < requiredBytes) {
+             throw std::runtime_error("Fast OpenCV Error: createFromBuffer input buffer is " + std::to_string(vec.size()) +
+                                      " bytes, but " + std::to_string(requiredBytes) + " are required!");
+           }
 
            cv::Mat mat(rows, cols, modeType);
            memcpy(mat.data, vec.data(), (int)rows * (int)cols * (int)channels * typeSize);
