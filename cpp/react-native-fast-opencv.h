@@ -18,11 +18,7 @@ using namespace cv;
 #endif
 #endif
 
-#ifdef ANDROID
 #include <ReactCommon/CallInvoker.h>
-#else
-#include <React-callinvoker/ReactCommon/CallInvoker.h>
-#endif
 
 #include "MatFactory.h"
 #include "MatVectorFactory.h"

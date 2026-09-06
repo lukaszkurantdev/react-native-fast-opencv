@@ -4,11 +4,7 @@
 #include <utility>
 #include <vector>
 
-#ifdef ANDROID
 #include <ReactCommon/CallInvoker.h>
-#else
-#include <React-callinvoker/ReactCommon/CallInvoker.h>
-#endif
 
 namespace mrousavy {
 

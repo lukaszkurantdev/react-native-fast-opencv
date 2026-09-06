@@ -1,15 +1,16 @@
 #import "FastOpencv.h"
-#import <React-callinvoker/ReactCommon/CallInvoker.h>
-#import <React/RCTBridge+Private.h>
+#import <ReactCommon/CallInvoker.h>
+#import <ReactCommon/RCTTurboModuleWithJSIBindings.h>
 #import <jsi/jsi.h>
-
-@interface RCTBridge (RCTTurboModule)
-- (std::shared_ptr<facebook::react::CallInvoker>)jsCallInvoker;
-@end
 
 using namespace facebook;
 
-@implementation FastOpencv
+@interface FastOpencv () <RCTTurboModuleWithJSIBindings>
+@end
+
+@implementation FastOpencv {
+    BOOL _installed;
+}
 
 @synthesize bridge = _bridge;
 
@@ -23,23 +24,16 @@ RCT_EXPORT_MODULE()
   _bridge = bridge;
 }
 
+- (void)installJSIBindingsWithRuntime:(facebook::jsi::Runtime &)runtime
+                          callInvoker:(const std::shared_ptr<facebook::react::CallInvoker> &)callInvoker
+{
+    OpenCVPlugin::installOpenCV(runtime, callInvoker);
+    _installed = YES;
+}
+
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 {
-    RCTBridge* bridge = [RCTBridge currentBridge];
-    RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
-    
-    if (!cxxBridge.runtime) {
-        return @(false);
-    }
-
-    auto callInvoker = [bridge jsCallInvoker];
-    
-    facebook::jsi::Runtime *jsRuntime =
-            (facebook::jsi::Runtime *)cxxBridge.runtime;
-    
-    OpenCVPlugin::installOpenCV(*jsRuntime, callInvoker);
-    
-    return @(true);
+    return @(_installed);
 }
 
 // Don't compile this code when we build for the old architecture.
@@ -47,13 +41,6 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
-    RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
-      auto callInvoker = cxxBridge.jsCallInvoker;
-      facebook::jsi::Runtime *jsRuntime =
-          (facebook::jsi::Runtime *)cxxBridge.runtime;
-    
-    OpenCVPlugin::installOpenCV(*jsRuntime, callInvoker);
-    
     return std::make_shared<facebook::react::NativeFastOpencvSpecJSI>(params);
 }
 #endif
