@@ -127,6 +127,13 @@ std::shared_ptr<cv::TermCriteria> FOCV_FunctionArguments::asTermCriteriaPtr(int 
     return FOCV_JsiObject::get_from_wrap<cv::TermCriteria>(*this->runtime, arguments[index]);
 }
 
+std::shared_ptr<cv::Ptr<cv::CLAHE>> FOCV_FunctionArguments::asCLAHEPtr(int index) {
+    if (!this->isCLAHE(index)) {
+        throw std::runtime_error("Fast OpenCV Error: Argument (" + std::to_string(index) + ") is not a CLAHE!");
+    }
+    return FOCV_JsiObject::get_from_wrap<cv::Ptr<cv::CLAHE>>(*this->runtime, arguments[index]);
+}
+
 bool FOCV_FunctionArguments::isNumber(int index) {
     this->assertIndex(index);
     return this->arguments[index].isNumber();
@@ -145,6 +152,10 @@ bool FOCV_FunctionArguments::isString(int index) {
 bool FOCV_FunctionArguments::isObject(int index) {
     this->assertIndex(index);
     return this->arguments[index].isObject();
+}
+
+bool FOCV_FunctionArguments::isCLAHE(int index) {
+    return this->isObject(index) && FOCV_JsiObject::type_from_wrap(*this->runtime, arguments[index]) == "clahe";
 }
 
 bool FOCV_FunctionArguments::isMat(int index) {
