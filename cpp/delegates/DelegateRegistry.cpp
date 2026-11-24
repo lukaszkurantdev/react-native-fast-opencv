@@ -18,6 +18,7 @@ TypeDelegate* DelegateRegistry::getHandler(const std::string& type) {
   static KeyPointVectorDelegate keyPointVectorHandler;
   static DMatchVectorDelegate dMatchVectorHandler;
   static DMatchVectorVectorDelegate dMatchVectorVectorHandler;
+  static CLAHEDelegate claheHandler;
 
   if (type == "mat") return &matHandler;
   if (type == "mat_vector") return &matVectorHandler;
@@ -36,6 +37,7 @@ TypeDelegate* DelegateRegistry::getHandler(const std::string& type) {
   if (type == "keypoint_vector") return &keyPointVectorHandler;
   if (type == "dmatch_vector") return &dMatchVectorHandler;
   if (type == "dmatch_vector_vector") return &dMatchVectorVectorHandler;
+  if (type == "clahe") return &claheHandler;
 
   return nullptr;
 }

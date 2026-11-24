@@ -265,6 +265,26 @@ Defines termination criteria for iterative algorithms.
 
 ---
 
+### `CLAHE`
+
+Contrast Limited Adaptive Histogram Equalization for grayscale images. Create an instance with `OpenCV.createCLAHE(clipLimit: number, tileGridSize: Size): CLAHE`.
+
+**Properties:**
+
+- `type`: `ObjectType.CLAHE`
+
+**Methods:**
+
+- `apply(src: Mat, dst: Mat): void` - Processes a single-channel `CV_8UC1` or `CV_16UC1` image into `dst`.
+- `getClipLimit(): number` - Get contrast limit threshold.
+- `setClipLimit(clipLimit: number): void` - Set contrast limit threshold.
+- `getTilesGridSize(): Size` - Get tile grid `Size`.
+- `setTilesGridSize(tileGridSize: Size): void` - Set tile grid `Size`.
+- `collectGarbage(): void` - Free cached working buffers, keep instance and settings.
+- `release(): void`
+
+---
+
 ### `ORB`
 
 An ORB (Oriented FAST and Rotated BRIEF) feature detector. Created by `OpenCV.ORB_create(...)` and passed to `OpenCV.detectAndCompute`. It is an opaque handle with no readable properties.

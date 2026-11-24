@@ -57,6 +57,18 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         }
         cv::addWeighted(*src1, alpha, *src2, beta, gamma, *dst);
       } break;
+      case hashString("createCLAHE", 11): {
+        auto clipLimit = args.asNumber(1);
+        auto tileGridSize = args.asSizePtr(2);
+
+        cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(clipLimit, *tileGridSize);
+
+        return FOCV_JsiObject::wrap(
+          runtime,
+          "clahe",
+          std::make_shared<cv::Ptr<cv::CLAHE>>(clahe)
+        );
+      } break;
       case hashString("batchDistance", 13): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);

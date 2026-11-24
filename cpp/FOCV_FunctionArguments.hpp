@@ -59,11 +59,13 @@ public:
     std::shared_ptr<cv::Scalar> asScalarPtr(int index);
     std::shared_ptr<cv::RotatedRect> asRotatedRectPtr(int index);
     std::shared_ptr<cv::TermCriteria> asTermCriteriaPtr(int index);
+    std::shared_ptr<cv::Ptr<cv::CLAHE>> asCLAHEPtr(int index);
     
     bool isNumber(int index);
     bool isBool(int index);
     bool isString(int index);
     bool isObject(int index);
+    bool isCLAHE(int index);
     bool isMat(int index);
     bool isMatVector(int index);
     bool isPoint(int index);

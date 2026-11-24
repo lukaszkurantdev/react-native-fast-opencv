@@ -17,6 +17,7 @@
 #include "KeyPointVectorDelegate.h"
 #include "DMatchVectorDelegate.h"
 #include "DMatchVectorVectorDelegate.h"
+#include "CLAHEDelegate.h"
 
 #ifndef DelegateRegistry_h
 #define DelegateRegistry_h

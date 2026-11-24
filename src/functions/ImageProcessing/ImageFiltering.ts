@@ -1,7 +1,7 @@
 import type { BorderTypes } from '../../constants/Core';
 import type { DataTypes } from '../../constants/DataTypes';
 import type { MorphShapes, MorphTypes } from '../../constants/ImageProcessing';
-import type { Mat, Point, Scalar, Size } from '../../objects/Objects';
+import type { Mat, Point, Scalar, Size, CLAHE } from '../../objects/Objects';
 
 export type ImageFiltering = {
   /**
@@ -303,4 +303,11 @@ export type ImageFiltering = {
     delta: number,
     borderType: Exclude<BorderTypes, BorderTypes.BORDER_WRAP>
   ): void;
+
+  /**
+   * Creates a CLAHE object instance
+   * @param clipLimit Contrast limit threshold
+   * @param tileGridSize Number of tiles along the width and height
+   */
+  createCLAHE(clipLimit: number, tileGridSize: Size): CLAHE;
 };

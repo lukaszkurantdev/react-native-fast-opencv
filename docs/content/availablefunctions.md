@@ -1904,6 +1904,19 @@ OpenCV.filter2D(src: Mat,
 ): void;
 ```
 
+### createCLAHE
+
+Creates a reusable CLAHE instance for local contrast enhancement of grayscale images.
+
+- clipLimit Contrast limit threshold.
+- tileGridSize Number of tiles along the width and height.
+
+```ts
+OpenCV.createCLAHE(clipLimit: number, tileGridSize: Size): CLAHE;
+```
+
+Call `clahe.apply(src, dst)` on the returned instance. Getters, setters, `collectGarbage()`, and `release()` are instance methods.
+
 ### GaussianBlur
 
 Blurs an image using a Gaussian filter.

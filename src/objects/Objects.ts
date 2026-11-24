@@ -318,6 +318,19 @@ export declare class DMatchVectorVector {
   length: number;
 }
 
+export declare class CLAHE {
+  private constructor();
+  type: ObjectType.CLAHE;
+  release(): void;
+
+  apply(src: Mat, dst: Mat): void;
+  getClipLimit(): number;
+  setClipLimit(clipLimit: number): void;
+  getTilesGridSize(): Size;
+  setTilesGridSize(tileGridSize: Size): void;
+  collectGarbage(): void;
+}
+
 export type Vector = MatVector | PointVector | RectVector;
 export type Array = Mat | Vec3b;
 

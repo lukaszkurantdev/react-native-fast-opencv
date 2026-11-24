@@ -128,5 +128,6 @@ export type {
   KeyPointVector,
   DMatchVector,
   DMatchVectorVector,
+  CLAHE,
 } from './objects/Objects';
 export type * from './functions/ImageProcessing/FeatureMatching';
