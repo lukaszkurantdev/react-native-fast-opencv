@@ -7,6 +7,7 @@ import { Home } from './home/Home';
 import { CameraPassthrough } from './examples/CameraPassthrough';
 import { DocumentDetection } from './examples/DocumentDetection';
 import { FitEllipseExample } from './examples/FitEllipseExample';
+import { CLAHEExample } from './examples/CLAHEExample';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -25,6 +26,7 @@ export default function App() {
           component={CameraPassthrough}
         />
         <Stack.Screen name={Route.FitEllipse} component={FitEllipseExample} />
+        <Stack.Screen name={Route.CLAHE} component={CLAHEExample} />
         <Stack.Screen
           name={Route.CameraRealtimeDetection}
           component={CameraRealtimeDetection}

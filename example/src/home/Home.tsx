@@ -12,6 +12,12 @@ interface ItemDetails {
 
 const items: ItemDetails[] = [
   {
+    title: 'CLAHE',
+    emoji: '🌗',
+    description: 'Enhance image contrast',
+    route: Route.CLAHE,
+  },
+  {
     title: 'Image Blur',
     emoji: '🔍',
     description: 'Blur an image',
