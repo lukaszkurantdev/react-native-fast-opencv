@@ -4,6 +4,7 @@ export enum Route {
   Home = 'Home',
   ImageBlur = 'ImageBlur',
   FitEllipse = 'FitEllipse',
+  LineSegmentDetector = 'LineSegmentDetector',
   CameraPassthrough = 'CameraPassthrough',
   CameraRealtimeDetection = 'CameraRealtimeDetection',
   DocumentDetection = 'DocumentDetection',
@@ -13,6 +14,7 @@ export interface StackParamList extends ParamListBase {
   Home: undefined;
   ImageBlur: undefined;
   FitEllipse: undefined;
+  LineSegmentDetector: undefined;
   CameraPassthrough: undefined;
   CameraRealtimeDetection: undefined;
   DocumentDetection: undefined;

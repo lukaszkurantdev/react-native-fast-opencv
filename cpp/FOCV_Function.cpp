@@ -57,6 +57,26 @@ jsi::Object FOCV_Function::invoke(jsi::Runtime& runtime, const jsi::Value* argum
         }
         cv::addWeighted(*src1, alpha, *src2, beta, gamma, *dst);
       } break;
+      case hashString("createLineSegmentDetector", 25): {
+        int refine = count > 1 && !arguments[1].isUndefined() ? static_cast<int>(args.asNumber(1)) : cv::LSD_REFINE_STD;
+        auto scale = count > 2 && !arguments[2].isUndefined() ? args.asNumber(2) : 0.8;
+        auto sigmaScale = count > 3 && !arguments[3].isUndefined() ? args.asNumber(3) : 0.6;
+        auto quant = count > 4 && !arguments[4].isUndefined() ? args.asNumber(4) : 2.0;
+        auto angTh = count > 5 && !arguments[5].isUndefined() ? args.asNumber(5) : 22.5;
+        auto logEps = count > 6 && !arguments[6].isUndefined() ? args.asNumber(6) : 0.0;
+        auto densityTh = count > 7 && !arguments[7].isUndefined() ? args.asNumber(7) : 0.7;
+        int nBins = count > 8 && !arguments[8].isUndefined() ? static_cast<int>(args.asNumber(8)) : 1024;
+
+        cv::Ptr<cv::LineSegmentDetector> lsd = cv::createLineSegmentDetector(
+          refine, scale, sigmaScale, quant, angTh, logEps, densityTh, nBins
+        );
+
+        return FOCV_JsiObject::wrap(
+          runtime,
+          "line_segment_detector",
+          std::make_shared<cv::Ptr<cv::LineSegmentDetector>>(lsd)
+        );
+      } break;
       case hashString("batchDistance", 13): {
         auto src1 = args.asMatPtr(1);
         auto src2 = args.asMatPtr(2);
