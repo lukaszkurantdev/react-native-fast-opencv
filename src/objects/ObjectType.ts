@@ -18,4 +18,5 @@ export enum ObjectType {
   KeyPointVector = 'keypoint_vector',
   DMatchVector = 'dmatch_vector',
   DMatchVectorVector = 'dmatch_vector_vector',
+  LineSegmentDetector = 'line_segment_detector',
 }

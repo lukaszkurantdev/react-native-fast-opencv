@@ -265,6 +265,23 @@ Defines termination criteria for iterative algorithms.
 
 ---
 
+### `LineSegmentDetector`
+
+Detects line segments in grayscale images. Create an instance with `OpenCV.createLineSegmentDetector()` or pass optional detector settings.
+
+**Properties:**
+
+- `type`: `ObjectType.LineSegmentDetector`
+
+**Methods:**
+
+- `detect(image: Mat, lines: Mat, width?: Mat, prec?: Mat, nfa?: Mat): void` - Detects lines in a `CV_8UC1` image. `lines` receives a `CV_32FC4` matrix of `(x1, y1, x2, y2)` endpoints. Optional matrices receive widths, precisions, and false-alarm scores. `nfa` is only computed with `LSD_REFINE_ADV`.
+- `drawSegments(image: Mat, lines: Mat): void` - Draws red lines onto the image in place. Accepts 1- or 3-channel images and converts grayscale images to BGR.
+- `compareSegments(size: Size, lines1: Mat, lines2: Mat, image?: Mat): number` - Returns the number of mismatching pixels. An optional 3-channel image receives the comparison overlay.
+- `release(): void`
+
+---
+
 ### `ORB`
 
 An ORB (Oriented FAST and Rotated BRIEF) feature detector. Created by `OpenCV.ORB_create(...)` and passed to `OpenCV.detectAndCompute`. It is an opaque handle with no readable properties.

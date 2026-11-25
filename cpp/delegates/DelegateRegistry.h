@@ -17,6 +17,7 @@
 #include "KeyPointVectorDelegate.h"
 #include "DMatchVectorDelegate.h"
 #include "DMatchVectorVectorDelegate.h"
+#include "LineSegmentDetectorDelegate.h"
 
 #ifndef DelegateRegistry_h
 #define DelegateRegistry_h

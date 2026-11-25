@@ -12,6 +12,12 @@ interface ItemDetails {
 
 const items: ItemDetails[] = [
   {
+    title: 'Line Segment Detector',
+    emoji: '📏',
+    description: 'Detect and draw line segments',
+    route: Route.LineSegmentDetector,
+  },
+  {
     title: 'Image Blur',
     emoji: '🔍',
     description: 'Blur an image',

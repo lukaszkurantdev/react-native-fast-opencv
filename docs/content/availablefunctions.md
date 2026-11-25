@@ -1904,6 +1904,34 @@ OpenCV.filter2D(src: Mat,
 ): void;
 ```
 
+### createLineSegmentDetector
+
+Creates a reusable Line Segment Detector with OpenCV defaults.
+
+- refine Refinement method, default `LSD_REFINE_STD`.
+- scale Image scale, default `0.8`.
+- sigmaScale Gaussian sigma scale, default `0.6`.
+- quant Gradient quantization error bound, default `2.0`.
+- angTh Gradient angle tolerance in degrees, default `22.5`.
+- logEps Detection threshold `-log10(NFA)`, default `0`. Only used with `LSD_REFINE_ADV`.
+- densityTh Minimum density of aligned points, default `0.7`.
+- nBins Number of gradient bins, default `1024`.
+
+```ts
+OpenCV.createLineSegmentDetector(
+  refine?: LineSegmentDetectorModes,
+  scale?: number,
+  sigmaScale?: number,
+  quant?: number,
+  angTh?: number,
+  logEps?: number,
+  densityTh?: number,
+  nBins?: number
+): LineSegmentDetector;
+```
+
+Call `detect`, `drawSegments`, and `compareSegments` on the returned instance. See the [example](./examples/lineSegmentDetector).
+
 ### GaussianBlur
 
 Blurs an image using a Gaussian filter.

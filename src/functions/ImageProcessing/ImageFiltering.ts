@@ -1,7 +1,17 @@
 import type { BorderTypes } from '../../constants/Core';
 import type { DataTypes } from '../../constants/DataTypes';
-import type { MorphShapes, MorphTypes } from '../../constants/ImageProcessing';
-import type { Mat, Point, Scalar, Size } from '../../objects/Objects';
+import type {
+  LineSegmentDetectorModes,
+  MorphShapes,
+  MorphTypes,
+} from '../../constants/ImageProcessing';
+import type {
+  Mat,
+  Point,
+  Scalar,
+  Size,
+  LineSegmentDetector,
+} from '../../objects/Objects';
 
 export type ImageFiltering = {
   /**
@@ -303,4 +313,26 @@ export type ImageFiltering = {
     delta: number,
     borderType: Exclude<BorderTypes, BorderTypes.BORDER_WRAP>
   ): void;
+
+  /**
+   * Creates a Line Segment Detector with OpenCV defaults.
+   * @param refine Refinement method, default LSD_REFINE_STD.
+   * @param scale Image scale, default 0.8.
+   * @param sigmaScale Gaussian sigma scale, default 0.6.
+   * @param quant Gradient quantization error bound, default 2.0.
+   * @param angTh Gradient angle tolerance in degrees, default 22.5.
+   * @param logEps Detection threshold -log10(NFA), default 0. Only used with LSD_REFINE_ADV.
+   * @param densityTh Minimum density of aligned points, default 0.7.
+   * @param nBins Number of gradient bins, default 1024.
+   */
+  createLineSegmentDetector(
+    refine?: LineSegmentDetectorModes,
+    scale?: number,
+    sigmaScale?: number,
+    quant?: number,
+    angTh?: number,
+    logEps?: number,
+    densityTh?: number,
+    nBins?: number
+  ): LineSegmentDetector;
 };

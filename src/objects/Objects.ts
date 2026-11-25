@@ -318,6 +318,16 @@ export declare class DMatchVectorVector {
   length: number;
 }
 
+export declare class LineSegmentDetector {
+  private constructor();
+  type: ObjectType.LineSegmentDetector;
+  release(): void;
+
+  compareSegments(size: Size, lines1: Mat, lines2: Mat, image?: Mat): number;
+  detect(image: Mat, lines: Mat, width?: Mat, prec?: Mat, nfa?: Mat): void;
+  drawSegments(image: Mat, lines: Mat): void;
+}
+
 export type Vector = MatVector | PointVector | RectVector;
 export type Array = Mat | Vec3b;
 
